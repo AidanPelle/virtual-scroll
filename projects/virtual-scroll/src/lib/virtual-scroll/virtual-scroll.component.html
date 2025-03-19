@@ -20,14 +20,14 @@
             [rowTemplate]="rowTemplate"
             [defaultRowTemplate]="defaultRowTemplate"
             [cellDefs]="cellDefs?.toArray()"
-            >
-                
+            [cellPadding]="cellPadding">
         </ng-container>
+
     </cdk-virtual-scroll-viewport>
 </ng-template>
 
 
 <ng-template #defaultRowTemplate>
-    <div vs-row [style.height.px]="itemSize">
+    <div vs-row class="vs-default-row">
     </div>
 </ng-template>

@@ -9,7 +9,7 @@ import { BaseDataSource } from '../data-sources/base-data-source';
 @Component({
   selector: 'virtual-scroll',
   templateUrl: './virtual-scroll.component.html',
-  styleUrl: './virtual-scroll.component.scss'
+  styleUrls: ['./virtual-scroll.component.scss', './vs-row.scss', './vs-cell.scss'],
 })
 export class VirtualScrollComponent<T> {
 
@@ -88,6 +88,9 @@ export class VirtualScrollComponent<T> {
   }
   private _inputLoading = new BehaviorSubject<boolean>(false);
 
+
+
+  @Input() cellPadding: number = 16;
 
 
   /**

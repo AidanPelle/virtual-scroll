@@ -1,4 +1,4 @@
-import { Directive, inject, ViewContainerRef } from '@angular/core';
+import { Directive, inject, ViewContainerRef } from "@angular/core";
 
 @Directive({
   selector: '[cellOutlet]',

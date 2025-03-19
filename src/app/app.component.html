@@ -1,4 +1,7 @@
-<virtual-scroll [dataSource]="dataSource">
-    <div vs-row *rowDef="let item;"></div>
-    <div *cellDef="let item;">Cell 1</div>
-</virtual-scroll>
+<div class="scroll-container">
+    <virtual-scroll [dataSource]="dataSource">
+        <div vs-row *rowDef="let item;" class="vs-default-row"></div>
+        <div *cellDef="let item;">Cell 1</div>
+        <div *cellDef="let item;">Cell 2</div>
+    </virtual-scroll>
+</div>

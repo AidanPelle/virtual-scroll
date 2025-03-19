@@ -1,0 +1,13 @@
+:host::ng-deep {
+    .vs-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        box-sizing: border-box;
+        background-color: white;
+    }
+
+    .vs-row-border {
+        border-bottom: 1px solid #F0F0F0;
+    }
+}

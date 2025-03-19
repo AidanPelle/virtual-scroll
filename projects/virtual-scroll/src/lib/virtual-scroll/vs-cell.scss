@@ -1,0 +1,11 @@
+:host::ng-deep {
+    .vs-cell {
+        box-sizing: border-box;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 32px;
+    }
+}
