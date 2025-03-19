@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VirtualScrollComponent } from './virtual-scroll.component';
+import { VirtualScrollComponent } from './virtual-scroll/virtual-scroll.component';
 
 
 

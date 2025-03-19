@@ -3,4 +3,4 @@
  */
 
 export * from './lib/virtual-scroll.module';
-export * from './lib/virtual-scroll.component';
+export * from './lib/virtual-scroll/virtual-scroll.component';
