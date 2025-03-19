@@ -1,14 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'virtual-scroll',
-  template: `
-    <p>
-      virtual-scroll works!
-    </p>
-  `,
-  styles: ``
+  templateUrl: './virtual-scroll.component.html',
+  styleUrl: './virtual-scroll.component.scss'
 })
 export class VirtualScrollComponent {
 
+  @Input() itemSize: number = 48;
 }
