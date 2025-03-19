@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     of(0).pipe(delay(2_000)).subscribe(() => {
-      this.dataSource = new CustomDataSource([1, 2, 3, 4]);
+      const array: number[] = [1];
+      this.dataSource = new CustomDataSource(array);
     });
   }
 }

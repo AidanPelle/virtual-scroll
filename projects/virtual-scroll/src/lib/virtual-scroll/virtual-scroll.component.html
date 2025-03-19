@@ -1,6 +1,12 @@
-<ng-container *ngIf="loading$ | async; else listTemplate">
+<ng-container *ngIf="loading$ | async; else emptyStateTemplate">
     <div>Loading...</div>
 </ng-container>
+
+<ng-template #emptyStateTemplate>
+    <ng-container *ngIf="!(dataSource$ | async)?.length; else listTemplate">
+        <div>No data to display!</div>
+    </ng-container>
+</ng-template>
 
 <ng-template #listTemplate>
     <cdk-virtual-scroll-viewport
