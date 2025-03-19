@@ -1,5 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, combineLatestWith, map, Observable, shareReplay, Subject, switchMap, throttleTime } from 'rxjs';
+import { Component, Input } from '@angular/core';
+import { asyncScheduler, BehaviorSubject, combineLatest, map,shareReplay, startWith, throttleTime } from 'rxjs';
+import { UtilityService } from '../utility.service';
+import { CustomDataSource } from '../data-sources/custom-data-source';
 
 @Component({
   selector: 'virtual-scroll',
@@ -26,6 +28,7 @@ export class VirtualScrollComponent<T> {
     this._itemSize.next(value);
   }
   private _itemSize = new BehaviorSubject<number>(48);
+
 
   /**
    * The height of the table in terms of viewport, ranging from 0-100. When this value is supplied,
@@ -66,22 +69,51 @@ export class VirtualScrollComponent<T> {
   private _minRowBuffer = new BehaviorSubject<number>(15);
 
 
+  /**
+   * The maximum number of rows that we keep rendered outside of the viewport for scrolling consistency
+   */
   @Input() set maxRowBuffer(value: number) {
     this._maxRowBuffer.next(value);
   }
   private _maxRowBuffer = new BehaviorSubject<number>(20);
 
 
+  @Input() set loading(value: boolean) {
+    this._inputLoading.next(value);
+  }
+  private _inputLoading = new BehaviorSubject<boolean>(false);
+
   /**
    * The minimum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
-  protected minBuffer$ = this._mapRowBufferToPx(this._minRowBuffer);
+  protected minBuffer$ = UtilityService.mapRowBufferToPx(this._minRowBuffer, this._itemSize);
 
 
   /**
    * The maximum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
-  protected maxBuffer$ = this._mapRowBufferToPx(this._maxRowBuffer);
+  protected maxBuffer$ = UtilityService.mapRowBufferToPx(this._maxRowBuffer, this._itemSize);
+
+
+  protected dataSource$ = this._arraySource.pipe(
+    map(array => {
+      return new CustomDataSource(array);
+    }),
+    shareReplay(1),
+  );
+  private isDataSourceLoading$ = this.dataSource$.pipe(
+    map(() => false),
+    startWith(true),
+    shareReplay(1)
+  );
+
+
+  protected loading$ = combineLatest([this._inputLoading, this.isDataSourceLoading$]).pipe(
+    map(([inputLoading, dataSourceLoading]) => {
+      const myLoad = inputLoading || dataSourceLoading;
+      return myLoad;
+    }),
+  );
 
 
   /**
@@ -94,15 +126,7 @@ export class VirtualScrollComponent<T> {
     shareReplay(1),
   );
 
-  private _mapRowBufferToPx(rowBuffer: Observable<number>) {
-    return rowBuffer.pipe(
-      combineLatestWith(this._itemSize),
-      map(([bufferRow, itemSize]) => {
-        return bufferRow * itemSize;
-      }),
-      shareReplay(1),
-    );
-  }
+  
 
   /////////////// COMPUTED PROPERTIES //////////////
   protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight, this._arraySource]).pipe(

@@ -1,8 +1,14 @@
-<cdk-virtual-scroll-viewport
-    [itemSize]="itemSize"
-    [style.height.px]="tableHeight$ | async"
-    [minBufferPx]="minBuffer$ | async"
-    [maxBufferPx]="maxBuffer$ | async"
-    (window:resize)="resizeEvent.next()">
-    <div style="height: 46px; border-bottom: 2px solid black;" *cdkVirtualFor="let item of _arraySource | async">Test</div>
-</cdk-virtual-scroll-viewport>
+<ng-container *ngIf="loading$ | async; else listTemplate">
+    <div>Loading...</div>
+</ng-container>
+
+<ng-template #listTemplate>
+    <cdk-virtual-scroll-viewport
+        [itemSize]="itemSize"
+        [style.height.px]="tableHeight$ | async"
+        [minBufferPx]="minBuffer$ | async"
+        [maxBufferPx]="maxBuffer$ | async"
+        (window:resize)="resizeEvent.next()">
+        <div style="height: 46px; border-bottom: 2px solid black;" *cdkVirtualFor="let item of _arraySource | async">Test</div>
+    </cdk-virtual-scroll-viewport>
+</ng-template>
