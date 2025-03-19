@@ -18,9 +18,16 @@
                 trackBy: trackByFn;"
             rowOutlet
             [rowTemplate]="rowTemplate"
-            [cellDefs]="cellDefs.toArray()"
+            [defaultRowTemplate]="defaultRowTemplate"
+            [cellDefs]="cellDefs?.toArray()"
             >
                 
         </ng-container>
     </cdk-virtual-scroll-viewport>
+</ng-template>
+
+
+<ng-template #defaultRowTemplate>
+    <div vs-row [style.height.px]="itemSize">
+    </div>
 </ng-template>

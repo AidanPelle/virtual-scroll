@@ -1,22 +1,24 @@
 import { CollectionViewer } from "@angular/cdk/collections";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { BaseDataSource } from "./base-data-source";
 
-export class CustomDataSource<T> implements BaseDataSource<T> {
-    
-    dataListener = new BehaviorSubject<T[]>([]);
+export class CustomDataSource<T> extends BaseDataSource<T> {
+    override data: T[] = [];
     
     constructor(
-        data: T[],
+        newData: T[],
     ) {
-        this.dataListener.next(data);
+        super();
+        this.data = newData;
+        this.dataListener.next(newData);
     }
+    
     connect(collectionViewer: CollectionViewer): Observable<readonly T[]> {
         return this.dataListener;
     }
 
     disconnect(collectionViewer: CollectionViewer): void {
-        
+
     }
     
 }

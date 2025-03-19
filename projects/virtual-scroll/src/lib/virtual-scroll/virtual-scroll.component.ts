@@ -1,9 +1,10 @@
 import { Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, map,shareReplay, startWith, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, map,shareReplay, startWith, Subject, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
 import { CellDefDirective } from '../defs/cell-def.directive';
+import { BaseDataSource } from '../data-sources/base-data-source';
 
 @Component({
   selector: 'virtual-scroll',
@@ -16,10 +17,12 @@ export class VirtualScrollComponent<T> {
   /**
    * A temporary way to pass in some sort of data to this component, while I set up handling table height etc.
    */
-  @Input() set arraySource(data: T[]) {
-    this._arraySource.next(data);
+  @Input() set dataSource(dataSource: BaseDataSource<T> | null) {
+    if (dataSource instanceof BaseDataSource)
+      this._dataSource.next(dataSource);
   }
-  protected _arraySource = new BehaviorSubject<T[]>([]);
+  protected _dataSource = new Subject<BaseDataSource<T>>();
+  protected dataSource$ = this._dataSource.pipe(shareReplay(1));
 
 
   /**
@@ -117,20 +120,14 @@ export class VirtualScrollComponent<T> {
   protected maxBuffer$ = UtilityService.mapRowBufferToPx(this._maxRowBuffer, this._itemSize);
 
 
-  protected dataSource$ = this._arraySource.pipe(
-    map(array => {
-      return new CustomDataSource(array);
-    }),
-    shareReplay(1),
-  );
-  private isDataSourceLoading$ = this.dataSource$.pipe(
+  private _isDataSourceLoading$ = this.dataSource$.pipe(
     map(() => false),
     startWith(true),
     shareReplay(1)
   );
 
 
-  protected loading$ = combineLatest([this._inputLoading, this.isDataSourceLoading$]).pipe(
+  protected loading$ = combineLatest([this._inputLoading, this._isDataSourceLoading$]).pipe(
     map(([inputLoading, dataSourceLoading]) => {
       const myLoad = inputLoading || dataSourceLoading;
       return myLoad;
@@ -151,13 +148,13 @@ export class VirtualScrollComponent<T> {
   
 
   /////////////// COMPUTED PROPERTIES //////////////
-  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight, this._arraySource]).pipe(
-    map(([heightVh, heightPx, offset, itemSize, windowHeight, arraySource]) => {
+  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight, this.dataSource$]).pipe(
+    map(([heightVh, heightPx, offset, itemSize, windowHeight, dataSource]) => {
       const maxPossibleHeight = heightVh != null
         ? windowHeight * heightVh / 100 - offset
         : heightPx - offset;
 
-      const totalContentHeight = itemSize * arraySource.length;
+      const totalContentHeight = itemSize * dataSource.length;
 
       const tableHeight = Math.min(maxPossibleHeight, totalContentHeight);
 
@@ -177,9 +174,9 @@ export class VirtualScrollComponent<T> {
 
 
   @ContentChild(RowDefDirective, { read: TemplateRef })
-  protected rowTemplate!: TemplateRef<any>;
+  protected rowTemplate?: TemplateRef<any>;
 
 
   @ContentChildren(CellDefDirective, {descendants: true})
-  protected cellDefs!: QueryList<CellDefDirective>;
+  protected cellDefs?: QueryList<CellDefDirective>;
 }
