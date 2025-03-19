@@ -10,4 +10,6 @@ import { VirtualScrollModule } from '../../projects/virtual-scroll/src/public-ap
 })
 export class AppComponent {
   title = 'aidanpelle-virtual-scroll';
+
+  dataSource = [1, 2, 3, 4];
 }
