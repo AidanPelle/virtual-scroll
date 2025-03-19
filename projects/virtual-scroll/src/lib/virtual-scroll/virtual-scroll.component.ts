@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { asyncScheduler, BehaviorSubject, combineLatest, map,shareReplay, startWith, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
+import { RowDefDirective } from '../defs/row-def.directive';
 
 @Component({
   selector: 'virtual-scroll',
@@ -143,4 +144,17 @@ export class VirtualScrollComponent<T> {
     }),
     shareReplay(1),
   );
+
+
+
+
+
+
+
+
+
+
+
+  @ContentChild(RowDefDirective, { read: TemplateRef })
+  protected rowTemplate!: TemplateRef<any>;
 }
