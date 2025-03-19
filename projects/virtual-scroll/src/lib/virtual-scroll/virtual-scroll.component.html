@@ -9,13 +9,16 @@
         [minBufferPx]="minBuffer$ | async"
         [maxBufferPx]="maxBuffer$ | async"
         (window:resize)="resizeEvent.next()">
-        <!-- <div style="height: 46px; border-bottom: 2px solid black;" *cdkVirtualFor="let item of _arraySource | async">Test</div> -->
         
         <ng-container
             *cdkVirtualFor="
-                let item of dataSource$ | async"
+                let item of dataSource$ | async;
+                let index = index;
+                templateCacheSize: 0;
+                trackBy: trackByFn;"
             rowOutlet
             [rowTemplate]="rowTemplate"
+            [cellDefs]="cellDefs.toArray()"
             >
                 
         </ng-container>

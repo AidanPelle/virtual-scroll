@@ -1,3 +1,4 @@
 <virtual-scroll [arraySource]="dataSource" [loading]="loading">
-    <div *rowDef="let item;">Hiya</div>
+    <div vs-row *rowDef="let item;"></div>
+    <div *cellDef="let item;">Cell 1</div>
 </virtual-scroll>

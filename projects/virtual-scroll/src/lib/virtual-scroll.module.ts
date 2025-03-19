@@ -4,6 +4,9 @@ import { VirtualScrollComponent } from './virtual-scroll/virtual-scroll.componen
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { RowOutletDirective } from './outlets/row-outlet.directive';
 import { RowDefDirective } from './defs/row-def.directive';
+import { VsRowComponent } from './row-components/vs-row.component';
+import { CellOutletDirective } from './outlets/cell-outlet.directive';
+import { CellDefDirective } from './defs/cell-def.directive';
 
 
 
@@ -16,10 +19,15 @@ import { RowDefDirective } from './defs/row-def.directive';
     VirtualScrollComponent,
     RowOutletDirective,
     RowDefDirective,
+    VsRowComponent,
+    CellOutletDirective,
+    CellDefDirective,
   ],
   exports: [
     VirtualScrollComponent,
     RowDefDirective,
+    VsRowComponent,
+    CellDefDirective,
   ]
 })
 export class VirtualScrollModule { }

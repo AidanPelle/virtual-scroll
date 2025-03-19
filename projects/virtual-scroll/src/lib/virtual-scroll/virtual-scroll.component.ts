@@ -1,8 +1,9 @@
-import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
+import { Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
 import { asyncScheduler, BehaviorSubject, combineLatest, map,shareReplay, startWith, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
+import { CellDefDirective } from '../defs/cell-def.directive';
 
 @Component({
   selector: 'virtual-scroll',
@@ -84,6 +85,26 @@ export class VirtualScrollComponent<T> {
   }
   private _inputLoading = new BehaviorSubject<boolean>(false);
 
+
+
+  /**
+   * Provides a unique identifier for a given row to virtual scroll, allowing for some optimization by cdk-virtual-scroll.
+   * 
+   * Essentially, it means that when a row is updated, if the result from the trackBy function is unique, then the DOM will
+   * only update the relevant row. Without a trackBy function, the DOM will need to check every row for updates.
+   * 
+   * We add some custom logic to coalesce the result of the trackByFn to the index, so that if the row's value is null, it still
+   * has a value that is likely to be unique.
+   */
+  @Input() public set trackByFn(fn: TrackByFunction<T>) {
+    const coalesceTrackFn = (index: number, item: any) => fn(index, item) ?? index;
+    this._trackByFn = coalesceTrackFn;
+  }
+  private _trackByFn = (index: number, item: any) => item ?? index;
+  public get trackByFn(): TrackByFunction<T> {
+    return this._trackByFn;
+  }
+
   /**
    * The minimum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
@@ -157,4 +178,8 @@ export class VirtualScrollComponent<T> {
 
   @ContentChild(RowDefDirective, { read: TemplateRef })
   protected rowTemplate!: TemplateRef<any>;
+
+
+  @ContentChildren(CellDefDirective, {descendants: true})
+  protected cellDefs!: QueryList<CellDefDirective>;
 }
