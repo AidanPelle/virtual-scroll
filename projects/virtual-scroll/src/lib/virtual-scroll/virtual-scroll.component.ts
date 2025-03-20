@@ -33,6 +33,7 @@ export class VirtualScrollComponent<T> {
     this._itemSize.next(value);
   }
   private _itemSize = new BehaviorSubject<number>(48);
+  protected itemSize$ = this._itemSize.asObservable();
 
 
   /**
@@ -114,13 +115,13 @@ export class VirtualScrollComponent<T> {
   /**
    * The minimum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
-  protected minBuffer$ = UtilityService.mapRowBufferToPx(this._minRowBuffer, this._itemSize);
+  protected minBuffer$ = UtilityService.mapRowBufferToPx(this._minRowBuffer, this.itemSize$);
 
-
+  items = Array.from({length: 100}).map((_, i) => `Item #${i}`);
   /**
    * The maximum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
-  protected maxBuffer$ = UtilityService.mapRowBufferToPx(this._maxRowBuffer, this._itemSize);
+  protected maxBuffer$ = UtilityService.mapRowBufferToPx(this._maxRowBuffer, this.itemSize$);
 
 
   private _isDataSourceLoading$ = this.dataSource$.pipe(
@@ -157,7 +158,7 @@ export class VirtualScrollComponent<T> {
   
 
   /////////////// COMPUTED PROPERTIES //////////////
-  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight, this.dataSource$]).pipe(
+  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this.dataSource$]).pipe(
     map(([heightVh, heightPx, offset, itemSize, windowHeight, dataSource]) => {
       const maxPossibleHeight = heightVh != null
         ? windowHeight * heightVh / 100 - offset

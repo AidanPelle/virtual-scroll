@@ -13,7 +13,7 @@ import { CustomDataSource } from '../../projects/virtual-scroll/src/lib/data-sou
 export class AppComponent implements OnInit {
   title = 'aidanpelle-virtual-scroll';
 
-  dataSource: CustomDataSource<number> | null = null;
+  dataSource: CustomDataSource<string> | null = null;
   loading = true;
 
   isCell1Active = true;
@@ -21,8 +21,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     of(0).pipe(delay(2_000)).subscribe(() => {
-      const array: number[] = [1];
-      this.dataSource = new CustomDataSource(array);
+      const items = Array.from({length: 1_000_000}).map((_, i) => `Item #${i}`);
+      this.dataSource = new CustomDataSource(items);
     });
   }
 }

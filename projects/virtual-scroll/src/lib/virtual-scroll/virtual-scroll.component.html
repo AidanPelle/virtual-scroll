@@ -10,7 +10,7 @@
 
 <ng-template #listTemplate>
     <cdk-virtual-scroll-viewport
-        [itemSize]="itemSize"
+        [itemSize]="itemSize$ | async"
         [style.height.px]="tableHeight$ | async"
         [minBufferPx]="minBuffer$ | async"
         [maxBufferPx]="maxBuffer$ | async"
