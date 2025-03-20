@@ -14,7 +14,7 @@ export class ColumnManager {
         this._viewContainer = viewContainer;
         this._cellPadding = cellPadding;
 
-        this._cellActivity$.pipe(takeUntil(this._onDestroy)).subscribe();
+        this.t2.pipe(takeUntil(this._onDestroy)).subscribe();
     }
 
     private _cellDefs: CellDefDirective[] = [];
@@ -30,17 +30,24 @@ export class ColumnManager {
      */
     private _cachedCellViews: CellView[] = [];
 
-    private _mappedDefs = defer(() => this._cellDefs.map((cd, baseIndex) => cd.activeState$.pipe(map(val => ({def: cd, baseIndex: baseIndex, isActive: val})))));
-    private _cellActivity$ =  merge(this._mappedDefs.pipe(switchMap(val => val))).pipe(
-        // In order to turn a column on or off, I need to know where in the currently active columns I need to place it
-        // If turning the column off, give it it's currently active index
-        // if turning it on, give it the index at which it will need to exist
+
+    
+    private t1 = defer(() => of(null));
+    private t2 = this.t1.pipe(
+        switchMap(() => {
+            const obsList = this._cellDefs.map((cd, baseIndex) => {
+                return cd.activeState$.pipe(map(val => {
+                    return {def: cd, baseIndex: baseIndex, isActive: val}
+                }));
+            });
+            return merge(...obsList);
+        }),
         switchMap(val => {
             const cellsThatOccurBeforeCurrentCell = this._cellDefs.slice(0, val.baseIndex);
             if (cellsThatOccurBeforeCurrentCell.length == 0)
                 return val.def.activeState$.pipe(map(a => {
-            return {cellDef: val.def, index: 0, isActive: a};
-            }));
+                    return {cellDef: val.def, index: 0, isActive: a};
+                }));
             const active$ = cellsThatOccurBeforeCurrentCell.map(c => c.activeState$.pipe(map(state => ({def: c, state: state}))));
             const activeIndex$ = combineLatest(active$).pipe(map(c => {
                 let actives = c.filter(cc => cc.state);

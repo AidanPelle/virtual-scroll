@@ -68,6 +68,8 @@ export class CellDefDirective {
 
       return defaultIsActive;
     }),
+    // We use distinct here to primarily avoid repeat calls from windowResize,so that column toggling only happens when active status actually changes
+    distinctUntilChanged(),
     shareReplay(1),
   );
 }
