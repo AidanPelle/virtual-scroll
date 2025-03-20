@@ -1,20 +1,22 @@
-import { Directive, inject, Input, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 import { CellDefDirective } from "../defs/cell-def.directive";
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { UtilityService } from "../utility.service";
+import { ColumnManager } from "../column-manager/column-manager";
 
 @Directive({
   selector: '[rowOutlet]',
 })
-export class RowOutletDirective implements OnInit {
+export class RowOutletDirective implements OnInit, OnDestroy {
 
   private _viewContainer = inject(ViewContainerRef);
+  private _columnManager?: ColumnManager;
 
   @Input() rowTemplate?: TemplateRef<any>;
 
   @Input() defaultRowTemplate!: TemplateRef<any>;
 
-  @Input() cellDefs?: CellDefDirective[] = [];
+  @Input() cellDefs: CellDefDirective[] = [];
 
   @Input() cellPadding!: number;
 
@@ -39,14 +41,12 @@ export class RowOutletDirective implements OnInit {
     rowView.rootNodes[0].classList.add('vs-row');
     rowView.rootNodes[0].classList.add('vs-row-border');
 
-    this.renderCells(cellOutlet);
+    this._columnManager?.onDestroy();
+    this._columnManager = new ColumnManager(this.cellDefs, cellOutlet.viewContainer, this.cellPadding);
   }
 
-  renderCells(cellOutlet: CellOutletDirective): void {
-    this.cellDefs?.forEach(cellDef => {
-      const cellView = cellOutlet.viewContainer.createEmbeddedView(cellDef.template);
-      UtilityService.applyCellStyling(cellDef, cellView, this.cellPadding);
-    });
+  ngOnDestroy(): void {
+    this._columnManager?.onDestroy();
   }
 
 }

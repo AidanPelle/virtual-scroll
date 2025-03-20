@@ -16,6 +16,9 @@ export class AppComponent implements OnInit {
   dataSource: CustomDataSource<number> | null = null;
   loading = true;
 
+  isCell1Active = true;
+  isCell2Active = true;
+
   ngOnInit(): void {
     of(0).pipe(delay(2_000)).subscribe(() => {
       const array: number[] = [1];

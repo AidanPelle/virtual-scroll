@@ -142,8 +142,14 @@ export class VirtualScrollComponent<T> {
    * The current height of the open page, updated whenever the page resizes
    */
   protected resizeEvent = new BehaviorSubject<void>(undefined);
-  private _windowHeight = this.resizeEvent.pipe(
-    throttleTime(50, asyncScheduler, { trailing: true }),   // Throttle here so that we don't recalc our page too frequently, at most every 50ms
+
+  
+  /**
+   * And observable that emits all resize events captured by virtual scroll.
+   * This is public so that cell defs can listen to the events and update their active status.
+   */
+  public resize$ = this.resizeEvent.pipe(throttleTime(50, asyncScheduler, { trailing: true })); // Throttle here so that we don't recalc our page too frequently, at most every 50ms
+  private _windowHeight = this.resize$.pipe( 
     map(() => window.innerHeight),
     shareReplay(1),
   );
