@@ -1,5 +1,5 @@
 import { Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, map,shareReplay, startWith, Subject, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, defer, map,of,shareReplay, startWith, Subject, switchMap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
@@ -173,13 +173,17 @@ export class VirtualScrollComponent<T> {
   );
 
 
-
-
-
-
-
-
-
+  public mappedActiveColumns2$ = defer(() => of(null)).pipe(
+    map(() => {
+      const obsList = (this.cellDefs ?? []).map((cd, baseIndex) => {
+        return cd.activeState$.pipe(map(val => {
+            return {cellDef: cd, baseIndex: baseIndex, isActive: val}
+        }));
+      });
+      return obsList;
+    }),
+    shareReplay(1),
+  );
 
 
   @ContentChild(RowDefDirective, { read: TemplateRef })
