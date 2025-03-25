@@ -1,5 +1,22 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 <div
-    *ngFor="let cellDef of virtualScroll.cellDefs">
-    <input type="checkbox" #input [checked]="cellDef.activeState$ | async" (change)="cellDef.userDefinedActiveState.next(input.checked)">
-    {{cellDef.columnName}}
+    cdkDropList
+    class="vs-drop-list column-selector-list">
+
+    <div
+        *ngFor="let cellDef of virtualScroll.cellDefs"
+        cdkDrag
+        class="column-selector-item">
+
+        <i cdkDragHandle class="material-icons vs-drag-handle" style="font-size:24px;">drag_indicator</i>
+
+        <input
+            #input
+            type="checkbox"
+            [checked]="cellDef.activeState$ | async"
+            (change)="cellDef.userDefinedActiveState.next(input.checked)">
+
+        {{cellDef.columnName}}
+    </div>
 </div>

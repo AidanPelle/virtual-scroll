@@ -10,6 +10,7 @@ import { CellOutletDirective } from './outlets/cell-outlet.directive';
 import { CellDefDirective } from './defs/cell-def.directive';
 import { ColumnSelectorDialogComponent } from './column-selector/column-selector-dialog.component';
 import { ColumnSelectorDirective } from './column-selector/column-selector.directive';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 
@@ -18,6 +19,7 @@ import { ColumnSelectorDirective } from './column-selector/column-selector.direc
     CommonModule,
     ScrollingModule,
     OverlayModule,
+    DragDropModule,
   ],
   declarations: [
     VirtualScrollComponent,
