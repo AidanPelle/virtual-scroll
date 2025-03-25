@@ -9,3 +9,4 @@ export * from './lib/defs/row-def.directive';
 export * from './lib/row-components/vs-row.component';
 export * from './lib/data-sources/base-data-source';
 export * from './lib/data-sources/custom-data-source';
+export * from './lib/column-selector/column-selector.directive';

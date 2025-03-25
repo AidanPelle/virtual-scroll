@@ -1,8 +1,8 @@
 import { Directive, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
-import { CellDefDirective } from "../defs/cell-def.directive";
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
-import { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
+import { BehaviorSubject, Observable } from "rxjs";
+import type { CellDefDirective } from "../defs/cell-def.directive";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -10,7 +10,6 @@ import { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.compone
 export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   private _viewContainer = inject(ViewContainerRef);
-  private _virtualScroll = inject(VirtualScrollComponent);
   private _columnManager?: ColumnManager<T>;
 
   @Input() rowTemplate?: TemplateRef<any>;
@@ -18,6 +17,10 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   @Input() defaultRowTemplate!: TemplateRef<any>;
 
   @Input() cellPadding!: number;
+
+  @Input() mappedActiveColumns$!: Observable<Observable<{cellDef: CellDefDirective, baseIndex: number, isActive: boolean}>[]>;
+
+  @Input() moveItem!: BehaviorSubject<{ fromIndex: number, toIndex: number } | null>;
 
   constructor() { }
 
@@ -41,7 +44,7 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     rowView.rootNodes[0].classList.add('vs-row-border');
 
     this._columnManager?.onDestroy();
-    this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this._virtualScroll);
+    this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this.mappedActiveColumns$, this.moveItem);
   }
 
   ngOnDestroy(): void {
