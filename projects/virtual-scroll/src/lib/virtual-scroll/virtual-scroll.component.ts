@@ -6,6 +6,7 @@ import { RowDefDirective } from '../defs/row-def.directive';
 import { CellDefDirective } from '../defs/cell-def.directive';
 import { BaseDataSource } from '../data-sources/base-data-source';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { VirtualScrollFooterData } from '../interfaces/footer-data';
 
 @Component({
   selector: 'virtual-scroll',
@@ -95,6 +96,9 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @Input() cellPadding: number = 16;
 
 
+  @Input() showFooter = true;
+
+
   /**
    * Provides a unique identifier for a given row to virtual scroll, allowing for some optimization by cdk-virtual-scroll.
    * 
@@ -171,6 +175,25 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
       return tableHeight;
     }),
+    shareReplay(1),
+  );
+
+
+  protected scrollIndex = new BehaviorSubject<number>(0);
+
+  private _numberOfVisibleRows$ = combineLatest([this.tableHeight$, this.itemSize$]).pipe(map(([tableHeight, itemSize]) => Math.ceil(tableHeight / itemSize)), shareReplay(1));
+
+  protected footerData$ = combineLatest([this.scrollIndex, this._numberOfVisibleRows$, this.dataSource$]).pipe(
+    map(([scrollIndex, numberOfVisibleRows, dataSource]) => {
+      const start = dataSource.length == 0 ? 0 : scrollIndex;
+      const footerData: VirtualScrollFooterData = {
+        start: start,
+        end: Math.min(start + numberOfVisibleRows, dataSource.length - 1),
+        itemCount: dataSource.length,
+      };
+      return footerData;
+    }),
+    startWith({start: -1, end: -1, itemCount: 0}),
     shareReplay(1),
   );
 
