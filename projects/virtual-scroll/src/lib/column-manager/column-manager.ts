@@ -35,7 +35,7 @@ export class ColumnManager<T> {
     private _cachedCellViews: CellView[] = [];
 
     private toggleColumns$ = defer(() => of(null)).pipe(
-        switchMap(() => this._virtualScroll.mappedActiveColumns2$.pipe(switchMap(cols => merge(...cols)))),
+        switchMap(() => this._virtualScroll.mappedActiveColumns$.pipe(switchMap(cols => merge(...cols)))),
         switchMap(val => {
             return combineLatest([of(val), this.activeIndexObs(val.baseIndex)]);
         }),

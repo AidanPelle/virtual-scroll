@@ -1,8 +1,12 @@
+<div [columnSelector]="virtualScroll">Column Selector</div>
+
 <button (click)="isCell1Active = !isCell1Active">Disable Cell 1</button>
 <button (click)="isCell2Active = !isCell2Active">Disable Cell 2</button>
 
+
+
 <div class="scroll-container">
-    <virtual-scroll [dataSource]="dataSource">
+    <virtual-scroll #virtualScroll [dataSource]="dataSource">
         <div vs-row *rowDef="let item;" class="vs-default-row"></div>
         <div *cellDef="let item; name: 'Cell 1'; isActive: isCell1Active">Cell 1</div>
         <div *cellDef="let item; name: 'Cell 2'; isActive: isCell2Active">Cell 2</div>

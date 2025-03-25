@@ -1,0 +1,5 @@
+@import '@angular/cdk/overlay/_index.scss';
+
+::ng-deep {
+    @include overlay();
+}

@@ -174,7 +174,7 @@ export class VirtualScrollComponent<T> {
   );
 
 
-  public mappedActiveColumns2$ = defer(() => of(null)).pipe(
+  public mappedActiveColumns$ = defer(() => of(null)).pipe(
     map(() => {
       const obsList = (this.cellDefs ?? []).map((cd, baseIndex) => {
         return cd.activeState$.pipe(map(val => {
