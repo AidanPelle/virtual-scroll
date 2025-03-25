@@ -6,5 +6,5 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrl: './column-selector-dialog.component.scss',
 })
 export class ColumnSelectorDialogComponent {
-
+  
 }
