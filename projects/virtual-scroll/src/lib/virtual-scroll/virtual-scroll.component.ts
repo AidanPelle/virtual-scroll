@@ -1,4 +1,4 @@
-import { Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
+import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
 import { asyncScheduler, BehaviorSubject, combineLatest, defer, map,of,shareReplay, startWith, Subject, switchMap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
@@ -11,7 +11,7 @@ import { BaseDataSource } from '../data-sources/base-data-source';
   templateUrl: './virtual-scroll.component.html',
   styleUrls: ['./virtual-scroll.component.scss', './vs-row.scss', './vs-cell.scss'],
 })
-export class VirtualScrollComponent<T> {
+export class VirtualScrollComponent<T> implements AfterContentInit {
 
 
   /**
@@ -192,5 +192,11 @@ export class VirtualScrollComponent<T> {
 
 
   @ContentChildren(CellDefDirective, {descendants: true})
-  public cellDefs?: QueryList<CellDefDirective>;
+  private cellDefs?: QueryList<CellDefDirective>;
+
+  public orderedCellDefs!: CellDefDirective[];
+
+  ngAfterContentInit(): void {
+    this.orderedCellDefs = this.cellDefs?.toArray()!;
+  }
 }

@@ -2,10 +2,11 @@
 
 <div
     cdkDropList
-    class="vs-drop-list column-selector-list">
+    class="vs-drop-list column-selector-list"
+    (cdkDropListDropped)="drop($event)">
 
     <div
-        *ngFor="let cellDef of virtualScroll.cellDefs"
+        *ngFor="let cellDef of virtualScroll.orderedCellDefs"
         cdkDrag
         class="column-selector-item">
 
