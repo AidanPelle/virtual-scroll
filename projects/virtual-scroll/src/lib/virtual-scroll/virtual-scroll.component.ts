@@ -182,7 +182,22 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @ContentChildren(CellDefDirective, { descendants: true })
   private cellDefs?: QueryList<CellDefDirective>;
 
-  
+
+  public moveItem = new BehaviorSubject<{ fromIndex: number, toIndex: number } | null>(null);
+
+  private cellDefs$ = new BehaviorSubject<CellDefDirective[]>([]);
+
+  public orderedCellDefs$ = this.moveItem.pipe(
+    switchMap(val => {
+      if (val !== null) {
+        const cells = this.cellDefs$.value;
+        moveItemInArray(cells, val.fromIndex, val.toIndex);
+        this.cellDefs$.next(cells);
+      }
+      return this.cellDefs$;
+    }),
+    shareReplay(1),
+  );
 
   public mappedActiveColumns$ = defer(() => of(null)).pipe(
     switchMap(() => {
@@ -197,21 +212,6 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
         }),
       );
       return obsList;
-    }),
-    shareReplay(1),
-  );
-
-  public moveItem = new BehaviorSubject<{ fromIndex: number, toIndex: number } | null>(null);
-
-  private cellDefs$ = new BehaviorSubject<CellDefDirective[]>([]);
-  public orderedCellDefs$ = this.moveItem.pipe(
-    switchMap(val => {
-      if (val !== null) {
-        const cells = this.cellDefs$.value;
-        moveItemInArray(cells, val.fromIndex, val.toIndex);
-        this.cellDefs$.next(cells);
-      }
-      return this.cellDefs$;
     }),
     shareReplay(1),
   );

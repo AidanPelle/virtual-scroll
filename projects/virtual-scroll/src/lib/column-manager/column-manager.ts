@@ -32,11 +32,18 @@ export class ColumnManager<T> {
      */
     private _cachedCellViews: CellView[] = [];
 
+
+    /**
+     * Handles keeping track of the first time we fire on rendering a row. Whenever the columns are re-ordered, we do not want to listen to the next active state,
+     * except for when we're initially loading. Afterwards, we can safely ignore.
+     */
+    private _initialLoad = true;
+
     private toggleColumns$ = defer(() => of(null)).pipe(
         switchMap(() => {
             return this._virtualScroll.mappedActiveColumns$.pipe(switchMap(cols => {
-                let c = cols.map(col => col.pipe(c => c.pipe(skip(this.initialLoad ? 0 : 1))));
-                this.initialLoad = false;
+                let c = cols.map(col => col.pipe(c => c.pipe(skip(this._initialLoad ? 0 : 1))));
+                this._initialLoad = false;
                 return merge(...c);
             }));
         }),
@@ -61,7 +68,7 @@ export class ColumnManager<T> {
                     this._cachedCellViews.push({columnName: val.cellDef.columnName, viewRef: cachedCell});
             }
         }),
-    )
+    );
 
     private moveColumn$ = defer(() => of(null)).pipe(
         switchMap(() => this._virtualScroll.moveItem),
@@ -73,9 +80,6 @@ export class ColumnManager<T> {
                 this._viewContainer.move(viewToMove, toActiveIndex);
         }),
     );
-
-
-    private initialLoad = true;
 
     private activeIndexObs(baseIndex: number) {
        return this._virtualScroll.mappedActiveColumns$.pipe(
