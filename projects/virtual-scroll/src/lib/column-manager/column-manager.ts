@@ -1,15 +1,15 @@
 import { ViewContainerRef } from "@angular/core";
-import type { CellDefDirective } from "../defs/cell-def.directive";
 import { UtilityService } from "../utility.service";
-import { BehaviorSubject, combineLatest, defer, filter, map, merge, Observable, of, skip, Subject, switchMap, take, takeUntil, tap } from "rxjs";
+import { combineLatest, defer, filter, map, merge, of, skip, Subject, switchMap, take, takeUntil, tap } from "rxjs";
 import { CellView } from "../interfaces/cell-view";
+import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 
 export class ColumnManager<T> {
     constructor(
         viewContainer: ViewContainerRef,
         cellPadding: number,
-        mappedActiveColumns$: Observable<Observable<{cellDef: CellDefDirective, baseIndex: number, isActive: boolean}>[]>,
-        moveItem: BehaviorSubject<{ fromIndex: number, toIndex: number } | null>,
+        mappedActiveColumns$: typeof VirtualScrollComponent.prototype.mappedActiveColumns$,
+        moveItem: typeof VirtualScrollComponent.prototype.moveItem,
     ) {
         this._viewContainer = viewContainer;
         this._cellPadding = cellPadding;
@@ -22,8 +22,8 @@ export class ColumnManager<T> {
 
     private _viewContainer!: ViewContainerRef;
     private _cellPadding!: number;
-    private _mappedActiveColumns$!: Observable<Observable<{cellDef: CellDefDirective, baseIndex: number, isActive: boolean}>[]>;
-    private _moveItem!: BehaviorSubject<{ fromIndex: number, toIndex: number } | null>;
+    private _mappedActiveColumns$!: typeof VirtualScrollComponent.prototype.mappedActiveColumns$;
+    private _moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
     // private _canReorder = true;
     // private _canResize = true;
     // private _canSelect = true;

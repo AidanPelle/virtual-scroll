@@ -1,8 +1,7 @@
 import { Directive, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
-import { BehaviorSubject, Observable } from "rxjs";
-import type { CellDefDirective } from "../defs/cell-def.directive";
+import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -18,9 +17,9 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   @Input() cellPadding!: number;
 
-  @Input() mappedActiveColumns$!: Observable<Observable<{cellDef: CellDefDirective, baseIndex: number, isActive: boolean}>[]>;
+  @Input() mappedActiveColumns$!: typeof VirtualScrollComponent.prototype.mappedActiveColumns$;
 
-  @Input() moveItem!: BehaviorSubject<{ fromIndex: number, toIndex: number } | null>;
+  @Input() moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
 
   constructor() { }
 
