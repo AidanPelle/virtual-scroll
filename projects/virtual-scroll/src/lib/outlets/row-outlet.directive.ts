@@ -17,8 +17,6 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   @Input() defaultRowTemplate!: TemplateRef<any>;
 
-  @Input() cellDefs: CellDefDirective[] = [];
-
   @Input() cellPadding!: number;
 
   constructor() { }
@@ -43,7 +41,7 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     rowView.rootNodes[0].classList.add('vs-row-border');
 
     this._columnManager?.onDestroy();
-    this._columnManager = new ColumnManager(this.cellDefs, cellOutlet.viewContainer, this.cellPadding, this._virtualScroll);
+    this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this._virtualScroll);
   }
 
   ngOnDestroy(): void {

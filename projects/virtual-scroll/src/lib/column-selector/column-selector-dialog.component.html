@@ -6,7 +6,7 @@
     (cdkDropListDropped)="drop($event)">
 
     <div
-        *ngFor="let cellDef of virtualScroll.orderedCellDefs"
+        *ngFor="let cellDef of virtualScroll.orderedCellDefs$ | async"
         cdkDrag
         class="column-selector-item">
 

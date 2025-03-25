@@ -15,8 +15,6 @@ export class ColumnSelectorDialogComponent {
   }
 
   drop(event: CdkDragDrop<any, any, any>) {
-    moveItemInArray(this.virtualScroll.orderedCellDefs, event.previousIndex, event.currentIndex);
-    this.virtualScroll.orderedCellDefs$.next(this.virtualScroll.orderedCellDefs);
-
+    this.virtualScroll.moveItem.next({fromIndex: event.previousIndex, toIndex: event.currentIndex});
   }
 }

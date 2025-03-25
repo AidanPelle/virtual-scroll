@@ -1,26 +1,24 @@
 import { ViewContainerRef } from "@angular/core";
 import { CellDefDirective } from "../defs/cell-def.directive";
 import { UtilityService } from "../utility.service";
-import { combineLatest, combineLatestWith, defer, map, merge, of, skip, skipWhile, Subject, switchMap, take, takeUntil, tap } from "rxjs";
+import { combineLatest, combineLatestWith, defer, filter, map, merge, of, skip, skipWhile, Subject, switchMap, take, takeUntil, tap } from "rxjs";
 import { CellView } from "../interfaces/cell-view";
 import { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 
 export class ColumnManager<T> {
     constructor(
-        cellDefs: CellDefDirective[],
         viewContainer: ViewContainerRef,
         cellPadding: number,
         virtualScroll: VirtualScrollComponent<T>,
     ) {
-        this._cellDefs = cellDefs;
         this._viewContainer = viewContainer;
         this._cellPadding = cellPadding;
         this._virtualScroll = virtualScroll;
 
         this.toggleColumns$.pipe(takeUntil(this._onDestroy)).subscribe();
+        this.moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
     }
 
-    private _cellDefs: CellDefDirective[] = [];
     private _viewContainer!: ViewContainerRef;
     private _cellPadding!: number;
     private _virtualScroll!: VirtualScrollComponent<T>;
@@ -65,6 +63,16 @@ export class ColumnManager<T> {
         }),
     )
 
+    private moveColumn$ = defer(() => of(null)).pipe(
+        switchMap(() => this._virtualScroll.moveItem),
+        filter(val => val != null),
+        switchMap(val => combineLatest([this.activeIndexObs(val.fromIndex), this.activeIndexObs(val.toIndex)])),
+        tap(([fromActiveIndex, toActiveIndex]) => {
+            const viewToMove = this._viewContainer.get(fromActiveIndex);
+            if (viewToMove)
+                this._viewContainer.move(viewToMove, toActiveIndex);
+        }),
+    );
 
 
     private initialLoad = true;
