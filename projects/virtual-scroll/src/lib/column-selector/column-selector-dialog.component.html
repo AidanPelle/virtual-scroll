@@ -1,1 +1,5 @@
-<div>Test</div>
+<div
+    *ngFor="let cellDef of virtualScroll.cellDefs">
+    <input type="checkbox" #input [checked]="cellDef.activeState$ | async" (change)="cellDef.userDefinedActiveState.next(input.checked)">
+    {{cellDef.columnName}}
+</div>

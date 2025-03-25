@@ -1,4 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, inject, ViewEncapsulation } from '@angular/core';
+import { VirtualScrollComponent } from '../virtual-scroll/virtual-scroll.component';
 
 @Component({
   selector: 'column-selector-dialog',
@@ -6,5 +7,9 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrl: './column-selector-dialog.component.scss',
 })
 export class ColumnSelectorDialogComponent {
-  
+  public virtualScroll!: VirtualScrollComponent<unknown>;
+
+  logChange(event: any) {
+    console.log(event);
+  }
 }

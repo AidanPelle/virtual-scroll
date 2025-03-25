@@ -8,12 +8,12 @@ import { Subject, takeUntil } from 'rxjs';
 @Directive({
   selector: '[columnSelector]',
 })
-export class ColumnSelectorDirective<T> {
+export class ColumnSelectorDirective {
 
   private _overlay = inject(Overlay);
   private _hostElement = inject(ElementRef);
 
-  @Input('columnSelector') virtualScroll!: VirtualScrollComponent<T>;
+  @Input('columnSelector') virtualScroll!: VirtualScrollComponent<any>;
 
   private _overlayRef: OverlayRef | null = null;
 
@@ -24,7 +24,8 @@ export class ColumnSelectorDirective<T> {
 
     const overlayConfig = this.getOverlayConfig();
     this._overlayRef = this._overlay.create(overlayConfig);
-    this._overlayRef.attach(new ComponentPortal(ColumnSelectorDialogComponent));
+    const componentRef = this._overlayRef.attach(new ComponentPortal(ColumnSelectorDialogComponent));
+    componentRef.instance.virtualScroll = this.virtualScroll;
 
     const closed$ = new Subject<void>();
     this._overlayRef.outsidePointerEvents().pipe(

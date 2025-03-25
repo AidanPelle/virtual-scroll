@@ -192,5 +192,5 @@ export class VirtualScrollComponent<T> {
 
 
   @ContentChildren(CellDefDirective, {descendants: true})
-  protected cellDefs?: QueryList<CellDefDirective>;
+  public cellDefs?: QueryList<CellDefDirective>;
 }
