@@ -1,7 +1,7 @@
 import { ViewContainerRef } from "@angular/core";
 import { CellDefDirective } from "../defs/cell-def.directive";
 import { UtilityService } from "../utility.service";
-import { combineLatest, combineLatestWith, defer, map, merge, of, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { combineLatest, combineLatestWith, defer, map, merge, of, skip, skipWhile, Subject, switchMap, take, takeUntil, tap } from "rxjs";
 import { CellView } from "../interfaces/cell-view";
 import { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 
@@ -35,7 +35,13 @@ export class ColumnManager<T> {
     private _cachedCellViews: CellView[] = [];
 
     private toggleColumns$ = defer(() => of(null)).pipe(
-        switchMap(() => this._virtualScroll.mappedActiveColumns$.pipe(switchMap(cols => merge(...cols)))),
+        switchMap(() => {
+            return this._virtualScroll.mappedActiveColumns$.pipe(switchMap(cols => {
+                let c = cols.map(col => col.pipe(c => c.pipe(skip(this.initialLoad ? 0 : 1))));
+                this.initialLoad = false;
+                return merge(...c);
+            }));
+        }),
         switchMap(val => {
             return combineLatest([of(val), this.activeIndexObs(val.baseIndex)]);
         }),
@@ -59,11 +65,19 @@ export class ColumnManager<T> {
         }),
     )
 
+
+
+    private initialLoad = true;
+
     private activeIndexObs(baseIndex: number) {
-        const obsList = this._cellDefs.map(cd => cd.activeState$);
-        return combineLatest(obsList).pipe(
-            map(list => list.slice(0, baseIndex)),
-            map(list => list.filter(isActive => isActive).length),
+       return this._virtualScroll.mappedActiveColumns$.pipe(
+            switchMap(obsList => {
+                return combineLatest(obsList).pipe(
+                    map(list => list.slice(0, baseIndex)),
+                    map(list => list.filter(isActive => isActive).length),
+                );
+            }),
+            take(1),
         );
     }
 

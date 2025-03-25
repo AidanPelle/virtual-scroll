@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, defer, map,of,shareReplay, startWith, Subject, switchMap, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, defer, map, of, shareReplay, startWith, Subject, switchMap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
@@ -117,7 +117,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
    */
   protected minBuffer$ = UtilityService.mapRowBufferToPx(this._minRowBuffer, this.itemSize$);
 
-  items = Array.from({length: 100}).map((_, i) => `Item #${i}`);
+  items = Array.from({ length: 100 }).map((_, i) => `Item #${i}`);
   /**
    * The maximum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
@@ -144,18 +144,18 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
    */
   protected resizeEvent = new BehaviorSubject<void>(undefined);
 
-  
+
   /**
    * And observable that emits all resize events captured by virtual scroll.
    * This is public so that cell defs can listen to the events and update their active status.
    */
   public resize$ = this.resizeEvent.pipe(throttleTime(50, asyncScheduler, { trailing: true })); // Throttle here so that we don't recalc our page too frequently, at most every 50ms
-  private _windowHeight = this.resize$.pipe( 
+  private _windowHeight = this.resize$.pipe(
     map(() => window.innerHeight),
     shareReplay(1),
   );
 
-  
+
 
   /////////////// COMPUTED PROPERTIES //////////////
   protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this.dataSource$]).pipe(
@@ -174,29 +174,36 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   );
 
 
+  @ContentChild(RowDefDirective, { read: TemplateRef })
+  protected rowTemplate?: TemplateRef<any>;
+
+
+  @ContentChildren(CellDefDirective, { descendants: true })
+  private cellDefs?: QueryList<CellDefDirective>;
+
+  public orderedCellDefs!: CellDefDirective[];
+
+  public orderedCellDefs$ = new BehaviorSubject<CellDefDirective[]>([]);
+
   public mappedActiveColumns$ = defer(() => of(null)).pipe(
-    map(() => {
-      const obsList = (this.cellDefs ?? []).map((cd, baseIndex) => {
-        return cd.activeState$.pipe(map(val => {
-            return {cellDef: cd, baseIndex: baseIndex, isActive: val}
-        }));
-      });
+    switchMap(() => {
+      const obsList = this.orderedCellDefs$.pipe(
+        map(cellDefList => {
+          const obsList2 = cellDefList.map((cellDef, baseIndex) => {
+            return cellDef.activeState$.pipe(map(val => {
+              return { cellDef: cellDef, baseIndex: baseIndex, isActive: val }
+            }));
+          });
+          return obsList2;
+        }),
+      );
       return obsList;
     }),
     shareReplay(1),
   );
 
-
-  @ContentChild(RowDefDirective, { read: TemplateRef })
-  protected rowTemplate?: TemplateRef<any>;
-
-
-  @ContentChildren(CellDefDirective, {descendants: true})
-  private cellDefs?: QueryList<CellDefDirective>;
-
-  public orderedCellDefs!: CellDefDirective[];
-
   ngAfterContentInit(): void {
     this.orderedCellDefs = this.cellDefs?.toArray()!;
+    this.orderedCellDefs$.next(this.orderedCellDefs);
   }
 }
