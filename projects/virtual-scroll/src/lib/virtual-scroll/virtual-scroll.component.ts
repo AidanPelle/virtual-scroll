@@ -136,6 +136,9 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   );
 
 
+  /**
+   * Display a generic loading state for virtual scroll, based on user-defined loading status along with the current status of the data source.
+   */
   protected loading$ = combineLatest([this._inputLoading, this._isDataSourceLoading$]).pipe(
     map(([inputLoading, dataSourceLoading]) => {
       const myLoad = inputLoading || dataSourceLoading;
@@ -181,9 +184,18 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
   protected scrollIndex = new BehaviorSubject<number>(0);
 
+  /**
+   * Throttle the current scroll events so that we don't have to process every single scroll event that comes through, for performance.
+   */
+  private scroll$ = this.scrollIndex.pipe(throttleTime(50, asyncScheduler, { trailing: true }));
+
   private _numberOfVisibleRows$ = combineLatest([this.tableHeight$, this.itemSize$]).pipe(map(([tableHeight, itemSize]) => Math.ceil(tableHeight / itemSize)), shareReplay(1));
 
-  protected footerData$ = combineLatest([this.scrollIndex, this._numberOfVisibleRows$, this.dataSource$]).pipe(
+
+  /**
+   * Handles displaying the start, end, and count items for the current list
+   */
+  protected footerData$ = combineLatest([this.scroll$, this._numberOfVisibleRows$, this.dataSource$]).pipe(
     map(([scrollIndex, numberOfVisibleRows, dataSource]) => {
       const start = dataSource.length == 0 ? 0 : scrollIndex;
       const footerData: VirtualScrollFooterData = {
@@ -206,10 +218,18 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   private cellDefs?: QueryList<CellDefDirective>;
 
 
-  public moveItem = new BehaviorSubject<{ fromIndex: number, toIndex: number } | null>(null);
+  public moveItem = new BehaviorSubject<{ fromIndex: number, toIndex: number, isActive: boolean } | null>(null);
 
+  /**
+   * Handles the initial mapping from the contentChildren out to subsequent functions, and allows us access to the current array value.
+   */
   private cellDefs$ = new BehaviorSubject<CellDefDirective[]>([]);
 
+
+  /**
+   * Handles taking in the current ordering of cell defs in the page, and whenever a drag/drop event occurs, re-arranging
+   * the array to match that new info.
+   */
   public orderedCellDefs$ = this.moveItem.pipe(
     switchMap(val => {
       if (val !== null) {
@@ -222,6 +242,10 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
+
+  /**
+   * Handles mapping from the current ordered list of cell defs, into their active state and index in the list.
+   */
   public mappedActiveColumns$ = defer(() => of(null)).pipe(
     switchMap(() => {
       const obsList = this.orderedCellDefs$.pipe(
