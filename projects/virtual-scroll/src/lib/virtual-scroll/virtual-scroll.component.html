@@ -15,7 +15,8 @@
         [minBufferPx]="minBuffer$ | async"
         [maxBufferPx]="maxBuffer$ | async"
         (window:resize)="resizeEvent.next()"
-        (scrolledIndexChange)="scrollIndex.next($event)">
+        (scrolledIndexChange)="scrollIndex.next($event)"
+        (scroll)="onScroll.next($event)">
         
         <ng-container
             *cdkVirtualFor="

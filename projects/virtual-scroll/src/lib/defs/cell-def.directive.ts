@@ -45,6 +45,8 @@ export class CellDefDirective {
 
   @Input('cellDefFixedWidth') fixedWidth: number | null = null;
 
+  @Input('cellDefSticky') sticky = false;
+
 
   /**
    * Handles the current state as selected by a user.

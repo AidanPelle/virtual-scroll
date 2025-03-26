@@ -1,4 +1,4 @@
-import { Directive, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, EmbeddedViewRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";   // Using type instead of direct import to fix circular import references
@@ -9,7 +9,7 @@ import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.co
 export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   private _viewContainer = inject(ViewContainerRef);
-  private _columnManager?: ColumnManager<T>;
+  public _columnManager?: ColumnManager<T>;
 
   @Input() rowTemplate?: TemplateRef<any>;
 
@@ -31,20 +31,30 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     this.renderRow();
   }
 
+  public rowView?: EmbeddedViewRef<any>;
+
+  /**
+   * A shorthand for grabbing the current element's positioning in the DOM, to reduce
+   * boilerplate when calculating the sticky shadow in the virtual-scroll.component.ts.
+   */
+  public get rowViewDimensions(): DOMRect {
+    return (this.rowView?.rootNodes[0]).getBoundingClientRect() as DOMRect;
+  }
+
   renderRow(): void {
     // Remove any currently rendered items from the view
     this._viewContainer.clear();
 
     // When there's no template provided from the user, we can substitute with some default template
-    const rowView = this._viewContainer.createEmbeddedView(this.rowTemplate ?? this.defaultRowTemplate);
+    this.rowView = this._viewContainer.createEmbeddedView(this.rowTemplate ?? this.defaultRowTemplate);
 
     const cellOutlet = CellOutletDirective.mostRecentView;
     if (!cellOutlet)
       throw Error('No vs-row detected on rowDef, cannot render cells');
 
 
-    rowView.rootNodes[0].classList.add('vs-row');
-    rowView.rootNodes[0].classList.add('vs-row-border');
+    this.rowView.rootNodes[0].classList.add('vs-row');
+    this.rowView.rootNodes[0].classList.add('vs-row-border');
 
     this._columnManager?.onDestroy();
     this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this.mappedActiveColumns$, this.moveItem, this.item, this.index);

@@ -1,5 +1,5 @@
-import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, defer, map, of, shareReplay, startWith, Subject, switchMap, throttleTime } from 'rxjs';
+import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
+import { asyncScheduler, BehaviorSubject, combineLatest, defer, distinctUntilChanged, filter, map, of, shareReplay, startWith, Subject, switchMap, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
@@ -7,6 +7,8 @@ import { CellDefDirective } from '../defs/cell-def.directive';
 import { BaseDataSource } from '../data-sources/base-data-source';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { VirtualScrollFooterData } from '../interfaces/footer-data';
+import { RowOutletDirective } from '../outlets/row-outlet.directive';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'virtual-scroll',
@@ -164,6 +166,32 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   );
 
 
+  protected onScroll = new Subject<Event>();
+  private horizontalScroll$ = this.onScroll.pipe(
+    throttleTime(50, asyncScheduler, { trailing: true }),
+    map(event => {
+      const target = event.target as HTMLElement;
+      return [target.scrollLeft, target.offsetWidth];
+    }),
+    distinctUntilChanged(),
+    startWith([0, 0]),
+  );
+
+  public stickyStyling$ = this.horizontalScroll$.pipe(
+    tap(([scrollLeft, offsetWidth]) => {
+      const scrollElement = this.rowOutlets.first?._columnManager?.stickyCell?.rootNodes[0] as HTMLElement
+      if (!scrollElement)
+        return;
+      if (scrollElement.offsetLeft < scrollLeft)
+        console.log("sticky right");
+      else if (scrollElement.offsetLeft + scrollElement.offsetWidth > scrollLeft + offsetWidth)
+        console.log("sticky left");
+      else console.log("no sticky")
+    }),
+    distinctUntilChanged(),
+  )
+
+  @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
 
   /////////////// COMPUTED PROPERTIES //////////////
   protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this.dataSource$]).pipe(
@@ -217,6 +245,12 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @ContentChildren(CellDefDirective, { descendants: true })
   private cellDefs?: QueryList<CellDefDirective>;
 
+  /**
+   * A reference to the list of the current rows that are rendered to the screen.
+   */
+  @ViewChildren(RowOutletDirective)
+  protected rowOutlets!: QueryList<RowOutletDirective<T>>;
+
 
   public moveItem = new BehaviorSubject<{ fromIndex: number, toIndex: number, isActive: boolean } | null>(null);
 
@@ -265,5 +299,9 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.cellDefs$.next(this.cellDefs?.toArray()!);
+  }
+
+  ngAfterViewInit(): void {
+    this.stickyStyling$.subscribe();
   }
 }

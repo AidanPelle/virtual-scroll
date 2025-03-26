@@ -24,6 +24,8 @@ export class ColumnManager<T> {
         this.moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
     }
 
+    public stickyCell: EmbeddedViewRef<any> | null = null;
+
     private _viewContainer!: ViewContainerRef;
     private _cellPadding!: number;
     private _mappedActiveColumns$!: typeof VirtualScrollComponent.prototype.mappedActiveColumns$;
@@ -66,16 +68,20 @@ export class ColumnManager<T> {
         }),
         tap(([val, activeIndex]) => {
             if (!val.isActive) {
-                const renderedCell = this._renderedCellViews.includes(val.cellDef.columnName)
-                if (!renderedCell)      // If the cell hasn't already been rendered, we can end here, since no action needed.
+                const renderedCellIndex = this._renderedCellViews.indexOf(val.cellDef.columnName)
+                if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
                     return;
                 
                 this._viewContainer.remove(activeIndex);
+                this._renderedCellViews.splice(renderedCellIndex, 1);
             }
             else {
                 const renderedCell = this._viewContainer.createEmbeddedView(val.cellDef.template, {$implicit: this._item, index: this._index}, {index: activeIndex});
                 UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
                 this._renderedCellViews.push(val.cellDef.columnName);
+
+                if (val.cellDef.sticky)
+                    this.stickyCell = renderedCell;
             }
         }),
     );
