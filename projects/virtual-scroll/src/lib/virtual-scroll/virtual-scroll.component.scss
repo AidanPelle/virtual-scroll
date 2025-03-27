@@ -3,6 +3,22 @@
         height: 48px;
         box-sizing: border-box;
     }
+
+    .sticky {
+        height: 100%;
+        position: sticky;
+        left: 0px;
+        right: 0px;
+        background-color: inherit;
+    }
+
+    .sticky-left-shadow {
+        box-shadow: -4px 0 4px -2px rgba(0, 0, 0, 0.16);
+    }
+
+    .sticky-right-shadow {
+        box-shadow: 4px 0 4px -2px rgba(0, 0, 0, 0.16);
+    }
 }
 
 :host {

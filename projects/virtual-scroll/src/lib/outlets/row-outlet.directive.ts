@@ -1,7 +1,8 @@
-import { Directive, EmbeddedViewRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, EmbeddedViewRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef, ViewRef } from "@angular/core";
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";   // Using type instead of direct import to fix circular import references
+import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -21,9 +22,16 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   @Input() moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
 
+  @Input() applyStickyShadow!: typeof VirtualScrollComponent.prototype.applyStickyShadow$;
+
   @Input() item!: T;
 
   @Input() index!: number;
+
+  private _onDestroy = new Subject<void>();
+
+  private renderSticky = new BehaviorSubject<EmbeddedViewRef<any> | null>(null);
+  public renderedSticky$ = this.renderSticky.pipe(takeUntil(this._onDestroy));
 
   constructor() { }
 
@@ -57,11 +65,13 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     this.rowView.rootNodes[0].classList.add('vs-row-border');
 
     this._columnManager?.onDestroy();
-    this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this.mappedActiveColumns$, this.moveItem, this.item, this.index);
+    this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this.mappedActiveColumns$, this.moveItem, this.item, this.index, this.renderSticky, this.applyStickyShadow);
   }
 
   ngOnDestroy(): void {
     this._columnManager?.onDestroy();
+    this._onDestroy.next();
+    this._onDestroy.complete();
   }
 
 }

@@ -1,6 +1,6 @@
 import { EmbeddedViewRef, ViewContainerRef, ViewRef } from "@angular/core";
 import { UtilityService } from "../utility.service";
-import { combineLatest, defer, filter, map, merge, of, skip, Subject, switchMap, take, takeUntil, tap } from "rxjs";
+import { BehaviorSubject, combineLatest, defer, filter, map, merge, of, skip, Subject, switchMap, take, takeUntil, tap } from "rxjs";
 import { CellView } from "../interfaces/cell-view";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 
@@ -12,6 +12,8 @@ export class ColumnManager<T> {
         moveItem: typeof VirtualScrollComponent.prototype.moveItem,
         item: T,
         index: number,
+        renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>,
+        applyStickyShadow: typeof VirtualScrollComponent.prototype.applyStickyShadow$,
     ) {
         this._viewContainer = viewContainer;
         this._cellPadding = cellPadding;
@@ -19,12 +21,12 @@ export class ColumnManager<T> {
         this._moveItem = moveItem;
         this._item = item;
         this._index = index;
+        this._renderSticky = renderSticky;
+        this._applyStickyShadow$ = applyStickyShadow;
 
         this.toggleColumns$.pipe(takeUntil(this._onDestroy)).subscribe();
         this.moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
     }
-
-    public stickyCell: EmbeddedViewRef<any> | null = null;
 
     private _viewContainer!: ViewContainerRef;
     private _cellPadding!: number;
@@ -32,6 +34,8 @@ export class ColumnManager<T> {
     private _moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
     private _item!: T;
     private _index!: number;
+    private _renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>;
+    private _applyStickyShadow$: typeof VirtualScrollComponent.prototype.applyStickyShadow$;
     // private _canReorder = true;
     // private _canResize = true;
     // private _canSelect = true;
@@ -80,8 +84,14 @@ export class ColumnManager<T> {
                 UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
                 this._renderedCellViews.push(val.cellDef.columnName);
 
-                if (val.cellDef.sticky)
-                    this.stickyCell = renderedCell;
+                if (val.cellDef.sticky) {
+                    renderedCell.rootNodes[0].classList.add('sticky');
+                    this._renderSticky.next(renderedCell);
+                    this._applyStickyShadow$.pipe(takeUntil(this._onDestroy)).subscribe(shadow => {
+                        renderedCell.rootNodes[0].classList.toggle('sticky-right-shadow', shadow === 'sticky-right-shadow');
+                        renderedCell.rootNodes[0].classList.toggle('sticky-left-shadow', shadow === 'sticky-left-shadow');
+                    });
+                }
             }
         }),
     );

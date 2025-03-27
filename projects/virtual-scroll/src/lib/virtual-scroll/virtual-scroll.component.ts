@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, defer, distinctUntilChanged, filter, map, of, shareReplay, startWith, Subject, switchMap, tap, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, concat, concatWith, defer, distinctUntilChanged, filter, map, merge, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
@@ -119,6 +119,10 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     return this._trackByFn;
   }
 
+  private get isStickyEnabled(): boolean {
+    return this.cellDefs?.find(cd => cd.sticky) != null;
+  }
+
   /**
    * The minimum size of the buffer in pixels, mapped from the buffer size in terms of rows
    */
@@ -152,7 +156,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   /**
    * The current height of the open page, updated whenever the page resizes
    */
-  protected resizeEvent = new BehaviorSubject<void>(undefined);
+  protected resizeEvent = new BehaviorSubject<HTMLElement | null>(null);
 
 
   /**
@@ -164,33 +168,29 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     map(() => window.innerHeight),
     shareReplay(1),
   );
-
-
+  
+  
   protected onScroll = new Subject<Event>();
-  private horizontalScroll$ = this.onScroll.pipe(
+  private horizontalScroll$ = merge(this.onScroll.pipe(map(scroll => scroll.target as HTMLElement)), this.resize$).pipe(
+    filter(() => this.isStickyEnabled),
+    filter(element => element != null),
     throttleTime(50, asyncScheduler, { trailing: true }),
-    map(event => {
-      const target = event.target as HTMLElement;
-      return [target.scrollLeft, target.offsetWidth];
+    map(scrollElement => {
+      return [scrollElement.scrollLeft, scrollElement.offsetWidth];
     }),
-    distinctUntilChanged(),
-    startWith([0, 0]),
   );
 
-  public stickyStyling$ = this.horizontalScroll$.pipe(
-    tap(([scrollLeft, offsetWidth]) => {
-      const scrollElement = this.rowOutlets.first?._columnManager?.stickyCell?.rootNodes[0] as HTMLElement
-      if (!scrollElement)
-        return;
-      if (scrollElement.offsetLeft < scrollLeft)
-        console.log("sticky right");
-      else if (scrollElement.offsetLeft + scrollElement.offsetWidth > scrollLeft + offsetWidth)
-        console.log("sticky left");
-      else console.log("no sticky")
+  private scrollData$ = defer(() => of(null)).pipe(
+    switchMap(() => this.getStickyCell()),
+    map(stickyCell => {
+      const parent = (stickyCell.rootNodes[0] as HTMLElement).parentElement!;
+      return [parent.scrollLeft, parent.offsetLeft];
     }),
-    distinctUntilChanged(),
+    tap(val => val),
+    concatWith(this.horizontalScroll$),
+    distinctUntilChanged((prev, current) => (prev[0] == current[0] && prev[1] == current[1])),
   )
-
+  
   @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
 
   /////////////// COMPUTED PROPERTIES //////////////
@@ -209,6 +209,50 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
+  stickyCellData$ = this.loading$.pipe(       // whenever loading goes to false, refresh our source looking
+    filter(loading => loading === false),
+    switchMap(() => this.dataSource$),
+    switchMap(source => {
+      return source.dataListener.pipe(    // whenever dataSource changes,
+        filter(() => source.length > 0),  // we need the next instance where length > 0
+        take(1),
+      );
+    }),
+    // Then we need to get a static reference to a rendered sticky cell
+    switchMap(() => this.getStickyCell()),
+    map(stickyCell => {
+      const stickyElement = stickyCell.rootNodes[0] as HTMLElement;
+      const previousSibling = stickyElement.previousElementSibling as HTMLElement | null;
+      // We get the previous sibling + its width instead of the offset of the current sibling, because the current sibling is sticky and so
+      // we don't know its original position
+      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0) , stickyElement.offsetWidth];
+    }),
+  );
+
+  public applyStickyShadow$ = combineLatest([this.scrollData$, this.stickyCellData$]).pipe(
+    map(([[scrollPosition, containerWidth], [cellPosition, cellWidth]]) => {
+      if (cellPosition < scrollPosition)
+        return "sticky-right-shadow";
+      else if (cellPosition + cellWidth > scrollPosition + containerWidth)
+        return "sticky-left-shadow";
+      else
+        return null;
+    }),
+    distinctUntilChanged(),
+    shareReplay(1),
+  )
+
+  getStickyCell() {
+    return this.rowOutlets.changes.pipe(
+      switchMap(() => {
+        const stickies = this.rowOutlets.map(row => row.renderedSticky$);
+        return merge(...stickies).pipe(
+          filter(cell => cell != null),
+        );
+      }),
+      take(1),
+    );
+  }
 
   protected scrollIndex = new BehaviorSubject<number>(0);
 
@@ -299,9 +343,5 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.cellDefs$.next(this.cellDefs?.toArray()!);
-  }
-
-  ngAfterViewInit(): void {
-    this.stickyStyling$.subscribe();
   }
 }

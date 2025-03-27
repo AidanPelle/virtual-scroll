@@ -6,10 +6,10 @@
     <virtual-scroll #virtualScroll [dataSource]="dataSource">
         <div vs-row *rowDef="let item;" class="vs-default-row"></div>
         <div *cellDef="let item; name: 'Cell 1'; minWidth: 500; isActive: isCell1Active;">Cell 1</div>
-        <div *cellDef="let item; name: 'Cell 2'; minWidth: 500; isActive: isCell2Active">Cell 2</div>
+        <div *cellDef="let item; name: 'Cell 2'; minWidth: 500; isActive: isCell2Active; sticky: true;">Cell 2</div>
         <div *cellDef="let item; name: 'Cell 3'; minWidth: 500;">Cell 3</div>
         <div *cellDef="let item; name: 'Cell 4'; minWidth: 500;">Cell 4</div>
-        <div *cellDef="let item; name: 'Cell 5'; minWidth: 500; sticky: true;">Cell 5</div>
+        <div *cellDef="let item; name: 'Cell 5'; minWidth: 500;">Cell 5</div>
         <div *cellDef="let item; name: 'Cell 6'; minWidth: 500;">Cell 6</div>
     </virtual-scroll>
 </div>

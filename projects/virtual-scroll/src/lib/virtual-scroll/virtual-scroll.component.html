@@ -10,11 +10,12 @@
 
 <ng-template #listTemplate>
     <cdk-virtual-scroll-viewport
+        #virtualScroll
         [itemSize]="itemSize$ | async"
         [style.height.px]="tableHeight$ | async"
         [minBufferPx]="minBuffer$ | async"
         [maxBufferPx]="maxBuffer$ | async"
-        (window:resize)="resizeEvent.next()"
+        (window:resize)="resizeEvent.next(virtualScroll.elementRef.nativeElement)"
         (scrolledIndexChange)="scrollIndex.next($event)"
         (scroll)="onScroll.next($event)">
         
@@ -31,7 +32,8 @@
             [mappedActiveColumns$]="mappedActiveColumns$"
             [moveItem]="moveItem"
             [item]="item"
-            [index]="index">
+            [index]="index"
+            [applyStickyShadow]="applyStickyShadow$">
         </ng-container>
 
     </cdk-virtual-scroll-viewport>
