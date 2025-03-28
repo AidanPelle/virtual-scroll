@@ -3,6 +3,7 @@ import { BaseDataSource, VirtualScrollModule } from '../../projects/virtual-scro
 import { delay, of, tap } from 'rxjs';
 import { CustomDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/custom-data-source';
 import { CompleteDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/complete-data-source';
+import { PaginatedDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/paginated-data-source';
 
 @Component({
   selector: 'app-root',
@@ -20,12 +21,15 @@ export class AppComponent implements OnInit {
   isCell1Active = true;
   isCell2Active = true;
 
-  arrayLength = 10;
+  arrayLength = 1_000_000;
 
   ngOnInit(): void {
-    console.log("Loading dataSource Called")
-    of(0).pipe(delay(2_000)).subscribe(() => {
-      this.dataSource = new CompleteDataSource(this.getData);
+    of(0).pipe(
+      tap(() => console.log("Loading DataSource Called")),
+      delay(2_000),
+      tap(() => console.log("Loading DataSource Finished")),
+    ).subscribe(() => {
+      this.dataSource = new PaginatedDataSource(this.getPageOfData, this.getCount);
     });
   }
 
@@ -34,6 +38,22 @@ export class AppComponent implements OnInit {
       tap(() => console.log("Get Data Called")),
       delay(2_000),
       tap(() => console.log("Get Data Finished")),
+    );
+  }
+
+  getCount = () => {
+    return of(this.arrayLength).pipe(
+      tap(() => console.log("Get Count Called")),
+      delay(2_000),
+      tap(() => console.log("Get Count Finished")),
+    );
+  }
+
+  getPageOfData = (index: number, pageSize: number) => {
+    return of(Array.from({length: pageSize}).map((_, i) => `Item #${i + index + 1}`)).pipe(
+      tap(() => console.log("Get Page of Data Called")),
+      delay(2_000),
+      tap(() => console.log("Get Page of Data Finished")),
     );
   }
 }
