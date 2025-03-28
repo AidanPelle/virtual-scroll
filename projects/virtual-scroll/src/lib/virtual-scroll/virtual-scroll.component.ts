@@ -190,6 +190,11 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     }),
   );
 
+
+  /**
+   * Handles initializing the widths for the container using the first rendered sticky cell, 
+   * after which scrollValues are supplied by listening to the horizontal scroll events
+   */
   private horizontalScrollData$ = defer(() => of(null)).pipe(
     switchMap(() => this.getStickyCell()),
     map(stickyCell => {
