@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
 import { asyncScheduler, BehaviorSubject, combineLatest, concat, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
@@ -14,6 +14,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
   selector: 'virtual-scroll',
   templateUrl: './virtual-scroll.component.html',
   styleUrls: ['./virtual-scroll.component.scss', './vs-row.scss', './vs-cell.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VirtualScrollComponent<T> implements AfterContentInit {
 
