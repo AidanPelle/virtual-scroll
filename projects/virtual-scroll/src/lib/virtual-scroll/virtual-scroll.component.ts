@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, concat, concatWith, defer, distinctUntilChanged, filter, map, merge, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, concat, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
@@ -26,7 +26,17 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
       this._dataSource.next(dataSource);
   }
   protected _dataSource = new Subject<BaseDataSource<T>>();
-  protected dataSource$ = this._dataSource.pipe(shareReplay(1));
+  protected dataSource$ = this._dataSource.pipe(
+    startWith(null),
+    pairwise(),
+    map(([previous, current]) => {
+      previous?.onDestroy.next();
+      previous?.onDestroy.complete();
+      return current;
+    }),
+    filter(source => source != null),
+    shareReplay(1)
+  );
 
 
   /**
@@ -180,11 +190,11 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     }),
   );
 
-  private scrollData$ = defer(() => of(null)).pipe(
+  private horizontalScrollData$ = defer(() => of(null)).pipe(
     switchMap(() => this.getStickyCell()),
     map(stickyCell => {
       const parent = (stickyCell.rootNodes[0] as HTMLElement).parentElement!;
-      return [parent.scrollLeft, parent.offsetLeft];
+      return [parent.scrollLeft, parent.offsetWidth];
     }),
     tap(val => val),
     concatWith(this.horizontalScroll$),
@@ -229,7 +239,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     }),
   );
 
-  public applyStickyShadow$ = combineLatest([this.scrollData$, this.stickyCellData$]).pipe(
+  public applyStickyShadow$ = combineLatest([this.horizontalScrollData$, this.stickyCellData$]).pipe(
     map(([[scrollPosition, containerWidth], [cellPosition, cellWidth]]) => {
       if (cellPosition < scrollPosition)
         return "sticky-right-shadow";
@@ -266,8 +276,10 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
   /**
    * Handles displaying the start, end, and count items for the current list
+   * 
+   * We listen to dataSource and the dataListener so that we can update scroll count appropriately on both
    */
-  protected footerData$ = combineLatest([this.scroll$, this._numberOfVisibleRows$, this.dataSource$]).pipe(
+  protected footerData$ = combineLatest([this.scroll$, this._numberOfVisibleRows$, this.dataSource$, this.dataSource$.pipe(switchMap(src => src.dataListener))]).pipe(
     map(([scrollIndex, numberOfVisibleRows, dataSource]) => {
       const start = dataSource.length == 0 ? 0 : scrollIndex;
       const footerData: VirtualScrollFooterData = {

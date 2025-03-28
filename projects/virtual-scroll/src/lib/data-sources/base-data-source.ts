@@ -1,10 +1,15 @@
 import { DataSource } from "@angular/cdk/collections";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 export abstract class BaseDataSource<T> extends DataSource<T> {
-    dataListener = new BehaviorSubject<T[]>([]);
+    public dataListener = new BehaviorSubject<T[]>([]);
     
-    data: T[] = [];
+    /**
+     * Handles cleaning up any running subscriptions when the dataSource is discarded
+     */
+    public onDestroy = new Subject<void>();
+
+    public data: T[] = [];
 
     get length(): number {
         return this.data.length;

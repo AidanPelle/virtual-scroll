@@ -21,8 +21,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     of(0).pipe(delay(2_000)).subscribe(() => {
-      const items = Array.from({length: 1_000_000}).map((_, i) => `Item #${i}`);
+      const items = Array.from({length: 10}).map((_, i) => `Item #${i}`);
       this.dataSource = new CustomDataSource(items);
     });
+
+    
   }
 }

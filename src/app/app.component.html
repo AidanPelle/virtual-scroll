@@ -1,6 +1,6 @@
 <button [columnSelector]="virtualScroll">Column Selector</button>
 
-
+<button (click)="dataSource?.data?.push('new row')">Add a row</button>
 
 <div class="scroll-container">
     <virtual-scroll #virtualScroll [dataSource]="dataSource">
