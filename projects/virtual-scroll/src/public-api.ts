@@ -10,3 +10,7 @@ export * from './lib/row-components/vs-row.component';
 export * from './lib/data-sources/base-data-source';
 export * from './lib/data-sources/custom-data-source';
 export * from './lib/column-selector/column-selector.directive';
+export * from './lib/data-sources/base-data-source';
+export * from './lib/data-sources/complete-data-source';
+export * from './lib/data-sources/custom-data-source';
+export * from './lib/data-sources/paginated-data-source';
