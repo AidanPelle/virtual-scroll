@@ -1,7 +1,6 @@
 import { AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, concat, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
-import { CustomDataSource } from '../data-sources/custom-data-source';
 import { RowDefDirective } from '../defs/row-def.directive';
 import { CellDefDirective } from '../defs/cell-def.directive';
 import { BaseDataSource } from '../data-sources/base-data-source';
@@ -151,11 +150,17 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1)
   );
 
+
+  /**
+   * A reference to the dataSource as soon as the actual data has been loaded into the class,
+   * allowing us to read the length of the returned data.
+   */
   private _dataSourcePostLoading$ = this.dataSource$.pipe(
     switchMap(src => src.loading$.pipe(
-      filter(loading => !loading),
+      filter(loading => loading == false),
       map(() => src),
     )),
+    shareReplay(1),
   )
 
 
@@ -231,7 +236,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
-  stickyCellData$ = this.loading$.pipe(       // whenever loading goes to false, refresh our source looking
+  stickyCellData$ = this.loading$.pipe(       // whenever loading goes to false, refresh our dataSource
     filter(loading => loading === false),
     switchMap(() => this.dataSource$),
     switchMap(source => {
