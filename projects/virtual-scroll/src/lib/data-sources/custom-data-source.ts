@@ -11,6 +11,7 @@ export class CustomDataSource<T> extends BaseDataSource<T> {
     ) {
         super();
         this.data = newData;
+        this.isLoading.next(false);
         this.handleChangeDetection();
     }
 
@@ -20,18 +21,9 @@ export class CustomDataSource<T> extends BaseDataSource<T> {
      */
     handleChangeDetection() {
         const iterableDiffer = new IterableDiffer();
-        timer(0, 1_000).pipe(takeUntil(this.onDestroy)).subscribe(() => {
+        timer(0, 1_000).pipe(takeUntil(this._onDestroy)).subscribe(() => {
             if (iterableDiffer.diff(this.data))
                 this.dataListener.next(this.data);
         });
     }
-    
-    connect(collectionViewer: CollectionViewer): Observable<readonly T[]> {
-        return this.dataListener;
-    }
-
-    disconnect(collectionViewer: CollectionViewer): void {
-
-    }
-    
 }

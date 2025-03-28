@@ -31,8 +31,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     startWith(null),
     pairwise(),
     map(([previous, current]) => {
-      previous?.onDestroy.next();
-      previous?.onDestroy.complete();
+      previous?.onDestroy();
       return current;
     }),
     filter(source => source != null),
@@ -147,10 +146,17 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
 
   private _isDataSourceLoading$ = this.dataSource$.pipe(
-    map(() => false),
+    switchMap(src => src.loading$),
     startWith(true),
     shareReplay(1)
   );
+
+  private _dataSourcePostLoading$ = this.dataSource$.pipe(
+    switchMap(src => src.loading$.pipe(
+      filter(loading => !loading),
+      map(() => src),
+    )),
+  )
 
 
   /**
@@ -210,7 +216,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
 
   /////////////// COMPUTED PROPERTIES //////////////
-  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this.dataSource$]).pipe(
+  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this._dataSourcePostLoading$]).pipe(
     map(([heightVh, heightPx, offset, itemSize, windowHeight, dataSource]) => {
       const maxPossibleHeight = heightVh != null
         ? windowHeight * heightVh / 100 - offset
