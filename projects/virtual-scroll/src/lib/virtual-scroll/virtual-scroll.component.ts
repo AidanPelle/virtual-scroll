@@ -233,10 +233,14 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     map(stickyCell => {
       const stickyElement = stickyCell.rootNodes[0] as HTMLElement;
       const previousSibling = stickyElement.previousElementSibling as HTMLElement | null;
+      return [previousSibling, stickyElement]
+    }),
+    // Switchmap into resize so that we re-trigger calculating the offset values when the page resizes
+    switchMap(([previousSibling, stickyElement]) => this.resize$.pipe(map(() => {
       // We get the previous sibling + its width instead of the offset of the current sibling, because the current sibling is sticky and so
       // we don't know its original position
-      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0) , stickyElement.offsetWidth];
-    }),
+      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0) , stickyElement?.offsetWidth ?? 0];
+    }))),
   );
 
   public applyStickyShadow$ = combineLatest([this.horizontalScrollData$, this.stickyCellData$]).pipe(

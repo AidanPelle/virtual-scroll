@@ -54,7 +54,10 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     this._viewContainer.clear();
 
     // When there's no template provided from the user, we can substitute with some default template
-    this.rowView = this._viewContainer.createEmbeddedView(this.rowTemplate ?? this.defaultRowTemplate);
+    this.rowView = this._viewContainer.createEmbeddedView(this.rowTemplate ?? this.defaultRowTemplate, {
+      $implicit: this.item,
+      index: this.index,
+    });
 
     const cellOutlet = CellOutletDirective.mostRecentView;
     if (!cellOutlet)
