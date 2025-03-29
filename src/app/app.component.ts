@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
       delay(2_000),
       tap(() => console.log("Loading DataSource Finished")),
     ).subscribe(() => {
-      this.dataSource = new PaginatedDataSource(this.getPageOfData, this.getCount);
+      this.dataSource = new CompleteDataSource(this.getData);
     });
   }
 

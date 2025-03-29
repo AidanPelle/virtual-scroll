@@ -212,12 +212,14 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   /**
    * Handles initializing the widths for the container using the first rendered sticky cell, 
    * after which scrollValues are supplied by listening to the horizontal scroll events
+   * 
+   * Because this function is only called when cells are being rendered, we know the viewport must exist for that to happen,
+   * therefore we can cast the viewport to definitely exist.
    */
   private horizontalScrollData$ = defer(() => of(null)).pipe(
-    switchMap(() => this.getStickyCell()),
-    map(stickyCell => {
-      const parent = (stickyCell.r!.rootNodes[0] as HTMLElement).parentElement!;
-      return [parent.scrollLeft, parent.offsetWidth];
+    map(() => {
+      const viewportElement = this.viewport!.elementRef.nativeElement;
+      return [viewportElement.scrollLeft, viewportElement.offsetWidth];
     }),
     tap(val => val),
     concatWith(this.horizontalScroll$),
