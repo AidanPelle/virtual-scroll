@@ -7,6 +7,16 @@
         background-color: white;
     }
 
+    .vs-default-row {
+        height: 48px;
+        box-sizing: border-box;
+    }
+
+    .vs-default-header-row {
+        height: 64px;
+        border-bottom: 2px solid #F0F0F0;
+    }
+
     .vs-row-border {
         border-bottom: 1px solid #F0F0F0;
     }

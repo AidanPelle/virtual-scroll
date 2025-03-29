@@ -1,5 +1,5 @@
 import { AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, ReplaySubject, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { RowDefDirective } from '../defs/row-def.directive';
 import { CellDefDirective } from '../defs/cell-def.directive';
@@ -8,6 +8,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { VirtualScrollFooterData } from '../interfaces/footer-data';
 import { RowOutletDirective } from '../outlets/row-outlet.directive';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { HeaderCellDefDirective } from '../defs/header-cell-def.directive';
 
 @Component({
   selector: 'virtual-scroll',
@@ -107,6 +108,9 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @Input() cellPadding: number = 16;
 
 
+  @Input() showHeader = true;
+
+
   @Input() showFooter = true;
 
 
@@ -143,6 +147,8 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
    */
   protected maxBuffer$ = UtilityService.mapRowBufferToPx(this._maxRowBuffer, this.itemSize$);
 
+
+  private _afterViewInit = new ReplaySubject<boolean>(1);
 
   private _isDataSourceLoading$ = this.dataSource$.pipe(
     switchMap(src => src.loading$),
@@ -210,7 +216,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   private horizontalScrollData$ = defer(() => of(null)).pipe(
     switchMap(() => this.getStickyCell()),
     map(stickyCell => {
-      const parent = (stickyCell.rootNodes[0] as HTMLElement).parentElement!;
+      const parent = (stickyCell.r!.rootNodes[0] as HTMLElement).parentElement!;
       return [parent.scrollLeft, parent.offsetWidth];
     }),
     tap(val => val),
@@ -221,7 +227,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
 
   /////////////// COMPUTED PROPERTIES //////////////
-  protected tableHeight$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this._dataSourcePostLoading$]).pipe(
+  private possibleHeights$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this._dataSourcePostLoading$]).pipe(
     map(([heightVh, heightPx, offset, itemSize, windowHeight, dataSource]) => {
       const maxPossibleHeight = heightVh != null
         ? windowHeight * heightVh / 100 - offset
@@ -229,10 +235,17 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
       const totalContentHeight = itemSize * dataSource.length;
 
-      const tableHeight = Math.min(maxPossibleHeight, totalContentHeight);
-
-      return tableHeight;
+      return [maxPossibleHeight, totalContentHeight];
     }),
+    shareReplay(1),
+  );
+
+  protected hasVerticalScrollBar$ = this.possibleHeights$.pipe(
+    map(([maxPossibleHeight, totalContentHeight]) => totalContentHeight > maxPossibleHeight),
+  );
+
+  protected tableHeight$ = this.possibleHeights$.pipe(
+    map(([maxPossibleHeight, totalContentHeight]) => Math.min(maxPossibleHeight, totalContentHeight)),
     shareReplay(1),
   );
 
@@ -248,7 +261,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     // Then we need to get a static reference to a rendered sticky cell
     switchMap(() => this.getStickyCell()),
     map(stickyCell => {
-      const stickyElement = stickyCell.rootNodes[0] as HTMLElement;
+      const stickyElement = stickyCell.r!.rootNodes[0] as HTMLElement;
       const previousSibling = stickyElement.previousElementSibling as HTMLElement | null;
       return [previousSibling, stickyElement]
     }),
@@ -273,12 +286,19 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   )
 
-  getStickyCell() {
-    return this.rowOutlets.changes.pipe(
+
+  /**
+   * StickyCell needs to wait for afterViewInit$ to fire, so that rowOutlets.changes will be populated
+   */
+  getStickyCell = () => {
+    return this._afterViewInit.pipe(
       switchMap(() => {
-        const stickies = this.rowOutlets.map(row => row.renderedSticky$);
+        return this.rowOutlets.changes
+      }),
+      switchMap(() => {
+        const stickies = this.rowOutlets.map(row => row.renderedSticky$.pipe(map(r => ({row: row, r: r}))));
         return merge(...stickies).pipe(
-          filter(cell => cell != null),
+          filter(cell => cell.r != null),
         );
       }),
       take(1),
@@ -318,9 +338,14 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   @ContentChild(RowDefDirective, { read: TemplateRef })
   protected rowTemplate?: TemplateRef<any>;
 
+  @ContentChild(HeaderCellDefDirective, { read: TemplateRef })
+  protected headerTemplate?: TemplateRef<any>;
 
   @ContentChildren(CellDefDirective, { descendants: true })
   private cellDefs?: QueryList<CellDefDirective>;
+
+  @ContentChildren(HeaderCellDefDirective, { descendants: true })
+  protected headerCellDefs?: QueryList<HeaderCellDefDirective>;
 
   /**
    * A reference to the list of the current rows that are rendered to the screen.
@@ -374,7 +399,13 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
+  
+
   ngAfterContentInit(): void {
     this.cellDefs$.next(this.cellDefs?.toArray()!);
+  }
+
+  ngAfterViewInit(): void {
+    this._afterViewInit.next(true);
   }
 }

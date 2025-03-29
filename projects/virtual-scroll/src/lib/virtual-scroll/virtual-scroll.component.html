@@ -1,3 +1,21 @@
+<div
+    *ngIf="showHeader"
+    class="header-container"
+    [style.width]="'calc(100% - ' + ((hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'">
+    <ng-container
+        headerOutlet
+        [rowTemplate]="headerTemplate"
+        [defaultRowTemplate]="defaultHeaderTemplate"
+        [cellPadding]="cellPadding"
+        [mappedActiveColumns$]="mappedActiveColumns$"
+        [moveItem]="moveItem"
+        [applyStickyShadow]="applyStickyShadow$"
+        [isHeader]="true"
+        [headerCellDefs]="headerCellDefs?.toArray() ?? []"
+        [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
+    </ng-container>
+</div>
+
 <ng-container *ngIf="loading$ | async; else emptyStateTemplate">
     <div>Loading...</div>
 </ng-container>
@@ -45,8 +63,18 @@
     </div>
 </div>
 
+<ng-template #defaultHeaderTemplate let-item>
+    <div vs-row class="vs-default-header-row">
+    </div>
+</ng-template>
 
 <ng-template #defaultRowTemplate>
     <div vs-row class="vs-default-row">
+    </div>
+</ng-template>
+
+<ng-template #defaultHeaderCellTemplate let-columnName="columnName">
+    <div class="vs-default-header-cell">
+        {{ columnName }}
     </div>
 </ng-template>

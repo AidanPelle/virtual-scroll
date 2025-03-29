@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
   isCell1Active = true;
   isCell2Active = true;
 
-  arrayLength = 1_000_000;
+  arrayLength = 10;
 
   ngOnInit(): void {
     of(0).pipe(

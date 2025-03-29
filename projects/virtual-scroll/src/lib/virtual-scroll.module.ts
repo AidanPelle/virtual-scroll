@@ -11,6 +11,9 @@ import { CellDefDirective } from './defs/cell-def.directive';
 import { ColumnSelectorDialogComponent } from './column-selector/column-selector-dialog.component';
 import { ColumnSelectorDirective } from './column-selector/column-selector.directive';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { HeaderOutletDirective } from './outlets/header-outlet.directive';
+import { HeaderDefDirective } from './defs/header-def.directive';
+import { HeaderCellDefDirective } from './defs/header-cell-def.directive';
 
 
 
@@ -24,18 +27,23 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
   declarations: [
     VirtualScrollComponent,
     RowOutletDirective,
+    HeaderOutletDirective,
     RowDefDirective,
+    HeaderDefDirective,
     VsRowComponent,
     CellOutletDirective,
     CellDefDirective,
+    HeaderCellDefDirective,
     ColumnSelectorDialogComponent,
     ColumnSelectorDirective,
   ],
   exports: [
     VirtualScrollComponent,
     RowDefDirective,
+    HeaderDefDirective,
     VsRowComponent,
     CellDefDirective,
+    HeaderCellDefDirective,
     ColumnSelectorDirective,
   ]
 })

@@ -1,8 +1,9 @@
-import { EmbeddedViewRef, ViewContainerRef, ViewRef } from "@angular/core";
+import { EmbeddedViewRef, TemplateRef, ViewContainerRef } from "@angular/core";
 import { UtilityService } from "../utility.service";
 import { BehaviorSubject, combineLatest, defer, filter, map, merge, of, skip, Subject, switchMap, take, takeUntil, tap } from "rxjs";
-import { CellView } from "../interfaces/cell-view";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
+import type { CellDefDirective } from "../defs/cell-def.directive";
+import type { HeaderCellDefDirective } from "../defs/header-cell-def.directive";
 
 export class ColumnManager<T> {
     constructor(
@@ -14,6 +15,9 @@ export class ColumnManager<T> {
         index: number,
         renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>,
         applyStickyShadow: typeof VirtualScrollComponent.prototype.applyStickyShadow$,
+        isHeader: boolean,
+        headerCellDefs: HeaderCellDefDirective[],
+        defaultHeaderCellTemplate?: TemplateRef<unknown>,
     ) {
         this._viewContainer = viewContainer;
         this._cellPadding = cellPadding;
@@ -23,6 +27,10 @@ export class ColumnManager<T> {
         this._index = index;
         this._renderSticky = renderSticky;
         this._applyStickyShadow$ = applyStickyShadow;
+        this._isHeader = isHeader;
+        this._headerCellDefs = headerCellDefs;
+        this._defaultHeaderCellTemplate = defaultHeaderCellTemplate;
+
 
         this.toggleColumns$.pipe(takeUntil(this._onDestroy)).subscribe();
         this.moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
@@ -36,6 +44,9 @@ export class ColumnManager<T> {
     private _index!: number;
     private _renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>;
     private _applyStickyShadow$: typeof VirtualScrollComponent.prototype.applyStickyShadow$;
+    private _isHeader = false;
+    private _headerCellDefs!: HeaderCellDefDirective[];
+    private _defaultHeaderCellTemplate?: TemplateRef<unknown>;
     // private _canReorder = true;
     // private _canResize = true;
     // private _canSelect = true;
@@ -71,30 +82,38 @@ export class ColumnManager<T> {
             return combineLatest([of(val), this.activeIndexObs(val.baseIndex)]);
         }),
         tap(([val, activeIndex]) => {
-            if (!val.isActive) {
-                const renderedCellIndex = this._renderedCellViews.indexOf(val.cellDef.columnName)
-                if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
-                    return;
-                
-                this._viewContainer.remove(activeIndex);
-                this._renderedCellViews.splice(renderedCellIndex, 1);
-            }
-            else {
-                const renderedCell = this._viewContainer.createEmbeddedView(val.cellDef.template, {$implicit: this._item, index: this._index}, {index: activeIndex});
-                UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
-                this._renderedCellViews.push(val.cellDef.columnName);
-
-                if (val.cellDef.sticky) {
-                    renderedCell.rootNodes[0].classList.add('sticky');
-                    this._renderSticky.next(renderedCell);
-                    this._applyStickyShadow$.pipe(takeUntil(this._onDestroy)).subscribe(shadow => {
-                        renderedCell.rootNodes[0].classList.toggle('sticky-right-shadow', shadow === 'sticky-right-shadow');
-                        renderedCell.rootNodes[0].classList.toggle('sticky-left-shadow', shadow === 'sticky-left-shadow');
-                    });
-                }
-            }
+            if (val.isActive)
+                this.renderCell(val, activeIndex);
+            else
+                this.removeRenderedCell(val, activeIndex);
         }),
     );
+
+    private renderCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
+        const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
+
+        const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName }, { index: activeIndex });
+        UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
+        this._renderedCellViews.push(val.cellDef.columnName);
+
+        if (val.cellDef.sticky) {
+            renderedCell.rootNodes[0].classList.add('sticky');
+            this._renderSticky.next(renderedCell);
+            this._applyStickyShadow$.pipe(takeUntil(this._onDestroy)).subscribe(shadow => {
+                renderedCell.rootNodes[0].classList.toggle('sticky-right-shadow', shadow === 'sticky-right-shadow');
+                renderedCell.rootNodes[0].classList.toggle('sticky-left-shadow', shadow === 'sticky-left-shadow');
+            });
+        }
+    }
+
+    private removeRenderedCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
+        const renderedCellIndex = this._renderedCellViews.indexOf(val.cellDef.columnName)
+        if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
+            return;
+
+        this._viewContainer.remove(activeIndex);
+        this._renderedCellViews.splice(renderedCellIndex, 1);
+    }
 
 
     /**
@@ -110,7 +129,7 @@ export class ColumnManager<T> {
         tap(([fromActiveIndex, toActiveIndex]) => {
             if (fromActiveIndex === toActiveIndex)
                 return;
-            
+
             const viewToMove = this._viewContainer.get(fromActiveIndex);
             if (viewToMove)
                 this._viewContainer.move(viewToMove, toActiveIndex);
@@ -122,7 +141,7 @@ export class ColumnManager<T> {
      * to tell where to place the generated view in the rendered row.
      */
     private activeIndexObs(baseIndex: number) {
-       return this._mappedActiveColumns$.pipe(
+        return this._mappedActiveColumns$.pipe(
             switchMap(obsList => {
                 return combineLatest(obsList).pipe(
                     map(list => list.slice(0, baseIndex)),

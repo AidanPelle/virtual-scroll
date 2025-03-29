@@ -1,8 +1,9 @@
-import { Directive, EmbeddedViewRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef, ViewRef } from "@angular/core";
+import { Directive, EmbeddedViewRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";   // Using type instead of direct import to fix circular import references
-import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, Subject, takeUntil } from "rxjs";
+import type { HeaderCellDefDirective } from "../defs/header-cell-def.directive";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -30,10 +31,8 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   private _onDestroy = new Subject<void>();
 
-  private renderSticky = new BehaviorSubject<EmbeddedViewRef<any> | null>(null);
+  protected renderSticky = new BehaviorSubject<EmbeddedViewRef<any> | null>(null);
   public renderedSticky$ = this.renderSticky.pipe(takeUntil(this._onDestroy));
-
-  constructor() { }
 
   ngOnInit(): void {
     this.renderRow();
@@ -68,7 +67,23 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     this.rowView.rootNodes[0].classList.add('vs-row-border');
 
     this._columnManager?.onDestroy();
-    this._columnManager = new ColumnManager(cellOutlet.viewContainer, this.cellPadding, this.mappedActiveColumns$, this.moveItem, this.item, this.index, this.renderSticky, this.applyStickyShadow);
+    this.initColumnManager(cellOutlet);
+  }
+
+  protected initColumnManager(cellOutlet: CellOutletDirective): void {
+    this._columnManager = new ColumnManager(
+      cellOutlet.viewContainer,
+      this.cellPadding,
+      this.mappedActiveColumns$,
+      this.moveItem,
+      this.item,
+      this.index,
+      this.renderSticky,
+      this.applyStickyShadow,
+      false,
+      [],
+      undefined,
+    );
   }
 
   ngOnDestroy(): void {
