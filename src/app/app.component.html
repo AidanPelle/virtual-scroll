@@ -3,7 +3,7 @@
 <button (click)="dataSource?.data?.push('new row')">Add a row</button>
 
 <div class="scroll-container">
-    <virtual-scroll #virtualScroll [dataSource]="dataSource" [heightVh]="100" [offset]="150" [showHeader]="false">
+    <virtual-scroll #virtualScroll [dataSource]="dataSource" [heightVh]="100" [offset]="150">
         <div vs-row *rowDef="let item;" class="vs-default-row"></div>
         <div *cellDef="let item; name: 'Cell 1'; fixedWidth: 200; isActive: isCell1Active;">{{item}}</div>
         <div *cellDef="let item; name: 'Cell 2'; minWidth: 200; isActive: isCell2Active;">Cell 2</div>
