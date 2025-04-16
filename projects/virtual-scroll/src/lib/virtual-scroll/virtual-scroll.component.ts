@@ -1,5 +1,5 @@
-import { AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, of, pairwise, ReplaySubject, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
+import { AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, ElementRef, EmbeddedViewRef, inject, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
+import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, Observable, of, pairwise, ReplaySubject, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { RowDefDirective } from '../defs/row-def.directive';
 import { CellDefDirective } from '../defs/cell-def.directive';
@@ -9,6 +9,7 @@ import { VirtualScrollFooterData } from '../interfaces/footer-data';
 import { RowOutletDirective } from '../outlets/row-outlet.directive';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { HeaderCellDefDirective } from '../defs/header-cell-def.directive';
+import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
 
 @Component({
   selector: 'virtual-scroll',
@@ -17,6 +18,8 @@ import { HeaderCellDefDirective } from '../defs/header-cell-def.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VirtualScrollComponent<T> implements AfterContentInit {
+
+  private _hostElement: ElementRef<HTMLElement> = inject(ElementRef);
 
 
   /**
@@ -196,8 +199,8 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     map(() => window.innerHeight),
     shareReplay(1),
   );
-  
-  
+
+
   protected onScroll = new Subject<Event>();
   private horizontalScroll$ = merge(this.onScroll.pipe(map(scroll => scroll.target as HTMLElement)), this.resize$).pipe(
     filter(() => this.isStickyEnabled),
@@ -216,17 +219,22 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
    * Because this function is only called when cells are being rendered, we know the viewport must exist for that to happen,
    * therefore we can cast the viewport to definitely exist.
    */
-  private horizontalScrollData$ = defer(() => of(null)).pipe(
+  private horizontalScrollData$ = this._afterViewInit.pipe(
     map(() => {
+      if (this.headerContainer) {
+        const headerElement = this.headerContainer.nativeElement;
+        return [headerElement.scrollLeft, headerElement.offsetWidth];
+      }
       const viewportElement = this.viewport!.elementRef.nativeElement;
       return [viewportElement.scrollLeft, viewportElement.offsetWidth];
     }),
-    tap(val => val),
+    take(1),
     concatWith(this.horizontalScroll$),
     distinctUntilChanged((prev, current) => (prev[0] == current[0] && prev[1] == current[1])),
   )
-  
+
   @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
+  @ViewChild('headerContainer', { read: ElementRef<HTMLDivElement> }) headerContainer?: ElementRef<HTMLDivElement>;
 
   /////////////// COMPUTED PROPERTIES //////////////
   private possibleHeights$ = combineLatest([this._heightVh, this._heightPx, this._offset, this.itemSize$, this._windowHeight, this._dataSourcePostLoading$]).pipe(
@@ -242,22 +250,35 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
-  protected hasVerticalScrollBar$ = this.possibleHeights$.pipe(
-    map(([maxPossibleHeight, totalContentHeight]) => totalContentHeight > maxPossibleHeight),
+  private _hasHorizontalScrollbar$ = defer(() => of(null)).pipe(
+    switchMap(() => this.cellDefs$),
+    map(cellDefs => cellDefs.reduce((a, b) => a + (b.fixedWidth ?? b.minWidth), 0) > this._hostElement.nativeElement.offsetWidth)
   );
 
-  protected tableHeight$ = this.possibleHeights$.pipe(
-    map(([maxPossibleHeight, totalContentHeight]) => Math.min(maxPossibleHeight, totalContentHeight)),
+  protected hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
+    map(([[maxPossibleHeight, totalContentHeight], hasHorizontalScrollbar]) => {
+      return totalContentHeight + (hasHorizontalScrollbar ? 16 : 0) > maxPossibleHeight;
+    }),
+  );
+
+  protected tableHeight$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
+    map(([[maxPossibleHeight, totalContentHeight], hasHorizontalScrollbar]) => Math.min(maxPossibleHeight, totalContentHeight + (hasHorizontalScrollbar ? 16 : 0))),
     shareReplay(1),
   );
 
   stickyCellData$ = this.loading$.pipe(       // whenever loading goes to false, refresh our dataSource
-    filter(loading => loading === false),
-    switchMap(() => this.dataSource$),
-    switchMap(source => {
-      return source.dataListener.pipe(    // whenever dataSource changes,
-        filter(() => source.length > 0),  // we need the next instance where length > 0
-        take(1),
+    switchMap(loading => {
+      if (this.showHeader)
+        return of(null);
+      return of(null).pipe(
+        filter(() => loading === false),
+        switchMap(() => this.dataSource$),
+        switchMap(source => {
+          return source.dataListener.pipe(    // whenever dataSource changes,
+            filter(() => source.length > 0),  // we need the next instance where length > 0
+            take(1),
+          );
+        }),
       );
     }),
     // Then we need to get a static reference to a rendered sticky cell
@@ -271,7 +292,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     switchMap(([previousSibling, stickyElement]) => this.resize$.pipe(map(() => {
       // We get the previous sibling + its width instead of the offset of the current sibling, because the current sibling is sticky and so
       // we don't know its original position
-      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0) , stickyElement?.offsetWidth ?? 0];
+      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0), stickyElement?.offsetWidth ?? 0];
     }))),
   );
 
@@ -292,13 +313,20 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
   /**
    * StickyCell needs to wait for afterViewInit$ to fire, so that rowOutlets.changes will be populated
    */
-  getStickyCell = () => {
+  getStickyCell = (): Observable<{
+    row: RowOutletDirective<T>;
+    r: EmbeddedViewRef<any> | null;
+  }> => {
     return this._afterViewInit.pipe(
       switchMap(() => {
-        return this.rowOutlets.changes
+        if (this.showHeader)
+          return of(this.headerOutlet.toArray());
+        return this.rowOutlets.changes.pipe(
+          map(() => this.rowOutlets.toArray())
+        );
       }),
-      switchMap(() => {
-        const stickies = this.rowOutlets.map(row => row.renderedSticky$.pipe(map(r => ({row: row, r: r}))));
+      switchMap((res: RowOutletDirective<T>[]) => {
+        const stickies = res.map(row => row.renderedSticky$.pipe(map(r => ({ row: row, r: r }))));
         return merge(...stickies).pipe(
           filter(cell => cell.r != null),
         );
@@ -332,7 +360,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
       };
       return footerData;
     }),
-    startWith({start: -1, end: -1, itemCount: 0}),
+    startWith({ start: -1, end: -1, itemCount: 0 }),
     shareReplay(1),
   );
 
@@ -354,6 +382,12 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
    */
   @ViewChildren(RowOutletDirective)
   protected rowOutlets!: QueryList<RowOutletDirective<T>>;
+
+  /**
+   * A reference to the list of the current rows that are rendered to the screen.
+   */
+  @ViewChildren(HeaderOutletDirective)
+  protected headerOutlet!: QueryList<HeaderOutletDirective<T>>;
 
 
   public moveItem = new BehaviorSubject<{ fromIndex: number, toIndex: number, isActive: boolean } | null>(null);
@@ -401,7 +435,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
-  
+
 
   ngAfterContentInit(): void {
     this.cellDefs$.next(this.cellDefs?.toArray()!);

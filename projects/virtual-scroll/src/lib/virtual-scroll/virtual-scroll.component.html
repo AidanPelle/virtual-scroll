@@ -1,4 +1,5 @@
 <div
+    #headerContainer
     *ngIf="showHeader"
     class="header-container"
     [style.width]="'calc(100% - ' + ((hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'">
