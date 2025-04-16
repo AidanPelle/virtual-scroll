@@ -12,10 +12,10 @@
         box-sizing: border-box;
     }
 
-    .vs-default-header-row {
+    .vs-row.vs-default-header-row {
         height: 64px;
-        border-bottom: 2px solid #F0F0F0;
         font-weight: 600;
+        min-width: fit-content;
     }
 
     .vs-row-border {

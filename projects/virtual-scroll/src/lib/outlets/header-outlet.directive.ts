@@ -12,8 +12,6 @@ export class HeaderOutletDirective<T> extends RowOutletDirective<T> {
 
   @Input() headerCellDefs!: HeaderCellDefDirective[];
 
-  @Input() isHeader = false;
-
   @Input() defaultHeaderCellTemplate!: TemplateRef<unknown>;
 
   @Input() hasVerticalScrollbar$!: Observable<boolean>;
@@ -28,7 +26,7 @@ export class HeaderOutletDirective<T> extends RowOutletDirective<T> {
       this.index,
       this.renderSticky,
       this.applyStickyShadow,
-      this.isHeader,
+      true,
       this.headerCellDefs,
       this.defaultHeaderCellTemplate,
     );

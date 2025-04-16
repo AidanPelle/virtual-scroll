@@ -20,8 +20,14 @@
     }
 }
 
-// This is necessary as we don't want a scrollbar on the header, just on the children.
+// // This is necessary as we don't want a scrollbar on the header, just on the children.
 .header-container {
     overflow-x: auto;
     scrollbar-width: none;
+    border-bottom: 1px solid #F0F0F0;
+
+    // Here, we need the border bottom on the container instead of the row
+    .vs-row-border {
+        border-bottom: none;
+    }
 }

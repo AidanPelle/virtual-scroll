@@ -1,4 +1,4 @@
-import { AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, ElementRef, EmbeddedViewRef, inject, Input, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, ElementRef, EmbeddedViewRef, inject, Input, OnInit, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
 import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, Observable, of, pairwise, ReplaySubject, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { RowDefDirective } from '../defs/row-def.directive';
@@ -17,7 +17,7 @@ import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
   styleUrls: ['./virtual-scroll.component.scss', './vs-row.scss', './vs-cell.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VirtualScrollComponent<T> implements AfterContentInit {
+export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterContentInit {
 
   private _hostElement: ElementRef<HTMLElement> = inject(ElementRef);
 
@@ -202,10 +202,8 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
 
 
   protected onScroll = new Subject<Event>();
-  private horizontalScroll$ = merge(this.onScroll.pipe(map(scroll => scroll.target as HTMLElement)), this.resize$).pipe(
-    filter(() => this.isStickyEnabled),
+  private horizontalScroll$ = merge(this.onScroll.pipe(map(event => event.target as HTMLElement)), this.resize$).pipe(
     filter(element => element != null),
-    throttleTime(50, asyncScheduler, { trailing: true }),
     map(scrollElement => {
       return [scrollElement.scrollLeft, scrollElement.offsetWidth];
     }),
@@ -219,7 +217,8 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
    * Because this function is only called when cells are being rendered, we know the viewport must exist for that to happen,
    * therefore we can cast the viewport to definitely exist.
    */
-  private horizontalScrollData$ = this._afterViewInit.pipe(
+  private stickyScrollData$ = this._afterViewInit.pipe(
+    filter(() => this.isStickyEnabled),
     map(() => {
       if (this.headerContainer) {
         const headerElement = this.headerContainer.nativeElement;
@@ -230,8 +229,21 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     }),
     take(1),
     concatWith(this.horizontalScroll$),
+    throttleTime(50, asyncScheduler, { trailing: true }),
     distinctUntilChanged((prev, current) => (prev[0] == current[0] && prev[1] == current[1])),
-  )
+  );
+
+  private syncHorizontalScroll$ = this.horizontalScroll$.pipe(
+    map(([scrollLeft, _]) => scrollLeft),
+    distinctUntilChanged(),
+    tap(scrollLeft => {
+      if (this.headerContainer && this.headerContainer.nativeElement.scrollLeft !== scrollLeft)
+        this.headerContainer.nativeElement.scrollLeft = scrollLeft;
+
+      if (this.viewport && this.viewport.elementRef.nativeElement.scrollLeft !== this.viewport.elementRef.nativeElement.scrollLeft)
+        this.viewport.elementRef.nativeElement.scrollLeft = scrollLeft;
+    }),
+  );
 
   @ViewChild(CdkVirtualScrollViewport) viewport?: CdkVirtualScrollViewport;
   @ViewChild('headerContainer', { read: ElementRef<HTMLDivElement> }) headerContainer?: ElementRef<HTMLDivElement>;
@@ -296,7 +308,7 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     }))),
   );
 
-  public applyStickyShadow$ = combineLatest([this.horizontalScrollData$, this.stickyCellData$]).pipe(
+  public applyStickyShadow$ = combineLatest([this.stickyScrollData$, this.stickyCellData$]).pipe(
     map(([[scrollPosition, containerWidth], [cellPosition, cellWidth]]) => {
       if (cellPosition < scrollPosition)
         return "sticky-right-shadow";
@@ -435,7 +447,9 @@ export class VirtualScrollComponent<T> implements AfterContentInit {
     shareReplay(1),
   );
 
-
+  ngOnInit(): void {
+    this.syncHorizontalScroll$.subscribe();
+  }
 
   ngAfterContentInit(): void {
     this.cellDefs$.next(this.cellDefs?.toArray()!);

@@ -2,7 +2,8 @@
     #headerContainer
     *ngIf="showHeader"
     class="header-container"
-    [style.width]="'calc(100% - ' + ((hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'">
+    [style.width]="'calc(100% - ' + ((hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'"
+    (scroll)="onScroll.next($event)">
     <ng-container
         headerOutlet
         [rowTemplate]="headerTemplate"
@@ -11,7 +12,6 @@
         [mappedActiveColumns$]="mappedActiveColumns$"
         [moveItem]="moveItem"
         [applyStickyShadow]="applyStickyShadow$"
-        [isHeader]="true"
         [headerCellDefs]="headerCellDefs?.toArray() ?? []"
         [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
     </ng-container>
