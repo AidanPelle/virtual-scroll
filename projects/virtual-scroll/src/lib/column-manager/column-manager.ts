@@ -86,6 +86,7 @@ export class ColumnManager<T> {
                 this.renderCell(val, activeIndex);
             else
                 this.removeRenderedCell(val, activeIndex);
+            this.updateCellIndices();
         }),
     );
 
@@ -133,6 +134,8 @@ export class ColumnManager<T> {
             const viewToMove = this._viewContainer.get(fromActiveIndex);
             if (viewToMove)
                 this._viewContainer.move(viewToMove, toActiveIndex);
+
+            this.updateCellIndices();
         }),
     );
 
@@ -150,6 +153,13 @@ export class ColumnManager<T> {
             }),
             take(1),
         );
+    }
+    
+    private updateCellIndices(): void {
+        for (let i = 0; i < this._viewContainer.length; i++) {
+            const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<any>;
+            viewRef.context.cellIndex = i;
+        }
     }
 
     onDestroy(): void {
