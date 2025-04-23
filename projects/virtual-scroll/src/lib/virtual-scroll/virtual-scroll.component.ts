@@ -1,5 +1,5 @@
 import { AfterContentInit, AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren, ElementRef, EmbeddedViewRef, inject, Input, OnInit, QueryList, TemplateRef, TrackByFunction, ViewChild, ViewChildren } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, map, merge, Observable, of, pairwise, ReplaySubject, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, concatWith, defer, distinctUntilChanged, filter, firstValueFrom, map, merge, Observable, of, pairwise, ReplaySubject, shareReplay, startWith, Subject, switchMap, take, tap, throttleTime } from 'rxjs';
 import { UtilityService } from '../utility.service';
 import { RowDefDirective } from '../defs/row-def.directive';
 import { CellDefDirective } from '../defs/cell-def.directive';
@@ -90,6 +90,18 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     this._minRowBuffer.next(value);
   }
   private _minRowBuffer = new BehaviorSubject<number>(15);
+
+
+  /**
+   * This value controls the width of the resize bar when canResize is present on wh-virtual-scroll.
+   * 
+   * Increase when you want to make it easier for users to grab, decrease when you need more space
+   * allocated for your columns.
+   * 
+   * Note: This value will also affect the rows, and insert an invisible element between them
+   * so that they remain aligned with the headers.
+   */
+  @Input() public resizeWidth: number = 8;
 
 
   /**
@@ -298,13 +310,13 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     map(stickyCell => {
       const stickyElement = stickyCell.r!.rootNodes[0] as HTMLElement;
       const previousSibling = stickyElement.previousElementSibling as HTMLElement | null;
-      return [previousSibling, stickyElement]
+      return [previousSibling, stickyElement] as const
     }),
     // Switchmap into resize so that we re-trigger calculating the offset values when the page resizes
     switchMap(([previousSibling, stickyElement]) => this.resize$.pipe(map(() => {
       // We get the previous sibling + its width instead of the offset of the current sibling, because the current sibling is sticky and so
       // we don't know its original position
-      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0), stickyElement?.offsetWidth ?? 0];
+      return [(previousSibling?.offsetLeft ?? 0) + (previousSibling?.offsetWidth ?? 0), stickyElement?.offsetWidth ?? 0] as const;
     }))),
   );
 
@@ -325,7 +337,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /**
    * StickyCell needs to wait for afterViewInit$ to fire, so that rowOutlets.changes will be populated
    */
-  getStickyCell = (): Observable<{
+  private getStickyCell = (): Observable<{
     row: RowOutletDirective<T>;
     r: EmbeddedViewRef<any> | null;
   }> => {
@@ -375,6 +387,67 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     startWith({ start: -1, end: -1, itemCount: 0 }),
     shareReplay(1),
   );
+
+  private hasNonFixedWidths = true;
+
+  removeCellWidths = new Subject<string>();
+  applyFixedWidth = new Subject<[string, number]>();
+
+  protected async resizeColumn(differential: number, columnName: string) {
+    // Since resizing only happens within the header row, if this function is called we can assume that the header exists
+    if (!this.headerOutlet?.get(0))
+      return;
+    const headerRow = this.headerOutlet.get(0);
+    // if any cell def does not have a fixed width, we need to set them to fixed
+    if (this.hasNonFixedWidths) {
+      const obs = this.mappedActiveColumns$.pipe(
+        switchMap(list => combineLatest(list)),
+        tap(list => {
+          list.forEach(cell => {
+            // Skip any cells that already have a fixed width defined
+            if (cell.cellDef.fixedWidth)
+              return;
+
+            // If the cell is active, set the rendered column's current width as the fixed width
+            if (cell.isActive) {
+              const renderedCell = headerRow?._columnManager?.renderedCellViews.find(c => c.columnName === cell.cellDef.columnName);
+              if (!renderedCell)
+                return;
+              cell.cellDef.modifiedFixedWidth = renderedCell.view.rootNodes[0].getBoundingClientRect().width;
+            
+              this.removeCellWidths.next(columnName);
+
+            // If the cell is not active, set the fixed width to the minimum width of the column
+            } else {
+              cell.cellDef.modifiedFixedWidth = cell.cellDef.minWidth
+            }
+          });
+        }),
+      );
+      await firstValueFrom(obs);
+      this.hasNonFixedWidths = false;
+    }
+
+    // Then apply the differential to the affected cellDef, and emit the resize observable
+    const modifiedCell = this.cellDefs?.find(c => c.columnName === columnName);
+    if (!modifiedCell)
+      return;
+
+    const newWidth = modifiedCell.fixedWidth ?? modifiedCell.minWidth + differential;
+    modifiedCell.modifiedFixedWidth = newWidth;
+    this.applyFixedWidth.next([columnName, newWidth]);
+  }
+
+
+  protected resetSizes(): void {
+    // Reset any modified fixed widths
+    this.cellDefs?.forEach(c => c.modifiedFixedWidth = null);
+    this.hasNonFixedWidths = true;
+
+    // re-render the rows. We don't want to manually reset styles in case the user has set styles themselves
+    this.headerOutlet.forEach(h => h.renderRow());
+    this.rowOutlets.forEach(r => r.renderRow());
+  }
 
 
   @ContentChild(RowDefDirective, { read: TemplateRef })

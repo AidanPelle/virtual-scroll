@@ -14,6 +14,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HeaderOutletDirective } from './outlets/header-outlet.directive';
 import { HeaderDefDirective } from './defs/header-def.directive';
 import { HeaderCellDefDirective } from './defs/header-cell-def.directive';
+import { ResizableDirective } from './resizable/resizable.directive';
 
 
 
@@ -36,6 +37,7 @@ import { HeaderCellDefDirective } from './defs/header-cell-def.directive';
     HeaderCellDefDirective,
     ColumnSelectorDialogComponent,
     ColumnSelectorDirective,
+    ResizableDirective,
   ],
   exports: [
     VirtualScrollComponent,

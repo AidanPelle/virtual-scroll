@@ -24,6 +24,10 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   @Input() moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
 
   @Input() applyStickyShadow!: typeof VirtualScrollComponent.prototype.applyStickyShadow$;
+  
+  @Input() removeCellWidths$!: typeof VirtualScrollComponent.prototype.removeCellWidths;
+
+  @Input() applyFixedWidths$!: typeof VirtualScrollComponent.prototype.applyFixedWidth;
 
   @Input() item!: T;
 
@@ -80,6 +84,8 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
       this.index,
       this.renderSticky,
       this.applyStickyShadow,
+      this.removeCellWidths$,
+      this.applyFixedWidths$,
       false,
       [],
       undefined,

@@ -15,6 +15,8 @@ export class ColumnManager<T> {
         index: number,
         renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>,
         applyStickyShadow: typeof VirtualScrollComponent.prototype.applyStickyShadow$,
+        removeCellWidths$: typeof VirtualScrollComponent.prototype.removeCellWidths,
+        applyFixedWidths$: typeof VirtualScrollComponent.prototype.applyFixedWidth,
         isHeader: boolean,
         headerCellDefs: HeaderCellDefDirective[],
         defaultHeaderCellTemplate?: TemplateRef<unknown>,
@@ -30,10 +32,14 @@ export class ColumnManager<T> {
         this._isHeader = isHeader;
         this._headerCellDefs = headerCellDefs;
         this._defaultHeaderCellTemplate = defaultHeaderCellTemplate;
+        this._removeCellWidths$ = removeCellWidths$;
+        this._applyFixedWidth$ = applyFixedWidths$;
 
 
         this.toggleColumns$.pipe(takeUntil(this._onDestroy)).subscribe();
         this.moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
+        this.removeCellWidth$.pipe(takeUntil(this._onDestroy)).subscribe();
+        this.applyFixedWidth$.pipe(takeUntil(this._onDestroy)).subscribe();
     }
 
     private _viewContainer!: ViewContainerRef;
@@ -47,6 +53,8 @@ export class ColumnManager<T> {
     private _isHeader = false;
     private _headerCellDefs!: HeaderCellDefDirective[];
     private _defaultHeaderCellTemplate?: TemplateRef<unknown>;
+    private _removeCellWidths$!: typeof VirtualScrollComponent.prototype.removeCellWidths;
+    private _applyFixedWidth$!: typeof VirtualScrollComponent.prototype.applyFixedWidth;
     // private _canReorder = true;
     // private _canResize = true;
     // private _canSelect = true;
@@ -55,7 +63,7 @@ export class ColumnManager<T> {
     /**
      * Cells that are currently active, we cache so that we know which we need to turn off or not
      */
-    private _renderedCellViews: string[] = [];
+    public renderedCellViews: { columnName: string, view: EmbeddedViewRef<any> }[] = [];
 
 
     /**
@@ -90,12 +98,36 @@ export class ColumnManager<T> {
         }),
     );
 
+    private removeCellWidth$ = defer(() => of(null)).pipe(
+        switchMap(() => this._removeCellWidths$),
+        tap(columnName => {
+            const renderedCell = this.renderedCellViews.find(r => r.columnName === columnName);
+            if (!renderedCell) {
+                console.error("Rendered cell not found!");
+                return;
+            }
+            UtilityService.removeCellWidths(renderedCell.view.rootNodes[0]);
+        }),
+    );
+
+    private applyFixedWidth$ = defer(() => of(null)).pipe(
+        switchMap(() => this._applyFixedWidth$),
+        tap(([columnName, fixedWidth]) => {
+            const renderedCell = this.renderedCellViews.find(r => r.columnName === columnName);
+            if (!renderedCell) {
+                console.error("Rendered cell not found!");
+                return;
+            }
+            UtilityService.applyFixedWidth(renderedCell.view.rootNodes[0], fixedWidth);
+        }),
+    );
+
     private renderCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
         const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
 
-        const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName }, { index: activeIndex });
+        const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: activeIndex });
         UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
-        this._renderedCellViews.push(val.cellDef.columnName);
+        this.renderedCellViews.push({columnName: val.cellDef.columnName, view: renderedCell});
 
         if (val.cellDef.sticky) {
             renderedCell.rootNodes[0].classList.add('sticky');
@@ -108,12 +140,12 @@ export class ColumnManager<T> {
     }
 
     private removeRenderedCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
-        const renderedCellIndex = this._renderedCellViews.indexOf(val.cellDef.columnName)
+        const renderedCellIndex = this.renderedCellViews.findIndex(r => r.columnName === val.cellDef.columnName);
         if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
             return;
 
         this._viewContainer.remove(activeIndex);
-        this._renderedCellViews.splice(renderedCellIndex, 1);
+        this.renderedCellViews.splice(renderedCellIndex, 1);
     }
 
 

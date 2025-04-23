@@ -73,9 +73,15 @@ export class UtilityService {
     rootElement.style.maxWidth = maxWidth + 'px';
   }
 
-  private static applyFixedWidth(rootElement: any, fixedWidth: number) {
+  public static applyFixedWidth(rootElement: any, fixedWidth: number) {
     rootElement.style.width = fixedWidth + 'px';
     rootElement.style.minWidth = fixedWidth + 'px';
     rootElement.style.maxWidth = fixedWidth + 'px';
   }
+
+  public static removeCellWidths(rootElement: any) {
+    rootElement.style.flex = null;
+    rootElement.style.minWidth = null;
+    rootElement.style.maxWidth = null;
+}
 }

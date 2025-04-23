@@ -79,3 +79,12 @@
         {{ columnName }}
     </div>
 </ng-template>
+
+<ng-template #slider let-columnName="columnName">
+    <div class="vs-slider" [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth"
+        vsResizable (resize)="resizeColumn($event, columnName)" (resetSizes)="resetSizes()">
+
+        <div class="vertical-line">
+        </div>
+    </div>
+</ng-template>

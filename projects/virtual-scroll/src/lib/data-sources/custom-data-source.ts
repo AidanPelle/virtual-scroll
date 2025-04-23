@@ -1,5 +1,4 @@
-import { CollectionViewer } from "@angular/cdk/collections";
-import { Observable, takeUntil, timer } from "rxjs";
+import { takeUntil, timer } from "rxjs";
 import { BaseDataSource } from "./base-data-source";
 import { IterableDiffer } from "../iterable-differ/iterable-differ";
 
@@ -21,7 +20,7 @@ export class CustomDataSource<T> extends BaseDataSource<T> {
      */
     handleChangeDetection() {
         const iterableDiffer = new IterableDiffer();
-        timer(0, 1_000).pipe(takeUntil(this._onDestroy)).subscribe(() => {
+        timer(0, 500).pipe(takeUntil(this._onDestroy)).subscribe(() => {
             if (iterableDiffer.diff(this.data))
                 this.dataListener.next(this.data);
         });

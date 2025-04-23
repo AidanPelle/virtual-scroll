@@ -26,6 +26,8 @@ export class HeaderOutletDirective<T> extends RowOutletDirective<T> {
       this.index,
       this.renderSticky,
       this.applyStickyShadow,
+      this.removeCellWidths$,
+      this.applyFixedWidths$,
       true,
       this.headerCellDefs,
       this.defaultHeaderCellTemplate,

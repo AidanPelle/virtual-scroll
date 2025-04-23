@@ -43,7 +43,16 @@ export class CellDefDirective {
 
   @Input('cellDefMaxDisplay') maxDisplay: number | null = null;
 
-  @Input('cellDefFixedWidth') fixedWidth: number | null = null;
+  @Input('cellDefFixedWidth') originalFixedWidth: number | null = null;
+
+  public set modifiedFixedWidth(value: number | null) {
+    this._modifiedFixedWidth = value;
+  }
+  private _modifiedFixedWidth: number | null = null;
+
+  public get fixedWidth(): number | null {
+    return this._modifiedFixedWidth ?? this.originalFixedWidth;
+  }
 
   @Input('cellDefSticky') sticky = false;
 
