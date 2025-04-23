@@ -129,6 +129,9 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   @Input() showFooter = true;
 
 
+  @Input() canResize = true;
+
+
   /**
    * Provides a unique identifier for a given row to virtual scroll, allowing for some optimization by cdk-virtual-scroll.
    * 
@@ -275,8 +278,14 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   private _hasHorizontalScrollbar$ = defer(() => of(null)).pipe(
-    switchMap(() => this.cellDefs$),
-    map(cellDefs => cellDefs.reduce((a, b) => a + (b.fixedWidth ?? b.minWidth), 0) > this._hostElement.nativeElement.offsetWidth)
+    switchMap(() => combineLatest([this.cellDefs$, this.applyFixedWidth.pipe(startWith(null)), this.resetSizes$])),
+    map(([cellDefs]) => {
+      let totalWidth = cellDefs.reduce((a, b) => a + (b.fixedWidth ?? b.minWidth), 0);
+      if (this.canResize)
+        totalWidth += cellDefs.length * this.resizeWidth;
+
+      return totalWidth > this._hostElement.nativeElement.offsetWidth;
+    })
   );
 
   protected hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
@@ -415,7 +424,8 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
                 return;
               cell.cellDef.modifiedFixedWidth = renderedCell.view.rootNodes[0].getBoundingClientRect().width;
             
-              this.removeCellWidths.next(columnName);
+              this.removeCellWidths.next(cell.cellDef.columnName);
+              this.applyFixedWidth.next([cell.cellDef.columnName, cell.cellDef.fixedWidth ?? 0]);
 
             // If the cell is not active, set the fixed width to the minimum width of the column
             } else {
@@ -433,11 +443,12 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     if (!modifiedCell)
       return;
 
-    const newWidth = modifiedCell.fixedWidth ?? modifiedCell.minWidth + differential;
+    const newWidth = (modifiedCell.fixedWidth ?? modifiedCell.minWidth) + differential;
     modifiedCell.modifiedFixedWidth = newWidth;
     this.applyFixedWidth.next([columnName, newWidth]);
   }
 
+  private resetSizes$ = new BehaviorSubject<void>(undefined);
 
   protected resetSizes(): void {
     // Reset any modified fixed widths
@@ -447,6 +458,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     // re-render the rows. We don't want to manually reset styles in case the user has set styles themselves
     this.headerOutlet.forEach(h => h.renderRow());
     this.rowOutlets.forEach(r => r.renderRow());
+    this.resetSizes$.next();
   }
 
 

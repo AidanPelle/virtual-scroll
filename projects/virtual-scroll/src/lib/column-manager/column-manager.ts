@@ -17,7 +17,9 @@ export class ColumnManager<T> {
         applyStickyShadow: typeof VirtualScrollComponent.prototype.applyStickyShadow$,
         removeCellWidths$: typeof VirtualScrollComponent.prototype.removeCellWidths,
         applyFixedWidths$: typeof VirtualScrollComponent.prototype.applyFixedWidth,
+        sliderTemplate: TemplateRef<unknown>,
         isHeader: boolean,
+        canResize: boolean,
         headerCellDefs: HeaderCellDefDirective[],
         defaultHeaderCellTemplate?: TemplateRef<unknown>,
     ) {
@@ -30,8 +32,10 @@ export class ColumnManager<T> {
         this._renderSticky = renderSticky;
         this._applyStickyShadow$ = applyStickyShadow;
         this._isHeader = isHeader;
+        this._canResize = canResize;
         this._headerCellDefs = headerCellDefs;
         this._defaultHeaderCellTemplate = defaultHeaderCellTemplate;
+        this._sliderTemplate = sliderTemplate;
         this._removeCellWidths$ = removeCellWidths$;
         this._applyFixedWidth$ = applyFixedWidths$;
 
@@ -53,11 +57,10 @@ export class ColumnManager<T> {
     private _isHeader = false;
     private _headerCellDefs!: HeaderCellDefDirective[];
     private _defaultHeaderCellTemplate?: TemplateRef<unknown>;
+    private _sliderTemplate!: TemplateRef<unknown>;
     private _removeCellWidths$!: typeof VirtualScrollComponent.prototype.removeCellWidths;
     private _applyFixedWidth$!: typeof VirtualScrollComponent.prototype.applyFixedWidth;
-    // private _canReorder = true;
-    // private _canResize = true;
-    // private _canSelect = true;
+    private _canResize = true;
     private _onDestroy = new Subject<void>();
 
     /**
@@ -123,9 +126,10 @@ export class ColumnManager<T> {
     );
 
     private renderCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
+        const indexToPlace = this._canResize ? activeIndex * 2 : activeIndex;
         const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
 
-        const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: activeIndex });
+        const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: indexToPlace });
         UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
         this.renderedCellViews.push({columnName: val.cellDef.columnName, view: renderedCell});
 
@@ -137,15 +141,22 @@ export class ColumnManager<T> {
                 renderedCell.rootNodes[0].classList.toggle('sticky-left-shadow', shadow === 'sticky-left-shadow');
             });
         }
+
+        if (this._canResize)
+            this._viewContainer.createEmbeddedView(this._sliderTemplate, { columnName: val.cellDef.columnName }, { index: indexToPlace + 1 });
     }
 
     private removeRenderedCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
         const renderedCellIndex = this.renderedCellViews.findIndex(r => r.columnName === val.cellDef.columnName);
+        const indexToPlace = this._canResize ? activeIndex * 2 : activeIndex;
         if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
             return;
 
-        this._viewContainer.remove(activeIndex);
+        this._viewContainer.remove(indexToPlace);
         this.renderedCellViews.splice(renderedCellIndex, 1);
+
+        if (this._canResize)
+            this._viewContainer.remove(indexToPlace);
     }
 
 
@@ -159,12 +170,29 @@ export class ColumnManager<T> {
         switchMap(() => this._moveItem),
         filter(val => val != null && val.isActive), // We want to skip any null moveItems (initial load), and when the item being moved is inactive since the rendering won't change anyways
         switchMap(val => combineLatest([this.activeIndexObs(val!.fromIndex), this.activeIndexObs(val!.toIndex)])),  // Since we're already filtering null vals, we can assert not null here for compilation
+        map(([fromActiveIndex, toActiveIndex]) => this._canResize ? [fromActiveIndex * 2, toActiveIndex * 2] : [fromActiveIndex, toActiveIndex]),
         tap(([fromActiveIndex, toActiveIndex]) => {
             if (fromActiveIndex === toActiveIndex)
                 return;
 
             const viewToMove = this._viewContainer.get(fromActiveIndex);
-            if (viewToMove)
+            if (!viewToMove)
+                return;
+
+            if (this._canResize) {
+                const sliderToMove = this._viewContainer.get(fromActiveIndex + 1);
+                if (!sliderToMove)
+                    return;
+
+                if (toActiveIndex > fromActiveIndex) {
+                    this._viewContainer.move(viewToMove, toActiveIndex + 1);
+                    this._viewContainer.move(sliderToMove, toActiveIndex + 1);
+                } else {
+                    this._viewContainer.move(sliderToMove, toActiveIndex);
+                    this._viewContainer.move(viewToMove, toActiveIndex);
+                }
+            }
+            else
                 this._viewContainer.move(viewToMove, toActiveIndex);
 
             this.updateCellIndices();
@@ -190,7 +218,7 @@ export class ColumnManager<T> {
     private updateCellIndices(): void {
         for (let i = 0; i < this._viewContainer.length; i++) {
             const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<any>;
-            viewRef.context.cellIndex = i;
+            viewRef.context.cellIndex = this._canResize ? Math.floor(i / 2) : i;
         }
     }
 

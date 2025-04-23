@@ -3,7 +3,6 @@ import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";   // Using type instead of direct import to fix circular import references
 import { BehaviorSubject, Subject, takeUntil } from "rxjs";
-import type { HeaderCellDefDirective } from "../defs/header-cell-def.directive";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -16,6 +15,8 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   @Input() rowTemplate?: TemplateRef<any>;
 
   @Input() defaultRowTemplate!: TemplateRef<any>;
+
+  @Input() sliderTemplate!: TemplateRef<unknown>;
 
   @Input() cellPadding!: number;
 
@@ -32,6 +33,8 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   @Input() item!: T;
 
   @Input() index!: number;
+
+  @Input() canResize = true;
 
   private _onDestroy = new Subject<void>();
 
@@ -86,7 +89,9 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
       this.applyStickyShadow,
       this.removeCellWidths$,
       this.applyFixedWidths$,
+      this.sliderTemplate,
       false,
+      this.canResize,
       [],
       undefined,
     );

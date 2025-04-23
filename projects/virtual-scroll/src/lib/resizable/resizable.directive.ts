@@ -156,7 +156,6 @@ export class ResizableDirective implements OnDestroy {
        * that data to virtual-scroll.component.ts.
        */
       const deltaX = secondX - firstX;
-      
       this.resize.emit(deltaX);
     });
   }

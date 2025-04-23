@@ -31,3 +31,29 @@
         border-bottom: none;
     }
 }
+
+.vs-slider {
+    display: flex;
+    align-items: center;
+    cursor: e-resize;
+    height: 100%;
+
+    .vertical-line {
+        background-color: #F0F0F0;
+        border-radius: 2px;
+        width: 2px;
+        height: 75%;
+        margin: auto;
+    }
+}
+
+.vs-slider:hover {
+    .vertical-line {
+        background-color: #DDDDDD;
+    }
+}
+
+.dummy-slider {
+    height: 100%;
+    box-sizing: border-box;
+}
