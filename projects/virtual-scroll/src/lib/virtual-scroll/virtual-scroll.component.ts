@@ -278,7 +278,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   private _hasHorizontalScrollbar$ = defer(() => of(null)).pipe(
-    switchMap(() => combineLatest([this.cellDefs$, this.applyFixedWidth.pipe(startWith(null)), this.resetSizes$])),
+    switchMap(() => combineLatest([this.cellDefs$, this.applyFixedWidth.pipe(startWith(null)), this.resetSizes$, this.resize$])),
     map(([cellDefs]) => {
       let totalWidth = cellDefs.reduce((a, b) => a + (b.fixedWidth ?? b.minWidth), 0);
       if (this.canResize)
