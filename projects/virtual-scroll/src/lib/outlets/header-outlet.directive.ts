@@ -19,18 +19,12 @@ export class HeaderOutletDirective<T> extends RowOutletDirective<T> {
   protected override initColumnManager(cellOutlet: CellOutletDirective): void {
     this._columnManager = new ColumnManager(
       cellOutlet.viewContainer,
-      this.cellPadding,
-      this.mappedActiveColumns$,
-      this.moveItem,
+      this.virtualScroll,
       this.item,
       this.index,
       this.renderSticky,
-      this.applyStickyShadow,
-      this.removeCellWidths$,
-      this.applyFixedWidths$,
       this.sliderTemplate,
       true,
-      this.canResize,
       this.headerCellDefs,
       this.defaultHeaderCellTemplate,
     );

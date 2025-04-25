@@ -18,23 +18,11 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   @Input() sliderTemplate!: TemplateRef<unknown>;
 
-  @Input() cellPadding!: number;
-
-  @Input() mappedActiveColumns$!: typeof VirtualScrollComponent.prototype.mappedActiveColumns$;
-
-  @Input() moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
-
-  @Input() applyStickyShadow!: typeof VirtualScrollComponent.prototype.applyStickyShadow$;
-  
-  @Input() removeCellWidths$!: typeof VirtualScrollComponent.prototype.removeCellWidths;
-
-  @Input() applyFixedWidths$!: typeof VirtualScrollComponent.prototype.applyFixedWidth;
+  @Input() virtualScroll!: typeof VirtualScrollComponent.prototype;
 
   @Input() item!: T;
 
   @Input() index!: number;
-
-  @Input() canResize = true;
 
   private _onDestroy = new Subject<void>();
 
@@ -80,18 +68,12 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   protected initColumnManager(cellOutlet: CellOutletDirective): void {
     this._columnManager = new ColumnManager(
       cellOutlet.viewContainer,
-      this.cellPadding,
-      this.mappedActiveColumns$,
-      this.moveItem,
+      this.virtualScroll,
       this.item,
       this.index,
       this.renderSticky,
-      this.applyStickyShadow,
-      this.removeCellWidths$,
-      this.applyFixedWidths$,
       this.sliderTemplate,
       false,
-      this.canResize,
       [],
       undefined,
     );

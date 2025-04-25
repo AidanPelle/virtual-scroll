@@ -8,37 +8,24 @@ import type { HeaderCellDefDirective } from "../defs/header-cell-def.directive";
 export class ColumnManager<T> {
     constructor(
         viewContainer: ViewContainerRef,
-        cellPadding: number,
-        mappedActiveColumns$: typeof VirtualScrollComponent.prototype.mappedActiveColumns$,
-        moveItem: typeof VirtualScrollComponent.prototype.moveItem,
+        virtualScroll: typeof VirtualScrollComponent.prototype,
         item: T,
         index: number,
         renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>,
-        applyStickyShadow: typeof VirtualScrollComponent.prototype.applyStickyShadow$,
-        removeCellWidths$: typeof VirtualScrollComponent.prototype.removeCellWidths,
-        applyFixedWidths$: typeof VirtualScrollComponent.prototype.applyFixedWidth,
         sliderTemplate: TemplateRef<unknown>,
         isHeader: boolean,
-        canResize: boolean,
         headerCellDefs: HeaderCellDefDirective[],
         defaultHeaderCellTemplate?: TemplateRef<unknown>,
     ) {
         this._viewContainer = viewContainer;
-        this._cellPadding = cellPadding;
-        this._mappedActiveColumns$ = mappedActiveColumns$;
-        this._moveItem = moveItem;
+        this._virtualScroll = virtualScroll;
         this._item = item;
         this._index = index;
         this._renderSticky = renderSticky;
-        this._applyStickyShadow$ = applyStickyShadow;
         this._isHeader = isHeader;
-        this._canResize = canResize;
         this._headerCellDefs = headerCellDefs;
         this._defaultHeaderCellTemplate = defaultHeaderCellTemplate;
         this._sliderTemplate = sliderTemplate;
-        this._removeCellWidths$ = removeCellWidths$;
-        this._applyFixedWidth$ = applyFixedWidths$;
-
 
         this.toggleColumns$.pipe(takeUntil(this._onDestroy)).subscribe();
         this.moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
@@ -46,21 +33,15 @@ export class ColumnManager<T> {
         this.applyFixedWidth$.pipe(takeUntil(this._onDestroy)).subscribe();
     }
 
+    private _virtualScroll!: typeof VirtualScrollComponent.prototype;
     private _viewContainer!: ViewContainerRef;
-    private _cellPadding!: number;
-    private _mappedActiveColumns$!: typeof VirtualScrollComponent.prototype.mappedActiveColumns$;
-    private _moveItem!: typeof VirtualScrollComponent.prototype.moveItem;
     private _item!: T;
     private _index!: number;
     private _renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>;
-    private _applyStickyShadow$: typeof VirtualScrollComponent.prototype.applyStickyShadow$;
     private _isHeader = false;
     private _headerCellDefs!: HeaderCellDefDirective[];
     private _defaultHeaderCellTemplate?: TemplateRef<unknown>;
     private _sliderTemplate!: TemplateRef<unknown>;
-    private _removeCellWidths$!: typeof VirtualScrollComponent.prototype.removeCellWidths;
-    private _applyFixedWidth$!: typeof VirtualScrollComponent.prototype.applyFixedWidth;
-    private _canResize = true;
     private _onDestroy = new Subject<void>();
 
     /**
@@ -83,7 +64,7 @@ export class ColumnManager<T> {
         switchMap(() => {
             // Whenever the ordering of columns changes, we skip the first output of the active status, so that we don't try to double render columns
             // However, we do not want to skip the first output on the initial load of the row, since that's what initially renders the columns
-            return this._mappedActiveColumns$.pipe(switchMap(cols => {
+            return this._virtualScroll.mappedActiveColumns$.pipe(switchMap(cols => {
                 let c = cols.map(col => col.pipe(c => c.pipe(skip(this._initialLoad ? 0 : 1))));
                 this._initialLoad = false;
                 return merge(...c);
@@ -102,7 +83,7 @@ export class ColumnManager<T> {
     );
 
     private removeCellWidth$ = defer(() => of(null)).pipe(
-        switchMap(() => this._removeCellWidths$),
+        switchMap(() => this._virtualScroll.removeCellWidths),
         tap(columnName => {
             const renderedCell = this.renderedCellViews.find(r => r.columnName === columnName);
             if (!renderedCell) {
@@ -114,7 +95,7 @@ export class ColumnManager<T> {
     );
 
     private applyFixedWidth$ = defer(() => of(null)).pipe(
-        switchMap(() => this._applyFixedWidth$),
+        switchMap(() => this._virtualScroll.applyFixedWidth),
         tap(([columnName, fixedWidth]) => {
             const renderedCell = this.renderedCellViews.find(r => r.columnName === columnName);
             if (!renderedCell) {
@@ -126,36 +107,36 @@ export class ColumnManager<T> {
     );
 
     private renderCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
-        const indexToPlace = this._canResize ? activeIndex * 2 : activeIndex;
+        const indexToPlace = this._virtualScroll.canResize ? activeIndex * 2 : activeIndex;
         const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
 
         const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: indexToPlace });
-        UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._cellPadding);
+        UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._virtualScroll.cellPadding);
         this.renderedCellViews.push({columnName: val.cellDef.columnName, view: renderedCell});
 
         if (val.cellDef.sticky) {
             renderedCell.rootNodes[0].classList.add('sticky');
             this._renderSticky.next(renderedCell);
-            this._applyStickyShadow$.pipe(takeUntil(this._onDestroy)).subscribe(shadow => {
+            this._virtualScroll.applyStickyShadow$.pipe(takeUntil(this._onDestroy)).subscribe(shadow => {
                 renderedCell.rootNodes[0].classList.toggle('sticky-right-shadow', shadow === 'sticky-right-shadow');
                 renderedCell.rootNodes[0].classList.toggle('sticky-left-shadow', shadow === 'sticky-left-shadow');
             });
         }
 
-        if (this._canResize)
+        if (this._virtualScroll.canResize)
             this._viewContainer.createEmbeddedView(this._sliderTemplate, { columnName: val.cellDef.columnName }, { index: indexToPlace + 1 });
     }
 
     private removeRenderedCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
         const renderedCellIndex = this.renderedCellViews.findIndex(r => r.columnName === val.cellDef.columnName);
-        const indexToPlace = this._canResize ? activeIndex * 2 : activeIndex;
+        const indexToPlace = this._virtualScroll.canResize ? activeIndex * 2 : activeIndex;
         if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
             return;
 
         this._viewContainer.remove(indexToPlace);
         this.renderedCellViews.splice(renderedCellIndex, 1);
 
-        if (this._canResize)
+        if (this._virtualScroll.canResize)
             this._viewContainer.remove(indexToPlace);
     }
 
@@ -167,10 +148,10 @@ export class ColumnManager<T> {
      * since this functionality only pertains to physically moving the rendered column.
      */
     private moveColumn$ = defer(() => of(null)).pipe(
-        switchMap(() => this._moveItem),
+        switchMap(() => this._virtualScroll.moveItem),
         filter(val => val != null && val.isActive), // We want to skip any null moveItems (initial load), and when the item being moved is inactive since the rendering won't change anyways
         switchMap(val => combineLatest([this.activeIndexObs(val!.fromIndex), this.activeIndexObs(val!.toIndex)])),  // Since we're already filtering null vals, we can assert not null here for compilation
-        map(([fromActiveIndex, toActiveIndex]) => this._canResize ? [fromActiveIndex * 2, toActiveIndex * 2] : [fromActiveIndex, toActiveIndex]),
+        map(([fromActiveIndex, toActiveIndex]) => this._virtualScroll.canResize ? [fromActiveIndex * 2, toActiveIndex * 2] : [fromActiveIndex, toActiveIndex]),
         tap(([fromActiveIndex, toActiveIndex]) => {
             if (fromActiveIndex === toActiveIndex)
                 return;
@@ -179,7 +160,7 @@ export class ColumnManager<T> {
             if (!viewToMove)
                 return;
 
-            if (this._canResize) {
+            if (this._virtualScroll.canResize) {
                 const sliderToMove = this._viewContainer.get(fromActiveIndex + 1);
                 if (!sliderToMove)
                     return;
@@ -204,7 +185,7 @@ export class ColumnManager<T> {
      * to tell where to place the generated view in the rendered row.
      */
     private activeIndexObs(baseIndex: number) {
-        return this._mappedActiveColumns$.pipe(
+        return this._virtualScroll.mappedActiveColumns$.pipe(
             switchMap(obsList => {
                 return combineLatest(obsList).pipe(
                     map(list => list.slice(0, baseIndex)),
@@ -218,7 +199,7 @@ export class ColumnManager<T> {
     private updateCellIndices(): void {
         for (let i = 0; i < this._viewContainer.length; i++) {
             const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<any>;
-            viewRef.context.cellIndex = this._canResize ? Math.floor(i / 2) : i;
+            viewRef.context.cellIndex = this._virtualScroll.canResize ? Math.floor(i / 2) : i;
         }
     }
 

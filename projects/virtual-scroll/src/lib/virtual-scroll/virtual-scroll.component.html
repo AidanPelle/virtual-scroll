@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 <div
     #headerContainer
     *ngIf="showHeader"
@@ -8,16 +10,10 @@
         headerOutlet
         [rowTemplate]="headerTemplate"
         [defaultRowTemplate]="defaultHeaderTemplate"
-        [cellPadding]="cellPadding"
-        [mappedActiveColumns$]="mappedActiveColumns$"
-        [moveItem]="moveItem"
-        [applyStickyShadow]="applyStickyShadow$"
-        [removeCellWidths$]="removeCellWidths"
-        [applyFixedWidths$]="applyFixedWidth"
         [sliderTemplate]="slider"
+        [virtualScroll]="this"
         [headerCellDefs]="headerCellDefs?.toArray() ?? []"
-        [defaultHeaderCellTemplate]="defaultHeaderCellTemplate"
-        [canResize]="canResize">
+        [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
     </ng-container>
 </div>
 
@@ -51,16 +47,10 @@
             rowOutlet
             [rowTemplate]="rowTemplate"
             [defaultRowTemplate]="defaultRowTemplate"
-            [cellPadding]="cellPadding"
-            [mappedActiveColumns$]="mappedActiveColumns$"
-            [moveItem]="moveItem"
             [item]="item"
             [index]="index"
-            [applyStickyShadow]="applyStickyShadow$"
-            [removeCellWidths$]="removeCellWidths"
-            [applyFixedWidths$]="applyFixedWidth"
             [sliderTemplate]="dummySliderTemplate"
-            [canResize]="canResize">
+            [virtualScroll]="this">
         </ng-container>
 
     </cdk-virtual-scroll-viewport>
