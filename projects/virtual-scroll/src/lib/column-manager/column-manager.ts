@@ -47,7 +47,7 @@ export class ColumnManager<T> {
     /**
      * Cells that are currently active, we cache so that we know which we need to turn off or not
      */
-    public renderedCellViews: { columnName: string, view: EmbeddedViewRef<any> }[] = [];
+    public renderedCellViews: { columnName: string, isSticky: boolean, view: EmbeddedViewRef<any> }[] = [];
 
 
     /**
@@ -112,7 +112,7 @@ export class ColumnManager<T> {
 
         const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: indexToPlace });
         UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._virtualScroll.cellPadding);
-        this.renderedCellViews.push({columnName: val.cellDef.columnName, view: renderedCell});
+        this.renderedCellViews.push({columnName: val.cellDef.columnName, isSticky: val.cellDef.sticky, view: renderedCell});
 
         if (val.cellDef.sticky) {
             renderedCell.rootNodes[0].classList.add('sticky');
@@ -177,6 +177,10 @@ export class ColumnManager<T> {
                 this._viewContainer.move(viewToMove, toActiveIndex);
 
             this.updateCellIndices();
+
+            // We re-fire the render sticky in case the sticky cell was moved in the row by these actions (assuming the sticky column is currently rendered)
+            if (this.renderedCellViews.find(c => c.isSticky) != null)
+                this._renderSticky.next(this._renderSticky.value);
         }),
     );
 

@@ -299,12 +299,12 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     shareReplay(1),
   );
 
-  stickyCellData$ = this.loading$.pipe(       // whenever loading goes to false, refresh our dataSource
+  stickyCellData$ = this.loading$.pipe(
     switchMap(loading => {
       if (this.showHeader)
         return of(null);
       return of(null).pipe(
-        filter(() => loading === false),
+        filter(() => loading === false),  // whenever loading goes to false, refresh our dataSource
         switchMap(() => this.dataSource$),
         switchMap(source => {
           return source.dataListener.pipe(    // whenever dataSource changes,
@@ -360,11 +360,13 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       }),
       switchMap((res: RowOutletDirective<T>[]) => {
         const stickies = res.map(row => row.renderedSticky$.pipe(map(r => ({ row: row, r: r }))));
-        return merge(...stickies).pipe(
-          filter(cell => cell.r != null),
+        const taggedStickies = stickies.map((obs$, index) => obs$.pipe(map(value => ({source: index, value}))));
+        return merge(...taggedStickies).pipe(
+          filter(item => item.value.r != null),
+          take(1),
+          switchMap(item => stickies[item.source])
         );
       }),
-      take(1),
     );
   }
 
