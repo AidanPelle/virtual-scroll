@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VirtualScrollComponent } from './virtual-scroll.component';
 
 describe('VirtualScrollComponent', () => {
-  let component: VirtualScrollComponent;
-  let fixture: ComponentFixture<VirtualScrollComponent>;
+  let component: VirtualScrollComponent<unknown>;
+  let fixture: ComponentFixture<VirtualScrollComponent<unknown>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
