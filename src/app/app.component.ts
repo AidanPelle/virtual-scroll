@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
+import { BaseDataSource, CompleteDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
-import { CompleteDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/complete-data-source';
 
 @Component({
   selector: 'app-root',
