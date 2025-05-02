@@ -15,8 +15,7 @@ export class UtilityService {
     );
   }
 
-  static applyCellStyling(cell: CellDefDirective, cellView: EmbeddedViewRef<CellContext<unknown>>, cellPadding: number) {
-    const rootElement = cellView.rootNodes[0];
+  static applyCellStyling(cell: CellDefDirective, rootElement: HTMLElement, cellPadding: number) {
     rootElement.classList.add('vs-cell');
     UtilityService.applyHorizontalPadding(rootElement, cellPadding);
     UtilityService.applyAlignment(rootElement, cell.align);

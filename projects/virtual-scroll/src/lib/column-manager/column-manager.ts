@@ -112,7 +112,7 @@ export class ColumnManager<T> {
         const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
 
         const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: indexToPlace });
-        UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<CellContext<T>>, this._virtualScroll.cellPadding);
+        UtilityService.applyCellStyling(val.cellDef, renderedCell.rootNodes[0], this._virtualScroll.cellPadding);
         this.renderedCellViews.push({columnName: val.cellDef.columnName, isSticky: val.cellDef.sticky, view: renderedCell});
 
         if (val.cellDef.sticky) {
