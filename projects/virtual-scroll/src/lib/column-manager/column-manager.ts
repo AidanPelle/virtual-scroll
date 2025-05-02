@@ -65,7 +65,7 @@ export class ColumnManager<T> {
             // Whenever the ordering of columns changes, we skip the first output of the active status, so that we don't try to double render columns
             // However, we do not want to skip the first output on the initial load of the row, since that's what initially renders the columns
             return this._virtualScroll.mappedActiveColumns$.pipe(switchMap(cols => {
-                let c = cols.map(col => col.pipe(c => c.pipe(skip(this._initialLoad ? 0 : 1))));
+                const c = cols.map(col => col.pipe(c => c.pipe(skip(this._initialLoad ? 0 : 1))));
                 this._initialLoad = false;
                 return merge(...c);
             }));

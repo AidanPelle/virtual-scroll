@@ -39,7 +39,7 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
             .subscribe({
                 next: count => {
                     this.data = Array(count);
-                    let numPages = Math.ceil(count / PAGE_SIZE);
+                    const numPages = Math.ceil(count / PAGE_SIZE);
                     this.pageMetadata = Array(numPages);
                     this.skipLoadAnimations = Array(count);
 
@@ -140,7 +140,7 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
                     // We only want to skip the loading animation for data that was fetched and currently exists within the rendered viewport.
                     if (rowIndex <= end && rowIndex + fetchedData.length >= start) {
     
-                        let firstRenderedFetchedItem = Math.max(rowIndex, start);
+                        const firstRenderedFetchedItem = Math.max(rowIndex, start);
     
                         // Only skip the loading animation for rows that are within the indices of the visible viewport,
                         // AND exist within this batch of fetched data.
