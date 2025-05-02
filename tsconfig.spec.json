@@ -8,6 +8,9 @@
       "jasmine"
     ]
   },
+  "files": [
+    "setup.jest.ts"
+  ],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
