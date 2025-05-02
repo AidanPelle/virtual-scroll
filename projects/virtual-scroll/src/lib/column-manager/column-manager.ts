@@ -4,6 +4,7 @@ import { BehaviorSubject, combineLatest, defer, filter, map, merge, of, skip, Su
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 import type { CellDefDirective } from "../defs/cell-def.directive";
 import type { HeaderCellDefDirective } from "../defs/header-cell-def.directive";
+import { CellContext } from "../interfaces/cell-context";
 
 export class ColumnManager<T> {
     constructor(
@@ -11,7 +12,7 @@ export class ColumnManager<T> {
         virtualScroll: typeof VirtualScrollComponent.prototype,
         item: T,
         index: number,
-        renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>,
+        renderSticky: BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>,
         sliderTemplate: TemplateRef<unknown>,
         isHeader: boolean,
         headerCellDefs: HeaderCellDefDirective[],
@@ -37,7 +38,7 @@ export class ColumnManager<T> {
     private _viewContainer!: ViewContainerRef;
     private _item!: T;
     private _index!: number;
-    private _renderSticky: BehaviorSubject<EmbeddedViewRef<any> | null>;
+    private _renderSticky: BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>;
     private _isHeader = false;
     private _headerCellDefs!: HeaderCellDefDirective[];
     private _defaultHeaderCellTemplate?: TemplateRef<unknown>;
@@ -47,7 +48,7 @@ export class ColumnManager<T> {
     /**
      * Cells that are currently active, we cache so that we know which we need to turn off or not
      */
-    public renderedCellViews: { columnName: string, isSticky: boolean, view: EmbeddedViewRef<any> }[] = [];
+    public renderedCellViews: { columnName: string, isSticky: boolean, view: EmbeddedViewRef<unknown> }[] = [];
 
 
     /**
@@ -111,7 +112,7 @@ export class ColumnManager<T> {
         const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
 
         const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: indexToPlace });
-        UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<any>, this._virtualScroll.cellPadding);
+        UtilityService.applyCellStyling(val.cellDef, renderedCell as EmbeddedViewRef<CellContext<T>>, this._virtualScroll.cellPadding);
         this.renderedCellViews.push({columnName: val.cellDef.columnName, isSticky: val.cellDef.sticky, view: renderedCell});
 
         if (val.cellDef.sticky) {
@@ -202,7 +203,7 @@ export class ColumnManager<T> {
     
     private updateCellIndices(): void {
         for (let i = 0; i < this._viewContainer.length; i++) {
-            const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<any>;
+            const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<CellContext<T>>;
             viewRef.context.cellIndex = this._virtualScroll.canResize ? Math.floor(i / 2) : i;
         }
     }

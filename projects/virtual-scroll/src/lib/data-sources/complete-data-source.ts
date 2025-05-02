@@ -4,6 +4,7 @@ import { GetDataFunction } from "../interfaces/get-data-function";
 import { REQUEST_TIMEOUT_DURATION } from "../constants";
 
 export class CompleteDataSource<T> extends BaseDataSource<T> {
+    
     override data: T[] = [];
 
     private getData!: GetDataFunction<T>;
@@ -30,5 +31,4 @@ export class CompleteDataSource<T> extends BaseDataSource<T> {
                 }
             });
     }
-
 }

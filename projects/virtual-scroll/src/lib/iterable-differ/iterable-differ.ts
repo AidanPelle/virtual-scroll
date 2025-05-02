@@ -19,7 +19,7 @@ export class IterableDiffer<T> {
 
 
         for (let i = 0; i < previousArray.length; i++) {
-            previousArray[i] !== newArray[i]
+            if (previousArray[i] !== newArray[i])
                 return true;
         }
         return false;

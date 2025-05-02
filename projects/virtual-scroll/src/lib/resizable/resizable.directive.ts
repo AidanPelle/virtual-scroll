@@ -22,7 +22,7 @@ export class ResizableDirective implements OnDestroy {
    * Emit to virtual-scroll.component.ts when the user has double clicked a resize bar
    * in order to reset the sizes for all the columns.
    */
-  @Output() resetSizes: EventEmitter<any> = new EventEmitter<any>();
+  @Output() resetSizes = new EventEmitter<void>();
 
 
   /**

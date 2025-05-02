@@ -18,15 +18,14 @@ export abstract class BaseDataSource<T> extends DataSource<T> {
         return this.data.length;
     }
 
-    connect(collectionViewer: CollectionViewer): Observable<readonly T[]> {
-        return this.dataListener;
-    }
-
-    disconnect(collectionViewer: CollectionViewer): void {}
-
     onDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
         this.dataListener.complete();
     }
+
+    override connect(_collectionViewer: CollectionViewer): Observable<readonly T[]> {
+        return this.dataListener;
+    }
+    override disconnect(_collectionViewer: CollectionViewer): void { }
 }

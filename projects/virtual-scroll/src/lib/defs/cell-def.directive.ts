@@ -1,6 +1,6 @@
 import { Directive, inject, TemplateRef, Input } from "@angular/core";
 import { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, shareReplay, startWith } from "rxjs";
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, shareReplay } from "rxjs";
 
 @Directive({
   selector: '[cellDef]',

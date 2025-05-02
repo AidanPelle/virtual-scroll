@@ -11,6 +11,7 @@ enum PageMetadata {
 }
 
 export class PaginatedDataSource<T> extends BaseDataSource<T> {
+
     override data: T[] = [];
 
     public skipLoadAnimations: boolean[] = [];
@@ -85,9 +86,9 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
                 // If page before the requested page is not missing, and the requested page is not missing, and the page after isn't missing,
                 // then we want to skip this request.
                 // We add guards for the page before/after to avoid outOfBounds errors on the pages.
-                if (this.pageMetadata.hasOwnProperty(Math.max(pageIndex - 1, 0))
-                    && this.pageMetadata.hasOwnProperty(pageIndex)
-                    && this.pageMetadata.hasOwnProperty(Math.min(pageIndex + 1, this.pageMetadata.length - 1)))
+                if (Object.prototype.hasOwnProperty.call(this.pageMetadata, Math.max(pageIndex - 1, 0))
+                    && Object.prototype.hasOwnProperty.call(this.pageMetadata, pageIndex)
+                    && Object.prototype.hasOwnProperty.call(this.pageMetadata, Math.min(pageIndex + 1, this.pageMetadata.length - 1)))
                     return false;
 
                 return true;
@@ -95,17 +96,17 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
             map(pageIndex => {
                 let rowIndex = 0;
                 let chunkSize = 0;
-                if (pageIndex !== 0 && !this.pageMetadata.hasOwnProperty(pageIndex - 1)) {
+                if (pageIndex !== 0 && !Object.prototype.hasOwnProperty.call(this.pageMetadata, pageIndex - 1)) {
                     this.pageMetadata[pageIndex - 1] = PageMetadata.IN_PROGRESS;
                     rowIndex = (pageIndex - 1) * PAGE_SIZE;
                     chunkSize += PAGE_SIZE;
                 }
-                if (!this.pageMetadata.hasOwnProperty(pageIndex)) {
+                if (!Object.prototype.hasOwnProperty.call(this.pageMetadata, pageIndex)) {
                     this.pageMetadata[pageIndex] = PageMetadata.IN_PROGRESS;
                     rowIndex = chunkSize > 0 ? rowIndex : pageIndex * PAGE_SIZE;
                     chunkSize += PAGE_SIZE;
                 }
-                if (pageIndex + 1 <= this.pageMetadata.length - 1 && !this.pageMetadata.hasOwnProperty(pageIndex + 1)) {
+                if (pageIndex + 1 <= this.pageMetadata.length - 1 && !Object.prototype.hasOwnProperty.call(this.pageMetadata, pageIndex + 1)) {
                     this.pageMetadata[pageIndex + 1] = PageMetadata.IN_PROGRESS;
                     rowIndex = chunkSize > 0 ? rowIndex : (pageIndex + 1) * PAGE_SIZE;
                     chunkSize += PAGE_SIZE;
@@ -171,5 +172,4 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
         });
         return this.dataListener;
     }
-
 }

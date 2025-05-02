@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
-import { CustomDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/custom-data-source';
 import { CompleteDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/complete-data-source';
-import { PaginatedDataSource } from '../../projects/virtual-scroll/src/lib/data-sources/paginated-data-source';
 
 @Component({
   selector: 'app-root',

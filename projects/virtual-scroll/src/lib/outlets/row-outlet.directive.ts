@@ -3,6 +3,7 @@ import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";   // Using type instead of direct import to fix circular import references
 import { BehaviorSubject, Subject, takeUntil } from "rxjs";
+import { CellContext } from "../interfaces/cell-context";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -12,9 +13,9 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   private _viewContainer = inject(ViewContainerRef);
   public _columnManager?: ColumnManager<T>;
 
-  @Input() rowTemplate?: TemplateRef<any>;
+  @Input() rowTemplate?: TemplateRef<unknown>;
 
-  @Input() defaultRowTemplate!: TemplateRef<any>;
+  @Input() defaultRowTemplate!: TemplateRef<unknown>;
 
   @Input() sliderTemplate!: TemplateRef<unknown>;
 
@@ -26,22 +27,14 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   private _onDestroy = new Subject<void>();
 
-  protected renderSticky = new BehaviorSubject<EmbeddedViewRef<any> | null>(null);
+  protected renderSticky = new BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>(null);
   public renderedSticky$ = this.renderSticky.pipe(takeUntil(this._onDestroy));
 
   ngOnInit(): void {
     this.renderRow();
   }
 
-  public rowView?: EmbeddedViewRef<any>;
-
-  /**
-   * A shorthand for grabbing the current element's positioning in the DOM, to reduce
-   * boilerplate when calculating the sticky shadow in the virtual-scroll.component.ts.
-   */
-  public get rowViewDimensions(): DOMRect {
-    return (this.rowView?.rootNodes[0]).getBoundingClientRect() as DOMRect;
-  }
+  public rowView?: EmbeddedViewRef<unknown>;
 
   renderRow(): void {
     // Remove any currently rendered items from the view

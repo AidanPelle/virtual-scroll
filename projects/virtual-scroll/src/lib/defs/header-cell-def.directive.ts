@@ -20,7 +20,7 @@ export class HeaderCellDefDirective {
   @Input('headerCellDefName') columnName: string = '';
 
   constructor(
-    public template: TemplateRef<any>,
+    public template: TemplateRef<unknown>,
   ) { }
 
 }

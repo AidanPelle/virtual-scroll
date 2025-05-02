@@ -142,10 +142,10 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * has a value that is likely to be unique.
    */
   @Input() public set trackByFn(fn: TrackByFunction<T>) {
-    const coalesceTrackFn = (index: number, item: any) => fn(index, item) ?? index;
+    const coalesceTrackFn = (index: number, item: T) => fn(index, item) ?? index;
     this._trackByFn = coalesceTrackFn;
   }
-  private _trackByFn = (index: number, item: any) => item ?? index;
+  private _trackByFn = (index: number, item: T) => item ?? index;
   public get trackByFn(): TrackByFunction<T> {
     return this._trackByFn;
   }
@@ -249,7 +249,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   private syncHorizontalScroll$ = this.horizontalScroll$.pipe(
-    map(([scrollLeft, _]) => scrollLeft),
+    map(([scrollLeft]) => scrollLeft),
     distinctUntilChanged(),
     tap(scrollLeft => {
       if (this.headerContainer && this.headerContainer.nativeElement.scrollLeft !== scrollLeft)
@@ -348,7 +348,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    */
   private getStickyCell = (): Observable<{
     row: RowOutletDirective<T>;
-    r: EmbeddedViewRef<any> | null;
+    r: EmbeddedViewRef<unknown> | null;
   }> => {
     return this._afterViewInit.pipe(
       switchMap(() => {
@@ -465,10 +465,10 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
 
   @ContentChild(RowDefDirective, { read: TemplateRef })
-  protected rowTemplate?: TemplateRef<any>;
+  protected rowTemplate?: TemplateRef<unknown>;
 
   @ContentChild(HeaderCellDefDirective, { read: TemplateRef })
-  protected headerTemplate?: TemplateRef<any>;
+  protected headerTemplate?: TemplateRef<unknown>;
 
   @ContentChildren(CellDefDirective, { descendants: true })
   private cellDefs?: QueryList<CellDefDirective>;
@@ -539,7 +539,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   }
 
   ngAfterContentInit(): void {
-    this.cellDefs$.next(this.cellDefs?.toArray()!);
+    this.cellDefs$.next(this.cellDefs!.toArray());
   }
 
   ngAfterViewInit(): void {

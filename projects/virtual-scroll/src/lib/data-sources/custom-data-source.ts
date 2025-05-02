@@ -3,6 +3,7 @@ import { BaseDataSource } from "./base-data-source";
 import { IterableDiffer } from "../iterable-differ/iterable-differ";
 
 export class CustomDataSource<T> extends BaseDataSource<T> {
+    
     override data: T[] = [];
     
     constructor(
