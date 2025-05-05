@@ -33,10 +33,12 @@ describe('UtilityService', () => {
   });
 
   it('should calculate total item size', async () => {
-    const obs = UtilityService.mapRowBufferToPx(of(10), of(48));
+    const numRowsToBuffer = 10;
+    const itemHeight = 48;
+    const obs = UtilityService.mapRowBufferToPx(of(numRowsToBuffer), of(itemHeight));
     const totalSize = await firstValueFrom(obs);
 
-    expect(totalSize).toEqual(480);
+    expect(totalSize).toEqual(numRowsToBuffer * itemHeight);
   });
 
   it('should have fixedWidth', () => {
