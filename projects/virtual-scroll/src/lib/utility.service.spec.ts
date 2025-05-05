@@ -58,6 +58,68 @@ describe('UtilityService', () => {
     expect(div.style.width).toEqual('');
     expect(div.style.maxWidth).toEqual('');
   });
+
+  it('should have maxWidth', () => {
+    const maxWidth = 50;
+    cellDef.maxWidth = maxWidth;
+    UtilityService.applyCellStyling(cellDef, div, cellPadding);
+    
+    expect(div.style.maxWidth).toEqual(maxWidth + 'px');
+    expect(div.style.width).toEqual('');
+    expect(div.style.minWidth).toEqual('');
+  });
+
+  it('should not have cell padding from 0', () => {
+    UtilityService.applyCellStyling(cellDef, div, 0);
+    expect(div.style.paddingLeft).toEqual('');
+    expect(div.style.paddingRight).toEqual('');
+  });
+
+  it('should not have cell padding from null', () => {
+    UtilityService.applyCellStyling(cellDef, div, 0);
+    expect(div.style.paddingLeft).toEqual('');
+    expect(div.style.paddingRight).toEqual('');
+  });
+
+  it('should be aligned center', () => {
+    cellDef.align = "center";
+    UtilityService.applyCellStyling(cellDef, div, cellPadding);
+    expect(div.style.display).toEqual("flex");
+    expect(div.style.justifyContent).toEqual("center");
+  });
+
+  it('should be aligned end', () => {
+    cellDef.align = "end";
+    UtilityService.applyCellStyling(cellDef, div, cellPadding);
+    expect(div.style.display).toEqual("flex");
+    expect(div.style.justifyContent).toEqual("flex-end");
+  });
+
+  it('should not have flex applied', () => {
+    UtilityService.applyCellStyling(cellDef, div, cellPadding);
+    expect(div.style.flex).toEqual("");
+  });
+
+  it('should be flex 2', () => {
+    cellDef.flex = 2;
+    UtilityService.applyCellStyling(cellDef, div, cellPadding);
+    expect(div.style.flex).toEqual("2");
+  });
+
+  it('should remove applied widths', () => {
+    const fixedWidth = 50;
+    cellDef.originalFixedWidth = fixedWidth;
+    UtilityService.applyCellStyling(cellDef, div, cellPadding);
+
+    expect(div.style.minWidth).toEqual(fixedWidth + 'px');
+    expect(div.style.width).toEqual(fixedWidth + 'px');
+    expect(div.style.maxWidth).toEqual(fixedWidth + 'px');
+
+    UtilityService.removeCellWidths(div);
+    expect(div.style.minWidth).toEqual('');
+    expect(div.style.width).toEqual('');
+    expect(div.style.maxWidth).toEqual('');
+  })
 });
 
 @Component({

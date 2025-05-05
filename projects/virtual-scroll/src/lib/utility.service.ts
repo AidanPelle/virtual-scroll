@@ -81,6 +81,7 @@ export class UtilityService {
 
   public static removeCellWidths(rootElement: HTMLElement) {
     rootElement.style.flex = '';
+    rootElement.style.width = '';
     rootElement.style.minWidth = '';
     rootElement.style.maxWidth = '';
   }
