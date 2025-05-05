@@ -5,8 +5,8 @@ import { VirtualScrollComponent } from '../virtual-scroll/virtual-scroll.compone
 import { VirtualScrollModule } from '../virtual-scroll.module';
 
 describe('ColumnSelectorDialogComponent', () => {
-  let component: ColumnSelectorDialogComponent;
-  let fixture: ComponentFixture<ColumnSelectorDialogComponent>;
+  let component: ColumnSelectorDialogComponent<unknown>;
+  let fixture: ComponentFixture<ColumnSelectorDialogComponent<unknown>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

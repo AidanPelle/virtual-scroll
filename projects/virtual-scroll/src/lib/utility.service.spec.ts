@@ -121,7 +121,7 @@ describe('UtilityService', () => {
     expect(div.style.minWidth).toEqual('');
     expect(div.style.width).toEqual('');
     expect(div.style.maxWidth).toEqual('');
-  })
+  });
 });
 
 @Component({
