@@ -5,6 +5,7 @@ import { VirtualScrollModule } from '../virtual-scroll.module';
 import { By } from '@angular/platform-browser';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { firstValueFrom } from 'rxjs';
+import { Component, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
 
 describe('VirtualScrollComponent', () => {
   let component: VirtualScrollComponent<number>;
@@ -13,9 +14,10 @@ describe('VirtualScrollComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [VirtualScrollModule],
+      declarations: [VirtualScrollTest],
       // Don't need to declare virtualScrollComponent since it's exported in VirtualScrollModule
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VirtualScrollComponent<number>);
     component = fixture.componentInstance;
@@ -36,7 +38,7 @@ describe('VirtualScrollComponent', () => {
     component.dataSource = new CustomDataSource([5]);
     component.loading = true;
     fixture.detectChanges();
-    
+
     const divs = fixture.debugElement.queryAll(By.css('div'));
     const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).textContent?.includes("Loading"));
     expect(loadingDiv).toBeTruthy();
@@ -45,7 +47,7 @@ describe('VirtualScrollComponent', () => {
   it('should not be loading', () => {
     component.dataSource = new CustomDataSource([5]);
     fixture.detectChanges();
-    
+
     const divs = fixture.debugElement.queryAll(By.css('div'));
     const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).textContent?.includes("Loading"));
     expect(loadingDiv).toBeFalsy();
@@ -54,7 +56,7 @@ describe('VirtualScrollComponent', () => {
   it('should not have a vertical scrollbar', async () => {
     component.dataSource = new CustomDataSource([5]);
     fixture.detectChanges();
-    
+
     const hasVerticalScrollBar = await firstValueFrom(component.hasVerticalScrollBar$);
     expect(hasVerticalScrollBar).toBeFalsy();
   });
@@ -62,8 +64,38 @@ describe('VirtualScrollComponent', () => {
   it('should have a vertical scrollbar', async () => {
     component.dataSource = new CustomDataSource(Array(100).fill(0));
     fixture.detectChanges();
-    
+
     const hasVerticalScrollBar = await firstValueFrom(component.hasVerticalScrollBar$);
     expect(hasVerticalScrollBar).toBeTruthy();
   });
+
+  it('should coalesce trackByFn with index', () => {
+    const trackBy = (index: number, item: number) => null;
+    component.trackByFn = trackBy;
+    expect(component.trackByFn(5, 7)).toEqual(5);
+  });
+
+  it('should not apply sticky shadow', async () => {
+    const fixture = TestBed.createComponent(VirtualScrollTest);
+    const component = fixture.componentInstance.virtualScroll;
+    fixture.detectChanges();
+
+    const applyStickyShadow = await firstValueFrom(component.applyStickyShadow$);
+    expect(applyStickyShadow).toBeFalsy();
+  });
 });
+
+@Component({
+  template: `
+  <div style="width: 200px;">
+    <virtual-scroll>
+      <div *cellDef="let item; name: 'Cell 1';">Cell 1</div>
+      <div *cellDef="let item; name: 'Cell 2'; sticky: true;">Cell 2</div>
+    </virtual-scroll>
+  </div>
+  `,
+})
+class VirtualScrollTest {
+  @ViewChild(VirtualScrollComponent, { static: true }) virtualScroll!: VirtualScrollComponent<unknown>;
+}
+
