@@ -288,7 +288,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     })
   );
 
-  protected hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
+  public hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
     map(([[maxPossibleHeight, totalContentHeight], hasHorizontalScrollbar]) => {
       return totalContentHeight + (hasHorizontalScrollbar ? 16 : 0) > maxPossibleHeight;
     }),
