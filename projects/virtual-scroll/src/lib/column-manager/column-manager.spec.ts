@@ -7,7 +7,7 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { CellContext } from '../interfaces/cell-context';
 import { By } from '@angular/platform-browser';
 
-describe('VsRowComponent', () => {
+describe('ColumnManager', () => {
   let manager: ColumnManager<unknown>;
   let virtualScroll: VirtualScrollComponent<unknown>;
   let fixture: ComponentFixture<ColumnManagerTest>;

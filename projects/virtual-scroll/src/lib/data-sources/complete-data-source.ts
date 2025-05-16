@@ -27,7 +27,7 @@ export class CompleteDataSource<T> extends BaseDataSource<T> {
                 },
                 error: error => {
                     this.isLoading.next(false);
-                    console.log("error occured retrieving data:", error);
+                    console.error("error occured retrieving data:", error);
                 }
             });
     }

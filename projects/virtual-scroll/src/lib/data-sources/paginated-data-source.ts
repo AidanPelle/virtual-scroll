@@ -48,7 +48,7 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
                     this.isLoading.next(false);
                 },
                 error: error => {
-                    console.log("Error retrieving count:", error);
+                    console.error("Error retrieving count:", error);
                     this.isLoading.next(false);
                 },
             });
@@ -156,7 +156,7 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
                     this.dataListener.next(this.data);
                 },
                 error: error => {
-                    console.log("Error retrieving page:", error);
+                    console.error("Error retrieving page:", error);
                     if (this.pageMetadata[pageIndex - 1] === PageMetadata.IN_PROGRESS)
                         delete this.pageMetadata[pageIndex - 1];
                     if (this.pageMetadata[pageIndex] === PageMetadata.IN_PROGRESS)
