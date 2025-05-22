@@ -7,18 +7,20 @@ export class CompleteDataSource<T> extends BaseDataSource<T> {
     
     override data: T[] = [];
 
-    private getData!: GetDataFunction<T>;
+    /** The user-provided function for asynchronously retrieving the full set of data. */
+    private _getData!: GetDataFunction<T>;
 
     constructor(
         getData: GetDataFunction<T>,
     ) {
         super();
-        this.getData = getData;
-        this.handleDataRequests();
+        this._getData = getData;
+        this._handleDataRequests();
     }
 
-    handleDataRequests(): void {
-        this.getData().pipe(timeout(REQUEST_TIMEOUT_DURATION), take(1))
+    /** Handles connecting to the asynchronous data, loading it into the class and emitting to cdk-virtual-scroll-viewport. */
+    private _handleDataRequests(): void {
+        this._getData().pipe(timeout(REQUEST_TIMEOUT_DURATION), take(1))
             .subscribe({
                 next: data => {
                     this.data = data;
