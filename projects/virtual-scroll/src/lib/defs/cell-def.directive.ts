@@ -63,7 +63,7 @@ export class CellDefDirective {
    */
   public userDefinedActiveState = new BehaviorSubject<boolean | null>(null);
   
-  public activeState$ = combineLatest([this.userDefinedActiveState, this._virtualScroll.resize$, this._defaultIsActive]).pipe(
+  public activeState$ = combineLatest([this.userDefinedActiveState, this._virtualScroll.throttledResize$, this._defaultIsActive]).pipe(
     // We don't care about the resize event's value, but we do need the trigger to recalc on min/max widths
     map(([userDefinedActiveState,, defaultIsActive]) => {
       // For active state, it is first decided by if the user has enabled/disabled the column. If so, this overrides all other actions.

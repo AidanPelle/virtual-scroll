@@ -4,15 +4,15 @@
     #headerContainer
     *ngIf="showHeader"
     class="header-container"
-    [style.width]="'calc(100% - ' + ((hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'"
-    (scroll)="onScroll.next($event)">
+    [style.width]="'calc(100% - ' + ((_hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'"
+    (scroll)="_onHorizontalScroll.next($event)">
     <ng-container
         headerOutlet
-        [rowTemplate]="headerTemplate"
+        [rowTemplate]="_headerTemplate"
         [defaultRowTemplate]="defaultHeaderTemplate"
         [sliderTemplate]="slider"
         [virtualScroll]="this"
-        [headerCellDefs]="headerCellDefs?.toArray() ?? []"
+        [headerCellDefs]="_headerCellDefs?.toArray() ?? []"
         [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
     </ng-container>
 </div>
@@ -30,13 +30,13 @@
 <ng-template #listTemplate>
     <cdk-virtual-scroll-viewport
         #virtualScroll
-        [itemSize]="itemSize$ | async"
-        [style.height.px]="tableHeight$ | async"
+        [itemSize]="_itemSize | async"
+        [style.height.px]="_tableHeight$ | async"
         [minBufferPx]="minBuffer$ | async"
         [maxBufferPx]="maxBuffer$ | async"
-        (window:resize)="resizeEvent.next(virtualScroll.elementRef.nativeElement)"
-        (scrolledIndexChange)="scrollIndex.next($event)"
-        (scroll)="onScroll.next($event)">
+        (window:resize)="_onResize.next(virtualScroll.elementRef.nativeElement)"
+        (scrolledIndexChange)="_scrollIndex.next($event)"
+        (scroll)="_onHorizontalScroll.next($event)">
         
         <ng-container
             *cdkVirtualFor="
@@ -45,7 +45,7 @@
                 templateCacheSize: 0;
                 trackBy: trackByFn;"
             rowOutlet
-            [rowTemplate]="rowTemplate"
+            [rowTemplate]="_rowTemplate"
             [defaultRowTemplate]="defaultRowTemplate"
             [item]="item"
             [index]="index"
@@ -80,7 +80,7 @@
 
 <ng-template #slider let-columnName="columnName">
     <div class="vs-slider" [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth"
-        vsResizable (resize)="resizeColumn($event, columnName)" (resetSizes)="resetSizes()">
+        vsResizable (resize)="onResize($event, columnName)" (resetSizes)="onResetSizes()">
 
         <div class="vertical-line">
         </div>

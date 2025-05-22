@@ -14,7 +14,7 @@ export class ColumnSelectorDialogComponent<T> {
 
   drop(event: CdkDragDrop<unknown, unknown, CellDefDirective>, activeState: Observable<boolean>) {
     activeState.pipe(take(1)).subscribe(isActive => {
-      this.virtualScroll.moveItem.next({fromIndex: event.previousIndex, toIndex: event.currentIndex, isActive: isActive});
+      this.virtualScroll.moveColumn.next({fromIndex: event.previousIndex, toIndex: event.currentIndex, isActive: isActive});
     });
   }
 }

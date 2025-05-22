@@ -149,7 +149,7 @@ export class ColumnManager<T> {
      * since this functionality only pertains to physically moving the rendered column.
      */
     private moveColumn$ = defer(() => of(null)).pipe(
-        switchMap(() => this._virtualScroll.moveItem),
+        switchMap(() => this._virtualScroll.moveColumn),
         filter(val => val != null && val.isActive), // We want to skip any null moveItems (initial load), and when the item being moved is inactive since the rendering won't change anyways
         switchMap(val => combineLatest([this.activeIndexObs(val!.fromIndex), this.activeIndexObs(val!.toIndex)])),  // Since we're already filtering null vals, we can assert not null here for compilation
         map(([fromActiveIndex, toActiveIndex]) => this._virtualScroll.canResize ? [fromActiveIndex * 2, toActiveIndex * 2] : [fromActiveIndex, toActiveIndex]),
