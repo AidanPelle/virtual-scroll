@@ -279,7 +279,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * therefore we can cast the viewport to definitely exist.
    */
   readonly _stickyScrollData$ = this._afterViewInit.pipe(
-    filter(() => this._cellDefsContent?.find(cd => cd.sticky) != null),
+    filter(() => this._cellDefsContent?.find(cd => cd.isSticky) != null),
     map(() => {
       if (this._headerContainer) {
         const headerElement = this._headerContainer.nativeElement;
@@ -533,14 +533,14 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
               const renderedCell = headerRow?._columnManager?.renderedCellViews.find(c => c.columnName === cell.cellDef.columnName);
               if (!renderedCell)
                 return;
-              cell.cellDef.modifiedFixedWidth = renderedCell.view.rootNodes[0].getBoundingClientRect().width;
+              cell.cellDef.fixedWidth = renderedCell.view.rootNodes[0].getBoundingClientRect().width;
 
               this.removeCellWidths.next(cell.cellDef.columnName);
               this.applyFixedWidth.next([cell.cellDef.columnName, cell.cellDef.fixedWidth ?? 0]);
 
               // If the cell is not active, set the fixed width to the minimum width of the column
             } else {
-              cell.cellDef.modifiedFixedWidth = cell.cellDef.minWidth
+              cell.cellDef.fixedWidth = cell.cellDef.minWidth
             }
           });
         }),
@@ -555,14 +555,14 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       return;
 
     const newWidth = (modifiedCell.fixedWidth ?? modifiedCell.minWidth) + differential;
-    modifiedCell.modifiedFixedWidth = newWidth;
+    modifiedCell.fixedWidth = newWidth;
     this.applyFixedWidth.next([columnName, newWidth]);
   }
 
   /** Whenever we emit to reset the column sizes back to default, handle resetting the modified fixed widths, and re-rendering the rows. */
   protected onResetSizes(): void {
     // Reset any modified fixed widths
-    this._cellDefsContent?.forEach(c => c.modifiedFixedWidth = null);
+    this._cellDefsContent?.forEach(c => c.fixedWidth = null);
     this._haxFlexColumns = true;
 
     // re-render the rows. We don't want to manually reset styles in case the user has set styles themselves

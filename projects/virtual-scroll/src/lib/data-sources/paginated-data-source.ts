@@ -12,12 +12,32 @@ enum PageMetadata {
 
 export class PaginatedDataSource<T> extends BaseDataSource<T> {
 
+    /**
+     * The actual data being displayed on screen. Since this list is paginated, we use a sparse array for portions not
+     * yet fetched in order to save memory usage.
+     */
     override data: T[] = [];
 
+    /** 
+     * Whenever the data for a row is loaded, the row is re-rendered by cdk-virtual-scroll-viewport, so we want to
+     * skip the next loading animation (to avoid any jitter) when rendering. This list contains which rows we
+     * want to skip the animation for.
+     * 
+     * In order to reduce memory usage on large lists, this object is a sparse array.
+     */
     public skipLoadAnimations: boolean[] = [];
+
+    /**
+     * Handles tracking the state of pages that would be fetched from the remote source, to avoid duplicate calls.
+     * 
+     * In order to reduce memory usage on large lists, this object is a sparse array.
+     */
     pageMetadata: PageMetadata[] = [];
 
+    /** This function handles retrieving a subset of the overall list, given a starting index and page size for the request. */
     private getPageOfData!: GetPageOfDataFunction<T>;
+
+    /** This function handles retrieving the overall size of the list, so we know how large to render our table. */
     private getCount!: GetCountFunction;
 
     constructor(
@@ -30,8 +50,8 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
         this.handleDataRequests();
     }
 
+    /** Handles running the count function and updating virtual scroll with the current loading state. */
     handleDataRequests(): void {
-        // this.isLoading.next(true);
         this.getCount()
             .pipe(
                 timeout(REQUEST_TIMEOUT_DURATION),

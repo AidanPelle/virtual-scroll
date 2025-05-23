@@ -197,9 +197,9 @@ export class ColumnManager<T> {
 
         const renderedCell = this._viewContainer.createEmbeddedView(cellTemplate, { $implicit: this._item, index: this._index, columnName: val.cellDef.columnName, cellIndex: activeIndex }, { index: indexToPlace });
         UtilityService.applyCellStyling(val.cellDef, renderedCell.rootNodes[0], this._virtualScroll.cellPadding);
-        this.renderedCellViews.push({columnName: val.cellDef.columnName, isSticky: val.cellDef.sticky, view: renderedCell});
+        this.renderedCellViews.push({columnName: val.cellDef.columnName, isSticky: val.cellDef.isSticky, view: renderedCell});
 
-        if (val.cellDef.sticky) {
+        if (val.cellDef.isSticky) {
             renderedCell.rootNodes[0].classList.add('sticky');
             this._renderSticky.next(renderedCell);
             this._virtualScroll.applyStickyShadow$.pipe(takeUntil(this._onDestroy)).subscribe(shadow => {
