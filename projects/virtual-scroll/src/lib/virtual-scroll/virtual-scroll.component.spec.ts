@@ -9,7 +9,7 @@ import { Component, ViewChild } from '@angular/core';
 
 describe('VirtualScrollComponent', () => {
   let component: VirtualScrollComponent<number>;
-  let fixture: ComponentFixture<VirtualScrollComponent<number>>;
+  let fixture: ComponentFixture<VirtualScrollTest>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,8 +19,8 @@ describe('VirtualScrollComponent', () => {
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(VirtualScrollComponent<number>);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(VirtualScrollTest);
+    component = fixture.componentInstance.virtualScroll;
     fixture.detectChanges();
   });
 
@@ -76,10 +76,6 @@ describe('VirtualScrollComponent', () => {
   });
 
   it('should not apply sticky shadow', async () => {
-    const fixture = TestBed.createComponent(VirtualScrollTest);
-    const component = fixture.componentInstance.virtualScroll;
-    fixture.detectChanges();
-
     const applyStickyShadow = await firstValueFrom(component.applyStickyShadow$);
     expect(applyStickyShadow).toBeFalsy();
   });
@@ -96,6 +92,6 @@ describe('VirtualScrollComponent', () => {
   `,
 })
 class VirtualScrollTest {
-  @ViewChild(VirtualScrollComponent, { static: true }) virtualScroll!: VirtualScrollComponent<unknown>;
+  @ViewChild(VirtualScrollComponent, { static: true }) virtualScroll!: VirtualScrollComponent<number>;
 }
 
