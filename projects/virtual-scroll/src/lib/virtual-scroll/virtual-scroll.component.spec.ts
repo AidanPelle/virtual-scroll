@@ -5,7 +5,7 @@ import { VirtualScrollModule } from '../virtual-scroll.module';
 import { By } from '@angular/platform-browser';
 import { CustomDataSource } from '../data-sources/custom-data-source';
 import { firstValueFrom } from 'rxjs';
-import { Component, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 describe('VirtualScrollComponent', () => {
   let component: VirtualScrollComponent<number>;
@@ -57,7 +57,7 @@ describe('VirtualScrollComponent', () => {
     component.dataSource = new CustomDataSource([5]);
     fixture.detectChanges();
 
-    const hasVerticalScrollBar = await firstValueFrom(component.hasVerticalScrollBar$);
+    const hasVerticalScrollBar = await firstValueFrom(component._hasVerticalScrollBar$);
     expect(hasVerticalScrollBar).toBeFalsy();
   });
 
@@ -65,12 +65,12 @@ describe('VirtualScrollComponent', () => {
     component.dataSource = new CustomDataSource(Array(100).fill(0));
     fixture.detectChanges();
 
-    const hasVerticalScrollBar = await firstValueFrom(component.hasVerticalScrollBar$);
+    const hasVerticalScrollBar = await firstValueFrom(component._hasVerticalScrollBar$);
     expect(hasVerticalScrollBar).toBeTruthy();
   });
 
   it('should coalesce trackByFn with index', () => {
-    const trackBy = (index: number, item: number) => null;
+    const trackBy = (_index: number, _item: number) => null;
     component.trackByFn = trackBy;
     expect(component.trackByFn(5, 7)).toEqual(5);
   });

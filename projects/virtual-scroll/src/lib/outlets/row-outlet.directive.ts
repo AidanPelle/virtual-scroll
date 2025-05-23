@@ -2,8 +2,10 @@ import { Directive, EmbeddedViewRef, inject, Input, OnDestroy, OnInit, TemplateR
 import { CellOutletDirective } from "./cell-outlet.directive";
 import { ColumnManager } from "../column-manager/column-manager";
 import type { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";   // Using type instead of direct import to fix circular import references
-import { BehaviorSubject, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, delay, filter, of, Subject, takeUntil } from "rxjs";
 import { CellContext } from "../interfaces/cell-context";
+import { RENDER_DELAY } from "../constants";
+import { BaseDataSource } from "../data-sources/base-data-source";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -17,6 +19,8 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   @Input() defaultRowTemplate!: TemplateRef<unknown>;
 
+  @Input() loadingRowTemplate!: TemplateRef<unknown>;
+
   @Input() sliderTemplate!: TemplateRef<unknown>;
 
   @Input() virtualScroll!: typeof VirtualScrollComponent.prototype;
@@ -25,16 +29,36 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   @Input() index!: number;
 
+  @Input() dataSource?: BaseDataSource<T> | null;
+
   private _onDestroy = new Subject<void>();
 
   protected renderSticky = new BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>(null);
   public renderedSticky$ = this.renderSticky.pipe(takeUntil(this._onDestroy));
 
   ngOnInit(): void {
-    this.renderRow();
+    if (this.dataSource?.skipLoadAnimation(this.index)) {
+      this.renderRow();
+      return;
+    }
+
+    this.renderPlaceholderRow();
+    of(0).pipe(
+      delay(RENDER_DELAY),
+      takeUntil(this._onDestroy),
+      filter(() => this.item !== undefined)
+    ).subscribe(() => this.renderRow());
   }
 
   public rowView?: EmbeddedViewRef<unknown>;
+
+  renderPlaceholderRow() {
+    // Remove any currently rendered items from the view
+    this._viewContainer.clear();
+
+    this.rowView = this._viewContainer.createEmbeddedView(this.loadingRowTemplate);
+    this.rowView.rootNodes[0].children[0].style.animationDelay = '-' + ((this.index % 10) / 2) + 's';
+  }
 
   renderRow(): void {
     // Remove any currently rendered items from the view

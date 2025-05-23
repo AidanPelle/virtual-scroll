@@ -16,6 +16,10 @@ export class HeaderOutletDirective<T> extends RowOutletDirective<T> {
 
   @Input() hasVerticalScrollbar$!: Observable<boolean>;
 
+  override ngOnInit(): void {
+    this.renderRow();
+  }
+
   protected override initColumnManager(cellOutlet: CellOutletDirective): void {
     this._columnManager = new ColumnManager(
       cellOutlet.viewContainer,

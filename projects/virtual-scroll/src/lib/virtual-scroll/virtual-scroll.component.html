@@ -4,7 +4,7 @@
     #headerContainer
     *ngIf="showHeader"
     class="header-container"
-    [style.width]="'calc(100% - ' + ((_hasVerticalScrollBar$ | async) ? 16 : 0) + 'px)'"
+    [style.width]="'calc(100% - ' + ((_hasVerticalScrollBar$ | async) ? SCROLLBAR_WIDTH : 0) + 'px)'"
     (scroll)="_onHorizontalScroll.next($event)">
     <ng-container
         headerOutlet
@@ -47,10 +47,12 @@
             rowOutlet
             [rowTemplate]="_rowTemplate"
             [defaultRowTemplate]="defaultRowTemplate"
+            [loadingRowTemplate]="loadingRowTemplate"
             [item]="item"
             [index]="index"
             [sliderTemplate]="dummySliderTemplate"
-            [virtualScroll]="this">
+            [virtualScroll]="this"
+            [dataSource]="dataSource$ | async">
         </ng-container>
 
     </cdk-virtual-scroll-viewport>
@@ -69,6 +71,17 @@
 
 <ng-template #defaultRowTemplate>
     <div vs-row class="vs-default-row">
+    </div>
+</ng-template>
+
+<ng-template #loadingRowTemplate>
+    <div
+        class="vs-row vs-row-border"
+        style="width: 100%; box-sizing: border-box;"
+        [style.height.px]="_itemSize | async"
+        [style.paddingLeft.px]="cellPadding"
+        [style.paddingRight.px]="cellPadding">
+        <div class="loading-row"></div>
     </div>
 </ng-template>
 

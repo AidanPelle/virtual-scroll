@@ -20,11 +20,11 @@
     }
 }
 
-// // This is necessary as we don't want a scrollbar on the header, just on the children.
+// This is necessary as we don't want a scrollbar on the header, just on the children.
 .header-container {
     overflow-x: auto;
     scrollbar-width: none;
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 2px solid #F0F0F0;
 
     // Here, we need the border bottom on the container instead of the row
     .vs-row-border {
@@ -56,4 +56,23 @@
 .dummy-slider {
     height: 100%;
     box-sizing: border-box;
+}
+
+// Originally sourced from https://codepen.io/philcoffman/pen/eRjqVZ
+.loading-row {
+    height: 15px;
+    width: 100%;
+    border-radius: 7.5px;
+    background: linear-gradient(to right, #f9f9f9 20%, #f0f0f0 50%, #f9f9f9 80%);
+    background-size: 500px 100px;
+    animation-name: moving-gradient;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+
+    @keyframes moving-gradient {
+        0% { background-position: -250px 0; }
+        100% { background-position: 250px 0; }
+    }
 }

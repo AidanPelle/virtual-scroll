@@ -172,4 +172,10 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
         });
         return this.dataListener;
     }
+
+    override skipLoadAnimation(_index: number): boolean {
+        const skipLoadAnimation = this.skipLoadAnimations[_index] ?? false;
+        delete this.skipLoadAnimations[_index];
+        return skipLoadAnimation;
+    }
 }

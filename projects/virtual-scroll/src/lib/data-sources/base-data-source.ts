@@ -22,6 +22,11 @@ export abstract class BaseDataSource<T> extends DataSource<T> {
         return this.data.length;
     }
 
+    /** Handles if we want to skip the loading animation for a row when rendering, default is false. */
+    skipLoadAnimation(_index: number): boolean {
+        return false;
+    }
+
     /** Handles cleanup of any listening observables, and the disconnect. */
     onDestroy() {
         this._onDestroy.next();

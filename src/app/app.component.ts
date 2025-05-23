@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseDataSource, CompleteDataSource, PaginatedDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
+import { BaseDataSource, PaginatedDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
 
 @Component({
@@ -18,12 +18,12 @@ export class AppComponent implements OnInit {
   isCell1Active = true;
   isCell2Active = true;
 
-  arrayLength = 10;
+  arrayLength = 10_000;
 
   ngOnInit(): void {
     of(0).pipe(
       tap(() => console.log("Loading DataSource Called")),
-      delay(2_000),
+      delay(1_000),
       tap(() => console.log("Loading DataSource Finished")),
     ).subscribe(() => {
       this.dataSource = new PaginatedDataSource(this.getPageOfData, this.getCount);
@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
   getCount = () => {
     return of(this.arrayLength).pipe(
       tap(() => console.log("Get Count Called")),
-      delay(2_000),
+      // delay(2_000),
       tap(() => console.log("Get Count Finished")),
     );
   }

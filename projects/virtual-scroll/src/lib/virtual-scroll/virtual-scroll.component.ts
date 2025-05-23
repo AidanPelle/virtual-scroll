@@ -7,6 +7,7 @@ import {
   ContentChildren,
   ElementRef,
   EmbeddedViewRef,
+  HostAttributeToken,
   inject,
   Input,
   OnInit,
@@ -50,6 +51,7 @@ import { RowOutletDirective } from '../outlets/row-outlet.directive';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { HeaderCellDefDirective } from '../defs/header-cell-def.directive';
 import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
+import { SCROLLBAR_WIDTH } from '../constants';
 
 @Component({
   selector: 'virtual-scroll',
@@ -60,6 +62,7 @@ import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
 export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterContentInit {
 
   private _hostElement: ElementRef<HTMLElement> = inject(ElementRef);
+  canResize = inject(new HostAttributeToken('canResize'), {optional: true}) != null;
 
   @ViewChild(CdkVirtualScrollViewport) _viewport?: CdkVirtualScrollViewport;
   @ViewChild('headerContainer', { read: ElementRef<HTMLDivElement> }) _headerContainer?: ElementRef<HTMLDivElement>;
@@ -71,8 +74,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   @ContentChild(HeaderCellDefDirective, { read: TemplateRef }) _headerTemplate?: TemplateRef<unknown>;
   @ContentChildren(HeaderCellDefDirective, { descendants: true }) _headerCellDefs?: QueryList<HeaderCellDefDirective>;
 
-
-  @Input() canResize = true;
+  protected readonly SCROLLBAR_WIDTH = SCROLLBAR_WIDTH;
 
   /** Whitespace to be left within a cell for readability. */
   @Input() cellPadding: number = 16;
@@ -200,15 +202,16 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /** Emits when we want to clear all flex, min and max widths applied to a column. For the purpose of applying fixed widths afterwards. */
   readonly removeCellWidths = new Subject<string>();
 
-  /** Scroll events emitted by the end user scrolling in the list */
+  /** Scroll events emitted by the end user scrolling in the list. */
   protected readonly _onHorizontalScroll = new Subject<Event>();
 
-  /** The current height of the open page, updated whenever the page resizes */
+  /** The current height of the open page, updated whenever the page resizes. */
   protected readonly _onResize = new BehaviorSubject<HTMLElement | null>(null);
 
   /** The index of the first element visible on the screen. */
   protected readonly _scrollIndex = new BehaviorSubject<number>(0);
 
+  /** Emits when we want to clear the manually set fixed widths on each of the columns. */
   private readonly _resetSizes = new BehaviorSubject<void>(undefined);
 
   /** Handles the initial mapping from the contentChildren out to subsequent functions, and allows us access to the current array value. */
@@ -390,7 +393,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    */
   readonly _hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
     map(([[maxPossibleHeight, totalContentHeight], hasHorizontalScrollbar]) => {
-      return totalContentHeight + (hasHorizontalScrollbar ? 16 : 0) > maxPossibleHeight;
+      return totalContentHeight + (hasHorizontalScrollbar ? SCROLLBAR_WIDTH : 0) > maxPossibleHeight;
     }),
   );
 
