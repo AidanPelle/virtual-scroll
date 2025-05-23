@@ -20,6 +20,7 @@ import {
   asyncScheduler,
   BehaviorSubject,
   combineLatest,
+  combineLatestWith,
   concatWith,
   defer,
   distinctUntilChanged,
@@ -318,6 +319,13 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     shareReplay(1)
   );
 
+  /** A list of the active columns, filtered by active state. */
+  private readonly _filteredActiveColumns$ = this.mappedActiveColumns$.pipe(
+    switchMap(cols => combineLatest(cols)),
+    map(allColumns => allColumns.filter(c => c.isActive)),
+    shareReplay(1),
+  );
+
   /**
    * Display a generic loading state for virtual scroll,
    * based on user-defined loading status along with the current status of the data source.
@@ -364,15 +372,15 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * 
    * Used to adjust tableHeight to account for the extra padding.
    */
-  private readonly _hasHorizontalScrollbar$ = defer(() => of(null)).pipe(
-    switchMap(() => combineLatest([this._cellDefs, this.applyFixedWidth.pipe(startWith(null)), this._resetSizes, this.throttledResize$])),
-    map(([cellDefs]) => {
-      let totalWidth = cellDefs.reduce((a, b) => a + (b.fixedWidth ?? b.minWidth), 0);
+  private readonly _hasHorizontalScrollbar$ = this._filteredActiveColumns$.pipe(
+    combineLatestWith(this.applyFixedWidth.pipe(startWith(null)), this._resetSizes, this.throttledResize$),
+    map(([activeCells]) => {
+      let totalWidth = activeCells.reduce((a, b) => a + (b.cellDef.fixedWidth ?? b.cellDef.minWidth), 0);
       if (this.canResize)
-        totalWidth += cellDefs.length * this.resizeWidth;
+        totalWidth += activeCells.length * this.resizeWidth;
 
       return totalWidth > this._hostElement.nativeElement.offsetWidth;
-    })
+    }),
   );
 
   /**

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseDataSource, CompleteDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
+import { BaseDataSource, CompleteDataSource, PaginatedDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
 
 @Component({
@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
       delay(2_000),
       tap(() => console.log("Loading DataSource Finished")),
     ).subscribe(() => {
-      this.dataSource = new CompleteDataSource(this.getData);
+      this.dataSource = new PaginatedDataSource(this.getPageOfData, this.getCount);
     });
   }
 
