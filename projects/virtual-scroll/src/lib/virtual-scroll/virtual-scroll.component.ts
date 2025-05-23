@@ -91,7 +91,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     if (source instanceof BaseDataSource)
       this._dataSource.next(source);
   }
-  private readonly _dataSource = new Subject<BaseDataSource<T>>();
+  private readonly _dataSource = new ReplaySubject<BaseDataSource<T>>(1);
 
   /**
    * The height of the table in pixels. Default value will be 500, so that the table is visible right off the bat.
@@ -319,7 +319,6 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   private readonly _isDataSourceLoading$ = this.dataSource$.pipe(
     switchMap(src => src.loading$),
     startWith(true),
-    shareReplay(1)
   );
 
   /** A list of the active columns, filtered by active state. */
@@ -338,6 +337,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       const myLoad = inputLoading || dataSourceLoading;
       return myLoad;
     }),
+    shareReplay(1),
   );
 
   /**

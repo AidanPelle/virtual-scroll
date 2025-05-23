@@ -31,7 +31,7 @@ export class PaginatedDataSource<T> extends BaseDataSource<T> {
     }
 
     handleDataRequests(): void {
-        this.isLoading.next(true);
+        // this.isLoading.next(true);
         this.getCount()
             .pipe(
                 timeout(REQUEST_TIMEOUT_DURATION),

@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
     ).subscribe(() => {
       this.dataSource = new PaginatedDataSource(this.getPageOfData, this.getCount);
     });
+    // this.dataSource = new PaginatedDataSource(this.getPageOfData, this.getCount);
   }
 
   getData = () => {
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit {
   getCount = () => {
     return of(this.arrayLength).pipe(
       tap(() => console.log("Get Count Called")),
-      // delay(2_000),
+      delay(2_000),
       tap(() => console.log("Get Count Finished")),
     );
   }

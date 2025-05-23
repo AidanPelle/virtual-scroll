@@ -17,7 +17,7 @@ describe('VirtualScrollComponent', () => {
       declarations: [VirtualScrollTest],
       // Don't need to declare virtualScrollComponent since it's exported in VirtualScrollModule
     })
-      .compileComponents();
+    .compileComponents();
 
     fixture = TestBed.createComponent(VirtualScrollTest);
     component = fixture.componentInstance.virtualScroll;
