@@ -1,7 +1,5 @@
 import { combineLatestWith, map, Observable, shareReplay } from 'rxjs';
 import type { CellDefDirective } from './defs/cell-def.directive';
-import { EmbeddedViewRef } from '@angular/core';
-import { CellContext } from './interfaces/cell-context';
 
 export class UtilityService {
 
