@@ -22,3 +22,21 @@ Run `ng test virtual-scroll` to execute the unit tests via [Karma](https://karma
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+# virtual-scroll
+
+[![npm](https://img.shields.io/npm/v/%40aidan-pelle%2Fvirtual-scroll) ![npm](https://img.shields.io/npm/dm/%40aidan-pelle%2Fvirtual-scroll)](https://www.npmjs.com/package/@aidan-pelle/virtual-scroll)
+
+Customized virtual scrolling for any data size, with extended functionality over cdk-virtual-scroll.
+
+# Installation
+```console
+npm install @aidan-pelle/virtual-scroll
+```
+
+# Default import
+```ts
+import VirtualScrollModule from 'virtual-scroll'
+```
