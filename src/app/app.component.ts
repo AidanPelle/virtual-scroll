@@ -11,6 +11,7 @@ import { StickyColumnDemoComponent } from './demo/sticky-column-demo/sticky-colu
 import { ModifyDataDemoComponent } from './demo/modify-data-demo/modify-data-demo.component';
 import { CompleteListDemoComponent } from './demo/complete-list-demo/complete-list-demo.component';
 import { PaginatedDemoComponent } from './demo/paginated-demo/paginated-demo.component';
+import { DemoViewerComponent } from './demo/demo-viewer/demo-viewer.component';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ import { PaginatedDemoComponent } from './demo/paginated-demo/paginated-demo.com
     ModifyDataDemoComponent,
     CompleteListDemoComponent,
     PaginatedDemoComponent,
+    DemoViewerComponent,
   ],
 })
 export class AppComponent implements OnInit {
