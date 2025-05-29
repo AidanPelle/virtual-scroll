@@ -16,7 +16,7 @@ export class IterableDiffer<T> {
      */
     diff(newArray: T[]): boolean {
         const previousArray = this.previousArray
-        this.previousArray = newArray;
+        this.previousArray = Object.assign([], newArray);;
 
         if (previousArray.length !== newArray.length)
             return true;

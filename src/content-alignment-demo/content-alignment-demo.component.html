@@ -1,0 +1,10 @@
+<h2>Custom Content Alignment</h2>
+<h3>Specify if you want content to be left, center or right aligned for a given column</h3>
+
+<mat-card appearance="raised">
+    <virtual-scroll [dataSource]="dataSource">
+        <div *cellDef="let item; name: 'Cell 1';">Default Alignment</div>
+        <div *cellDef="let item; name: 'Cell 2'; align: 'center'">Center Aligned</div>
+        <div *cellDef="let item; name: 'Cell 3'; align: 'end'">Right Aligned</div>
+    </virtual-scroll>
+</mat-card>

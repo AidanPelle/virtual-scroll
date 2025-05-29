@@ -1,0 +1,12 @@
+<h2>Responsive Column Enabling/Disabling</h2>
+<h3>Columns can be enabled/disabled for different screen widths, for this example we're using 500px and 1000px as breakpoints</h3>
+
+<mat-card appearance="raised">
+    <virtual-scroll [dataSource]="dataSource">
+        <div *cellDef="let item; name: 'Cell 1'">Cell 1</div>
+        <div *cellDef="let item; name: 'Cell 2'">Cell 2</div>
+        <div *cellDef="let item; name: 'Cell 3'">Cell 3</div>
+        <div *cellDef="let item; name: 'Cell 4'; minDisplay: 700;">Min Display: 700px;</div>
+        <div *cellDef="let item; name: 'Cell 5'; maxDisplay: 1200;">Max Display: 1200px</div>
+    </virtual-scroll>
+</mat-card>

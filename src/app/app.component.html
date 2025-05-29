@@ -1,15 +1,38 @@
-<button [columnSelector]="virtualScroll">Column Selector</button>
+<!-- <h1>Virtual Scroll Demo</h1> -->
 
-<button (click)="dataSource?.data?.push('new row')">Add a row</button>
 
-<div class="scroll-container">
-    <virtual-scroll #virtualScroll [dataSource]="dataSource" [heightVh]="100" [offset]="150">
-        <div vs-row *rowDef="let item;" class="vs-default-row"></div>
-        <div *cellDef="let item; name: 'Cell 1'; minWidth: 200; isActive: isCell1Active;">{{item}}</div>
-        <div *cellDef="let item; name: 'Cell 2'; minWidth: 200; isActive: isCell2Active; let cellIndex = cellIndex">{{cellIndex}} Cell Index</div>
-        <div *cellDef="let item; name: 'Cell 3'; minWidth: 200; sticky: true;">Cell 3</div>
-        <div *cellDef="let item; name: 'Cell 4'; minWidth: 200;">Cell 4</div>
-        <div *cellDef="let item; name: 'Cell 5'; minWidth: 200;">Cell 5</div>
-        <div *cellDef="let item; name: 'Cell 6'; minWidth: 200; minDisplay: 1200;">Cell 6</div>
-    </virtual-scroll>
+
+<div class="demo-container">
+    <!-- <button [columnSelector]="virtualScroll">Column Selector</button>
+    
+    <button (click)="dataSource?.data?.push('new row')">Add a row</button>
+    
+    <div class="scroll-container">
+        <virtual-scroll #virtualScroll [dataSource]="dataSource" [heightVh]="100" [offset]="150">
+            <div vs-row *rowDef="let item;" class="vs-default-row"></div>
+            <div *cellDef="let item; name: 'Cell 1'; minWidth: 200; isActive: isCell1Active;">{{item}}</div>
+            <div *cellDef="let item; name: 'Cell 2'; minWidth: 200; isActive: isCell2Active; let cellIndex = cellIndex">{{cellIndex}} Cell Index</div>
+            <div *cellDef="let item; name: 'Cell 3'; minWidth: 200; sticky: true;">Cell 3</div>
+            <div *cellDef="let item; name: 'Cell 4'; minWidth: 200;">Cell 4</div>
+            <div *cellDef="let item; name: 'Cell 5'; minWidth: 200;">Cell 5</div>
+            <div *cellDef="let item; name: 'Cell 6'; minWidth: 200; minDisplay: 1200;">Cell 6</div>
+        </virtual-scroll>
+    </div> -->
+    
+    
+    <!-- <app-default-demo></app-default-demo> -->
+    
+    <!-- <app-resizable-demo></app-resizable-demo> -->
+    
+    <!-- <app-column-widths-demo></app-column-widths-demo> -->
+
+    <!-- <app-content-alignment-demo></app-content-alignment-demo> -->
+
+    <!-- <app-dynamic-container-demo></app-dynamic-container-demo> -->
+
+    <!-- <app-responsive-column-enabling-demo></app-responsive-column-enabling-demo> -->
+
+    <!-- <app-sticky-column-demo></app-sticky-column-demo> -->
+
+    <app-modify-list-data-demo></app-modify-list-data-demo>
 </div>

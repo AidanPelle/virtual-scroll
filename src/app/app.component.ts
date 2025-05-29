@@ -1,13 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseDataSource, PaginatedDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
+import { DefaultDemoComponent } from '../default-demo/default-demo.component';
+import { ResizableDemoComponent } from '../resizable-demo/resizable-demo.component';
+import { ColumnWidthsDemoComponent } from '../column-widths-demo/column-widths-demo.component';
+import { ContentAlignmentDemoComponent } from '../content-alignment-demo/content-alignment-demo.component';
+import { DynamicContainerDemoComponent } from '../dynamic-container-demo/dynamic-container-demo.component';
+import { ResponsiveColumnEnablingDemoComponent } from './responsive-column-enabling-demo/responsive-column-enabling-demo.component';
+import { StickyColumnDemoComponent } from './sticky-column-demo/sticky-column-demo.component';
+import { ModifyDataDemoComponent } from './modify-data-demo/modify-data-demo.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [VirtualScrollModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  imports: [
+    VirtualScrollModule,
+    DefaultDemoComponent,
+    ResizableDemoComponent,
+    ColumnWidthsDemoComponent,
+    ContentAlignmentDemoComponent,
+    DynamicContainerDemoComponent,
+    ResponsiveColumnEnablingDemoComponent,
+    StickyColumnDemoComponent,
+    ModifyDataDemoComponent,
+  ],
 })
 export class AppComponent implements OnInit {
   title = 'aidanpelle-virtual-scroll';

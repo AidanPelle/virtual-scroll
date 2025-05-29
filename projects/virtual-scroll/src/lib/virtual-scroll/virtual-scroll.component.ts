@@ -476,7 +476,9 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   private readonly _throttledScrollIndex$ = this._scrollIndex.pipe(throttleTime(50, asyncScheduler, { trailing: true }));
 
   /** Using the current height of the table and the height of a given row, calculate how many rows are currently visible. */
-  private readonly _numberOfVisibleRows$ = combineLatest([this._tableHeight$, this._itemSize]).pipe(map(([tableHeight, itemSize]) => Math.ceil(tableHeight / itemSize)), shareReplay(1));
+  private readonly _numberOfVisibleRows$ = combineLatest([this._tableHeight$, this._itemSize]).pipe(map(([tableHeight, itemSize]) => {
+    return Math.ceil(tableHeight / itemSize);
+  }), shareReplay(1));
 
   /**
    * Handles displaying the start, end, and count items for the current list
@@ -488,7 +490,8 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       const start = dataSource.length == 0 ? 0 : scrollIndex;
       const footerData: VirtualScrollFooterData = {
         start: start,
-        end: Math.min(start + numberOfVisibleRows, dataSource.length - 1),
+        // The -1 on number of visible rows accounts for that the end is inclusive, not exclusive.
+        end: Math.min(start + numberOfVisibleRows - 1, dataSource.length - 1),
         itemCount: dataSource.length,
       };
       return footerData;

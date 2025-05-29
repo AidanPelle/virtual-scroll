@@ -1,0 +1,12 @@
+<h2>Column Widths</h2>
+<h3>Column Widths can be defined as a fraction, a fixed width (px), a min/max width (px), or some combination</h3>
+
+<mat-card appearance="raised">
+    <virtual-scroll [dataSource]="dataSource">
+        <div *cellDef="let item; name: 'Cell 1'; flex: 3">3 Fractions Cell</div>
+        <div *cellDef="let item; name: 'Cell 2';">Default 1 Fraction Cell</div>
+        <div *cellDef="let item; name: 'Cell 3'; flex: 3; maxWidth: 300;">3 Fractions, Max Width 300px</div>
+        <div *cellDef="let item; name: 'Cell 4'; minWidth: 200;">1 Fraction, Min Width 200px</div>
+        <div *cellDef="let item; name: 'Cell 5'; fixedWidth: 200;">200px Fixed Width Cell</div>
+    </virtual-scroll>
+</mat-card>

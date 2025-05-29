@@ -1,0 +1,14 @@
+<h2>Modifying List Data</h2>
+<h3>When using a Custom DataSource, we can append/remove items in the list, which will automatically be caught by Virtual Scroll</h3>
+
+<div style="display: flex; gap: 6px; padding-bottom: 12px;">
+    <button mat-raised-button (click)="appendItem()">Append Item</button>
+    <button mat-raised-button (click)="removeFirstItem()">Remove First Item</button>
+</div>
+<mat-card appearance="raised">
+    <virtual-scroll [dataSource]="dataSource">
+        <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
+        <div *cellDef="let item; let columnName = columnName; name: 'Cell 2'">{{columnName}}</div>
+        <div *cellDef="let item; name: 'Cell 3'">Cell 3</div>
+    </virtual-scroll>
+</mat-card>
