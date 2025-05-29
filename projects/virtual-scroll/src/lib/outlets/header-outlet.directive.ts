@@ -16,7 +16,7 @@ export class HeaderOutletDirective<T> extends RowOutletDirective<T> {
   @Input() defaultHeaderCellTemplate!: TemplateRef<unknown>;
 
   override ngOnInit(): void {
-    this.renderRow();
+    this._renderRow();
   }
 
   protected override initColumnManager(cellOutlet: CellOutletDirective): void {

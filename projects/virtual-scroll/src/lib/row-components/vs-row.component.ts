@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 
+/**
+ * This component primarily gives us access to a CellOutletDirective,
+ * so that we have a place to inject colums into.
+ */
 @Component({
   selector: 'vs-row, [vs-row]',
   template: `

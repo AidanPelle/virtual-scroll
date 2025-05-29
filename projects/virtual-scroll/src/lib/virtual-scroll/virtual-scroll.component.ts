@@ -569,8 +569,8 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     this._haxFlexColumns = true;
 
     // re-render the rows. We don't want to manually reset styles in case the user has set styles themselves
-    this._renderedHeader.forEach(h => h.renderRow());
-    this._renderedRows.forEach(r => r.renderRow());
+    this._renderedHeader.forEach(h => h._renderRow());
+    this._renderedRows.forEach(r => r._renderRow());
     this._resetSizes.next();
   }
 
@@ -591,7 +591,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
         );
       }),
       switchMap((res: RowOutletDirective<T>[]) => {
-        const stickies = res.map(row => row.renderedSticky$.pipe(map(r => ({ row: row, view: r }))));
+        const stickies = res.map(row => row.renderSticky$.pipe(map(r => ({ row: row, view: r }))));
         const taggedStickies = stickies.map((obs$, index) => obs$.pipe(map(value => ({ source: index, value }))));
         return merge(...taggedStickies).pipe(
           filter(item => item.value.view != null),
