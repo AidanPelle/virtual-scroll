@@ -1,0 +1,18 @@
+<h2>Default Configuration</h2>
+<h3>A minimum setup in order to produce a working list</h3>
+
+<mat-card appearance="raised">
+    <virtual-scroll [dataSource]="dataSource">
+        <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
+        <div *cellDef="let item; let columnName = columnName; name: 'Cell 2'">{{columnName}}</div>
+        <div *cellDef="let item; let rowIndex = index; name: 'Cell 3'">Cell 3, index {{rowIndex}}</div>
+    </virtual-scroll>
+</mat-card>
+
+<mat-card appearance="raised" style="margin-top: 20px;">
+    <mat-card-content>
+        <div *ngFor="let logItem of infoLog">
+            {{logItem}}
+        </div>
+    </mat-card-content>
+</mat-card>

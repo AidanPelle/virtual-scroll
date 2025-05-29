@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseDataSource, PaginatedDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
-import { DefaultDemoComponent } from '../default-demo/default-demo.component';
-import { ResizableDemoComponent } from '../resizable-demo/resizable-demo.component';
-import { ColumnWidthsDemoComponent } from '../column-widths-demo/column-widths-demo.component';
-import { ContentAlignmentDemoComponent } from '../content-alignment-demo/content-alignment-demo.component';
-import { DynamicContainerDemoComponent } from '../dynamic-container-demo/dynamic-container-demo.component';
-import { ResponsiveColumnEnablingDemoComponent } from './responsive-column-enabling-demo/responsive-column-enabling-demo.component';
-import { StickyColumnDemoComponent } from './sticky-column-demo/sticky-column-demo.component';
-import { ModifyDataDemoComponent } from './modify-data-demo/modify-data-demo.component';
+import { DefaultDemoComponent } from './demo/default-demo/default-demo.component';
+import { ResizableDemoComponent } from './demo/resizable-demo/resizable-demo.component';
+import { ColumnWidthsDemoComponent } from './demo/column-widths-demo/column-widths-demo.component';
+import { ContentAlignmentDemoComponent } from './demo/content-alignment-demo/content-alignment-demo.component';
+import { DynamicContainerDemoComponent } from './demo/dynamic-container-demo/dynamic-container-demo.component';
+import { ResponsiveColumnEnablingDemoComponent } from './demo/responsive-column-enabling-demo/responsive-column-enabling-demo.component';
+import { StickyColumnDemoComponent } from './demo/sticky-column-demo/sticky-column-demo.component';
+import { ModifyDataDemoComponent } from './demo/modify-data-demo/modify-data-demo.component';
+import { CompleteListDemoComponent } from './demo/complete-list-demo/complete-list-demo.component';
+import { PaginatedDemoComponent } from './demo/paginated-demo/paginated-demo.component';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +27,8 @@ import { ModifyDataDemoComponent } from './modify-data-demo/modify-data-demo.com
     ResponsiveColumnEnablingDemoComponent,
     StickyColumnDemoComponent,
     ModifyDataDemoComponent,
+    CompleteListDemoComponent,
+    PaginatedDemoComponent,
   ],
 })
 export class AppComponent implements OnInit {
