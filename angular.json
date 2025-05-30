@@ -27,6 +27,7 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -36,12 +37,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "loader": {
-              ".html": "text",
-              ".scss": "text",
-              ".ts": "text"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {

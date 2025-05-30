@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomDataSource, VirtualScrollModule } from '../../../../projects/virtual-scroll/src/public-api';
+import { CustomDataSource, VirtualScrollModule } from '../../../../../projects/virtual-scroll/src/public-api';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({

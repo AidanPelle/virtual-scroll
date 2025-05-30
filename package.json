@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node copy-components.js",
     "start": "ng serve --port 4600",
-    "prebuild": "node replace-prebuild.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "jest",

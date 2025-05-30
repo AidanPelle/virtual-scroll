@@ -44,3 +44,5 @@ Thumbs.db
 
 # npmjs.org
 .npmrc
+
+/src/assets/components
