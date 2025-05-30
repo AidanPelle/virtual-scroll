@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
 import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
+import { MatCardModule } from '@angular/material/card';
+
 @Component({
-  selector: 'app-default-demo',
-  templateUrl: './default-demo.component.html',
-  styleUrl: './default-demo.component.scss',
+  selector: 'app-dynamic-height-demo',
+  templateUrl: './dynamic-height-demo.component.html',
+  styleUrl: './dynamic-height-demo.component.scss',
   standalone: true,
   imports: [VirtualScrollModule, MatCardModule],
 })
-export class DefaultDemoComponent {
+export class DynamicHeightDemoComponent {
   protected dataSource = this.initSource();
 
   initSource() {

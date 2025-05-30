@@ -2,8 +2,8 @@ import { Type } from "@angular/core"
 import { ColumnWidthsDemoComponent } from "./components/column-widths-demo/column-widths-demo.component"
 import { CompleteListDemoComponent } from "./components/complete-list-demo/complete-list-demo.component"
 import { ContentAlignmentDemoComponent } from "./components/content-alignment-demo/content-alignment-demo.component"
-import { DefaultDemoComponent } from "./components/default-demo/default-demo.component"
-import { DynamicContainerDemoComponent } from "./components/dynamic-container-demo/dynamic-container-demo.component"
+import { BasicDemoComponent } from "./components/basic-demo/basic-demo.component"
+import { DynamicHeightDemoComponent } from "./components/dynamic-height-demo/dynamic-height-demo.component"
 import { ModifyDataDemoComponent } from "./components/modify-data-demo/modify-data-demo.component"
 import { PaginatedDemoComponent } from "./components/paginated-demo/paginated-demo.component"
 import { ResizableDemoComponent } from "./components/resizable-demo/resizable-demo.component"
@@ -11,6 +11,11 @@ import { ResponsiveColumnEnablingDemoComponent } from "./components/responsive-c
 import { StickyColumnDemoComponent } from "./components/sticky-column-demo/sticky-column-demo.component"
 
 export const DEMO_COMPONENTS: {[route: string]: {title: string, subtitle: string, component: Type<unknown>}} = {
+    "basic": {
+        title: "Basic Configuration",
+        subtitle: "A minimum setup in order to produce a working list.",
+        component: BasicDemoComponent,
+    },
     "column-widths": {
         title: "Column Widths",
         subtitle: "Column Widths can be defined as a fraction, a fixed width (px), a min/max width (px), or some combination.",
@@ -22,19 +27,14 @@ export const DEMO_COMPONENTS: {[route: string]: {title: string, subtitle: string
         component: CompleteListDemoComponent,
     },
     "content-alignment": {
-        title: "Custom Content Alignment",
+        title: "Content Alignment",
         subtitle: "Specify if you want content to be left, center or right aligned for a given column.",
         component: ContentAlignmentDemoComponent,
     },
-    "default": {
-        title: "Default Configuration",
-        subtitle: "A minimum setup in order to produce a working list.",
-        component: DefaultDemoComponent,
-    },
-    "dynamic-container": {
-        title: "Dynamic Container",
+    "dynamic-height": {
+        title: "Dynamic Height",
         subtitle: "Resize the viewport and the virtual list will grow/shrink accordingly.",
-        component: DynamicContainerDemoComponent,
+        component: DynamicHeightDemoComponent,
     },
     "modify-data": {
         title: "Modifying List Data",
