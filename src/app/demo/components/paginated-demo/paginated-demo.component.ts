@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { of, delay, tap } from 'rxjs';
-import { PaginatedDataSource, VirtualScrollModule } from '../../../../projects/virtual-scroll/src/public-api';
+import { PaginatedDataSource, VirtualScrollModule } from '../../../../../projects/virtual-scroll/src/public-api';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 

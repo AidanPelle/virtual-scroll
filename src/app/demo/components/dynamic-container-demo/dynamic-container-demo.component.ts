@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
+import { CustomDataSource, VirtualScrollModule } from '../../../../../projects/virtual-scroll/src/public-api';
 import { MatCardModule } from '@angular/material/card';
-import { CustomDataSource, VirtualScrollModule } from '../../../../projects/virtual-scroll/src/public-api';
 
 @Component({
-  selector: 'app-resizable-demo',
-  templateUrl: './resizable-demo.component.html',
-  styleUrl: './resizable-demo.component.scss',
+  selector: 'app-dynamic-container-demo',
+  templateUrl: './dynamic-container-demo.component.html',
+  styleUrl: './dynamic-container-demo.component.scss',
   standalone: true,
   imports: [VirtualScrollModule, MatCardModule],
 })
-export class ResizableDemoComponent {
+export class DynamicContainerDemoComponent {
   protected dataSource = this.initSource();
 
   initSource() {

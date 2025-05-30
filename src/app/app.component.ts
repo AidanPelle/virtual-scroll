@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseDataSource, PaginatedDataSource, VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { delay, of, tap } from 'rxjs';
-import { ResizableDemoComponent } from './demo/resizable-demo/resizable-demo.component';
+import { ResizableDemoComponent } from './demo/components/resizable-demo/resizable-demo.component';
 import { ColumnWidthsDemoComponent } from './demo/components/column-widths-demo/column-widths-demo.component';
-import { DynamicContainerDemoComponent } from './demo/dynamic-container-demo/dynamic-container-demo.component';
-import { ResponsiveColumnEnablingDemoComponent } from './demo/responsive-column-enabling-demo/responsive-column-enabling-demo.component';
-import { StickyColumnDemoComponent } from './demo/sticky-column-demo/sticky-column-demo.component';
-import { ModifyDataDemoComponent } from './demo/modify-data-demo/modify-data-demo.component';
+import { DynamicContainerDemoComponent } from './demo/components/dynamic-container-demo/dynamic-container-demo.component';
+import { ResponsiveColumnEnablingDemoComponent } from './demo/components/responsive-column-enabling-demo/responsive-column-enabling-demo.component';
+import { StickyColumnDemoComponent } from './demo/components/sticky-column-demo/sticky-column-demo.component';
+import { ModifyDataDemoComponent } from './demo/components/modify-data-demo/modify-data-demo.component';
 import { CompleteListDemoComponent } from './demo/components/complete-list-demo/complete-list-demo.component';
-import { PaginatedDemoComponent } from './demo/paginated-demo/paginated-demo.component';
+import { PaginatedDemoComponent } from './demo/components/paginated-demo/paginated-demo.component';
 import { DemoViewerComponent } from './demo/demo-viewer/demo-viewer.component';
 
 @Component({
