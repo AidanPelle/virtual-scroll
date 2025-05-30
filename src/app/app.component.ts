@@ -5,6 +5,9 @@ import { MatListModule } from '@angular/material/list';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DEMO_COMPONENTS } from '../demo/demo-map';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +21,19 @@ import { CommonModule } from '@angular/common';
     MatListModule,
     RouterLink,
     RouterOutlet,
+    MatButtonModule,
+    MatIconModule,
   ],
 })
 export class AppComponent {
-  protected _router = inject(Router);
+  private _router = inject(Router);
+  private _iconRegistry = inject(MatIconRegistry);
+  private _sanitizer = inject(DomSanitizer);
+
+  constructor() {
+    this._iconRegistry.addSvgIcon('github-logo', this._sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github-mark.svg'));
+  }
+
   demoRoutes = DEMO_COMPONENTS;
 
   isRouteActivated(route: string) {
