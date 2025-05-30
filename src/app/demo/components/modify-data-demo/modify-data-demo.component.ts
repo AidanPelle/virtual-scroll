@@ -4,7 +4,7 @@ import { CustomDataSource, VirtualScrollModule } from '../../../../../projects/v
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-modify-list-data-demo',
+  selector: 'app-modify-data-demo',
   templateUrl: './modify-data-demo.component.html',
   styleUrl: './modify-data-demo.component.scss',
   standalone: true,

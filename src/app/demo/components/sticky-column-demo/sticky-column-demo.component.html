@@ -1,7 +1,7 @@
 <h2>Sticky Column</h2>
 <h3>When the screen width is too small to fit all the columns on-screen, the column designated as sticky will "stick" to either side of the viewport</h3>
 
-<mat-card appearance="raised">
+<mat-card appearance="outlined">
     <virtual-scroll [dataSource]="dataSource">
         <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
         <div *cellDef="let item; name: 'Cell 2'; minWidth: 300;">Cell 2</div>

@@ -1,26 +1,11 @@
-<h4>HTML</h4>
-<mat-card appearance="outlined" style="overflow: auto;">
+<mat-card appearance="outlined" style="overflow: auto; margin-bottom: 50px;">
+    <mat-card-header style="padding-left: 0; padding-right: 0; border-bottom: 2px solid #F0F0F0;">
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+            <mat-tab *ngFor="let item of fileViews" [label]="item.title"></mat-tab>
+        </mat-tab-group>
+    </mat-card-header>
     <mat-card-content>
-        <pre class="code-view">
-<code>{{htmlFile}}</code>
-        </pre>
-    </mat-card-content>
-</mat-card>
-
-<h4>SCSS</h4>
-<mat-card appearance="outlined" style="overflow: auto;">
-    <mat-card-content>
-        <pre class="code-view">
-<code>{{scssFile}}</code>
-        </pre>
-    </mat-card-content>
-</mat-card>
-
-<h4>TS</h4>
-<mat-card appearance="outlined" style="overflow: auto;">
-    <mat-card-content>
-        <pre class="code-view">
-<code>{{tsFile}}</code>
-        </pre>
+        
+        <pre class="code-view"><code>{{selectedFileView}}</code></pre>
     </mat-card-content>
 </mat-card>
