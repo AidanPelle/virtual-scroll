@@ -6,7 +6,7 @@
 
 <mat-card-content class="log-list">
     <h3>Complete List Log Items</h3>
-    <div *ngFor="let logItem of infoLog">
-        {{logItem}}
-    </div>
+    @for (logItem of infoLog; track $index) {
+        <div>{{logItem}}</div>
+    }
 </mat-card-content>

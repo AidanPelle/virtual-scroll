@@ -1,7 +1,11 @@
-<mat-sidenav-container style="height: 100%;">
+<div style="width: 100%; height: 56px; border-bottom: 1px solid rgb(169, 172, 170);">
+
+</div>
+
+<mat-sidenav-container style="height: calc(100% - 56px);">
     <mat-sidenav [opened]="true" mode="side">
         <mat-nav-list>
-            <a *ngFor="let route of demoRoutes | keyvalue" mat-list-item [routerLink]="'demo/' + route.key">{{route.value.title}}</a>
+            <a *ngFor="let route of demoRoutes | keyvalue" mat-list-item [routerLink]="'demo/' + route.key" [activated]="isRouteActivated(route.key)">{{route.value.title}}</a>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

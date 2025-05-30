@@ -52,8 +52,8 @@ export const DEMO_COMPONENTS: {[route: string]: {title: string, subtitle: string
         component: ResizableDemoComponent,
     },
     "responsive-column-enabling": {
-        title: "Responsive Column Enabling/Disabling",
-        subtitle: "Columns can be enabled/disabled for different screen widths, for this example we're using 500px and 1000px as breakpoints.",
+        title: "Responsive Columns",
+        subtitle: "Columns can be enabled/disabled for different screen widths, for this example we're using 1000px and 1400px as breakpoints.",
         component: ResponsiveColumnEnablingDemoComponent,
     },
     "sticky-column": {
