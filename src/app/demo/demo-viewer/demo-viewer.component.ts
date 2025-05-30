@@ -5,13 +5,14 @@ import { MatCardModule } from '@angular/material/card';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
+import { HighlightModule } from 'ngx-highlightjs';
 
 @Component({
   selector: 'app-demo-viewer',
   templateUrl: './demo-viewer.component.html',
   styleUrl: './demo-viewer.component.scss',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTabsModule],
+  imports: [CommonModule, MatCardModule, MatTabsModule, HighlightModule],
 })
 export class DemoViewerComponent {
   private _viewContainerRef = inject(ViewContainerRef);
@@ -21,14 +22,20 @@ export class DemoViewerComponent {
 
   @Input() componentId!: string;
 
-  fileViews: {title: string, file: string}[] = [];
+  fileViews: {title: string, file: string, language: string}[] = [];
 
   selectedTabIndex = 0;
 
-  get selectedFileView(): string | null {
+  get selectedFileView(): string {
     if (this.fileViews[this.selectedTabIndex])
       return this.fileViews[this.selectedTabIndex].file;
-    return null;
+    return '';
+  }
+
+  get selectedFileLanguage(): string {
+    if (this.fileViews[this.selectedTabIndex])
+      return this.fileViews[this.selectedTabIndex].language;
+    return '';
   }
   
   async ngOnInit() {
@@ -45,10 +52,10 @@ export class DemoViewerComponent {
     const scssFile$ = this._http.get(`assets/components/${name}/${name}.component.scss`, { responseType: 'text' });
 
     forkJoin([htmlFile$, tsFile$, scssFile$]).subscribe(([htmlFile, tsFile, scssFile]) => {
-      this.fileViews.push({title: 'HTML', file: htmlFile});
-      this.fileViews.push({title: 'TS', file: tsFile});
+      this.fileViews.push({title: 'HTML', file: htmlFile, language: 'html'});
+      this.fileViews.push({title: 'TS', file: tsFile, language: 'typescript'});
       if ((scssFile?.length ?? 0) > 0)
-        this.fileViews.push({title: 'SCSS', file: scssFile});
+        this.fileViews.push({title: 'SCSS', file: scssFile, language: 'css'});
     });
 
     return component;

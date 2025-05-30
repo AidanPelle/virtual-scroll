@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CustomDataSource, VirtualScrollModule } from '../../../../../projects/virtual-scroll/src/public-api';
+import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
 
 @Component({
   selector: 'app-sticky-column-demo',
