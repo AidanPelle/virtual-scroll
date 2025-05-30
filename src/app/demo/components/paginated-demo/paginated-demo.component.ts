@@ -17,7 +17,7 @@ export class PaginatedDemoComponent {
   getCount = () => {
     this.infoLog.push("Called: getCount");
     return of(400_000).pipe(
-      delay(2_000),
+      delay(1_000),
       tap(() => this.infoLog.push("Finished: getCount")),
     );
   }
@@ -26,7 +26,7 @@ export class PaginatedDemoComponent {
     this.infoLog.push(`Called: getPageOfData, index: ${index}, page size: ${pageSize}`);
     const data = Array.from({length: pageSize}).map((_, i) => `Item #${i + 1 + index}`);
     return of(data).pipe(
-      delay(2_000),
+      delay(1_000),
       tap(() => this.infoLog.push(`Finished: getPageOfData, index: ${index}, page size: ${pageSize}`)),
     );
   }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, Injector, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Injector, ViewChild, ViewContainerRef } from '@angular/core';
 import { DEMO_COMPONENTS } from '../demo-map';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -7,20 +7,34 @@ import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { HighlightModule } from 'ngx-highlightjs';
 import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-demo-viewer',
   templateUrl: './demo-viewer.component.html',
   styleUrl: './demo-viewer.component.scss',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTabsModule, HighlightModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTabsModule,
+    HighlightModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
 })
 export class DemoViewerComponent {
-  private _viewContainerRef = inject(ViewContainerRef);
   private _injector = inject(Injector);
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _http = inject(HttpClient);
   private _route = inject(ActivatedRoute);
+
+  @ViewChild('demoComponentContainer', {static: true, read: ViewContainerRef}) _viewContainerRef!: ViewContainerRef;
+
+  protected _showCodeView = false;
 
   fileViews: {title: string, file: string, language: string}[] = [];
   selectedDemo?: typeof DEMO_COMPONENTS[string];

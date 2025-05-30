@@ -1,15 +1,12 @@
-<mat-card appearance="outlined">
-    <virtual-scroll [dataSource]="dataSource">
-        <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
-        <div *cellDef="let item; let columnName = columnName; name: 'Cell 2'">{{columnName}}</div>
-        <div *cellDef="let item; let rowIndex = index; name: 'Cell 3'">Cell 3, index {{rowIndex}}</div>
-    </virtual-scroll>
-</mat-card>
+<virtual-scroll [dataSource]="dataSource" class="virtual-scroll">
+    <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
+    <div *cellDef="let item; let columnName = columnName; name: 'Cell 2'">{{columnName}}</div>
+    <div *cellDef="let item; let rowIndex = index; name: 'Cell 3'">Cell 3, index {{rowIndex}}</div>
+</virtual-scroll>
 
-<mat-card appearance="outlined" style="margin-top: 20px; max-height: 400px; overflow: auto;">
-    <mat-card-content>
-        <div *ngFor="let logItem of infoLog">
-            {{logItem}}
-        </div>
-    </mat-card-content>
-</mat-card>
+<mat-card-content class="log-list">
+    <h3>Paginated List Log Items</h3>
+    <div *ngFor="let logItem of infoLog">
+        {{logItem}}
+    </div>
+</mat-card-content>
