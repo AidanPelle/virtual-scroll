@@ -3,7 +3,7 @@ import { VirtualScrollModule } from '../../projects/virtual-scroll/src/public-ap
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { DEMO_COMPONENTS } from './demo/demo-map';
+import { DEMO_COMPONENTS } from '../demo/demo-map';
 import { CommonModule } from '@angular/common';
 
 @Component({

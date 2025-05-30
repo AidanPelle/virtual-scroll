@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const chokidar = require('chokidar');
 
-const srcDir = 'src/app/demo/components';
+const srcDir = 'src/demo/components';
 const targetDir = 'src/assets/components';
 
 function ensureDirExists(dir) {
