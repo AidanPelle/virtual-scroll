@@ -1,0 +1,15 @@
+<div style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);">
+    <button mat-icon-button [columnSelector]="virtualScroll" style="margin: 6px;">
+        <mat-icon outl>calendar_view_week_outline</mat-icon>
+    </button>
+</div>
+
+<virtual-scroll #virtualScroll [dataSource]="dataSource">
+    <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
+    <div *cellDef="let item; let columnName = columnName; name: 'Cell 2'">{{columnName}}</div>
+    <div *cellDef="let item; let rowIndex = index; name: 'Cell 3'">Cell 3, index {{rowIndex}}</div>
+    <div *cellDef="let item; name: 'Cell 4'">Cell 4</div>
+    <div *cellDef="let item; name: 'Cell 5'">Cell 5</div>
+    <div *cellDef="let item; name: 'Cell 6'; isActive: false;">Inactive by default</div>
+    <div *cellDef="let item; name: 'Cell 7'">Cell 7</div>
+</virtual-scroll>

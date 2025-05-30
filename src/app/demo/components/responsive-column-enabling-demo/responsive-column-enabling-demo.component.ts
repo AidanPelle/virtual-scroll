@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-responsive-column-enabling-demo',
   templateUrl: './responsive-column-enabling-demo.component.html',
   styleUrl: './responsive-column-enabling-demo.component.scss',
   standalone: true,
-  imports: [VirtualScrollModule, MatCardModule],
+  imports: [VirtualScrollModule],
 })
 export class ResponsiveColumnEnablingDemoComponent {
   protected dataSource = this.initSource();

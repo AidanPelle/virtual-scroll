@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
 import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -8,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './modify-data-demo.component.html',
   styleUrl: './modify-data-demo.component.scss',
   standalone: true,
-  imports: [VirtualScrollModule, MatCardModule, MatButtonModule],
+  imports: [VirtualScrollModule, MatButtonModule],
 })
 export class ModifyDataDemoComponent {
   protected dataSource = this.initSource();

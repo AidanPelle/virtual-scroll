@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
 import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
 
 @Component({
@@ -7,7 +6,7 @@ import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
   templateUrl: './sticky-column-demo.component.html',
   styleUrl: './sticky-column-demo.component.scss',
   standalone: true,
-  imports: [VirtualScrollModule, MatCardModule],
+  imports: [VirtualScrollModule],
 })
 export class StickyColumnDemoComponent {
   protected dataSource = this.initSource();

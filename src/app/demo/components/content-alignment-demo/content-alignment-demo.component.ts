@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-content-alignment-demo',
   templateUrl: './content-alignment-demo.component.html',
   styleUrl: './content-alignment-demo.component.scss',
   standalone: true,
-  imports: [VirtualScrollModule, MatCardModule],
+  imports: [VirtualScrollModule],
 })
 export class ContentAlignmentDemoComponent {
   protected dataSource = this.initSource();

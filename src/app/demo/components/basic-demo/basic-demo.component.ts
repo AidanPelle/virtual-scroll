@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
 import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
 @Component({
   selector: 'app-default-demo',
   templateUrl: './basic-demo.component.html',
   styleUrl: './basic-demo.component.scss',
   standalone: true,
-  imports: [VirtualScrollModule, MatCardModule],
+  imports: [VirtualScrollModule],
 })
 export class BasicDemoComponent {
   protected dataSource = this.initSource();

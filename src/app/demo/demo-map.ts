@@ -9,6 +9,7 @@ import { PaginatedDemoComponent } from "./components/paginated-demo/paginated-de
 import { ResizableDemoComponent } from "./components/resizable-demo/resizable-demo.component"
 import { ResponsiveColumnEnablingDemoComponent } from "./components/responsive-column-enabling-demo/responsive-column-enabling-demo.component"
 import { StickyColumnDemoComponent } from "./components/sticky-column-demo/sticky-column-demo.component"
+import { ColumnSelectorDemoComponent } from "./components/column-selector-demo/column-selector-demo.component"
 
 export const DEMO_COMPONENTS: {[route: string]: {title: string, subtitle: string, component: Type<unknown>}} = {
     "basic": {
@@ -16,9 +17,14 @@ export const DEMO_COMPONENTS: {[route: string]: {title: string, subtitle: string
         subtitle: "A minimum setup in order to produce a working list.",
         component: BasicDemoComponent,
     },
+    "column-selector": {
+        title: "Column Selector",
+        subtitle: "Allows a user to enable, disable, or reorder columns to their individual preference.",
+        component: ColumnSelectorDemoComponent,
+    },
     "column-widths": {
         title: "Column Widths",
-        subtitle: "Column Widths can be defined as a fraction, a fixed width (px), a min/max width (px), or some combination.",
+        subtitle: "Column widths can be defined as a fraction, a fixed width (px), a min/max width (px), or some combination.",
         component: ColumnWidthsDemoComponent,
     },
     "complete-list": {
