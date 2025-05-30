@@ -48,10 +48,10 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   public rowView?: EmbeddedViewRef<unknown>;
 
   /** BehaviorSubject that emits whenever the column manager renders a sticky column. */
-  protected renderSticky = new BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>(null);
+  protected readonly renderSticky = new BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>(null);
   
   /** Subject to handle cleaning up ongoing observables when this row no longer exists. */
-  private _onDestroy = new Subject<void>();
+  private readonly _onDestroy = new Subject<void>();
   
   /** A reference to the renderSticky BehaviorSubject, scoped for when this row is destroyed. */
   public renderSticky$ = this.renderSticky.pipe(takeUntil(this._onDestroy));

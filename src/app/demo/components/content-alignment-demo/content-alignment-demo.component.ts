@@ -13,7 +13,7 @@ export class ContentAlignmentDemoComponent {
   protected dataSource = this.initSource();
 
   initSource() {
-    const data = Array.from({length: 400_000}).map((_, i) => `Item #${i + 1}`);
+    const data = Array.from({length: 10_000}).map((_, i) => `Item #${i + 1}`);
     return new CustomDataSource(data);
   }
 }

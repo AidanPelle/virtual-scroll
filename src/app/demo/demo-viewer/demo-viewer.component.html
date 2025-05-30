@@ -1,3 +1,6 @@
+<h2>{{selectedDemo?.title}}</h2>
+<h3>{{selectedDemo?.subtitle}}</h3>
+
 <mat-card appearance="outlined" class="demo-viewer-card">
     <mat-card-header class="card-header">
         <mat-tab-group [(selectedIndex)]="selectedTabIndex">
@@ -9,4 +12,5 @@
     <mat-card-content>
         <pre class="code-view"><code [highlight]="selectedFileView" [language]="selectedFileLanguage"></code></pre>
     </mat-card-content>
+    <mat-card-content>Test</mat-card-content>
 </mat-card>

@@ -38,6 +38,7 @@ import {
   Subject,
   switchMap,
   take,
+  takeUntil,
   tap,
   throttleTime
 } from 'rxjs';
@@ -220,6 +221,9 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /** Used to force an observable to not start processing until after the view has initialized, so that we have access to dynamic viewChildren. */
   private readonly _afterViewInit = new ReplaySubject<boolean>(1);
 
+  /** Used to clean up observables and subscriptions when the component's lifetime ends. */
+  private readonly _onDestroy = new Subject<void>();
+
   /** Handles skipping checking the current flex state of columns, to avoid performance hits on resizing. */
   private _haxFlexColumns = true;
 
@@ -228,6 +232,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * the array to match that new info.
    */
   readonly orderedCellDefs$ = this.moveColumn.pipe(
+    takeUntil(this._onDestroy),
     switchMap(val => {
       if (val !== null) {
         const cells = this._cellDefs.value;
@@ -241,6 +246,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   /** Handles mapping from the current ordered list of cell defs, into their active state and index in the list. */
   readonly mappedActiveColumns$ = defer(() => of(null)).pipe(
+    takeUntil(this._onDestroy),
     switchMap(() => {
       const obsList = this.orderedCellDefs$.pipe(
         map(cellDefList => {
@@ -261,10 +267,11 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * An observable that emits all resize events captured by virtual scroll.
    * This is public so that cell defs can listen to the events and update their active status.
    */
-  readonly throttledResize$ = this._onResize.pipe(throttleTime(50, asyncScheduler, { trailing: true })); // Throttle here so that we don't recalc our page too frequently, at most every 50ms
+  readonly throttledResize$ = this._onResize.pipe(takeUntil(this._onDestroy), throttleTime(50, asyncScheduler, { trailing: true })); // Throttle here so that we don't recalc our page too frequently, at most every 50ms
 
   /** Observable that contains the current horizontal scroll position, along with the total width of the element. */
   private readonly _horizontalScrollData$ = merge(this._onHorizontalScroll.pipe(map(event => event.target as HTMLElement)), this.throttledResize$).pipe(
+    takeUntil(this._onDestroy),
     filter(element => element != null),
     map(scrollElement => {
       return [scrollElement.scrollLeft, scrollElement.offsetWidth];
@@ -279,6 +286,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * therefore we can cast the viewport to definitely exist.
    */
   readonly _stickyScrollData$ = this._afterViewInit.pipe(
+    takeUntil(this._onDestroy),
     filter(() => this._cellDefsContent?.find(cd => cd.isSticky) != null),
     map(() => {
       if (this._headerContainer) {
@@ -296,12 +304,14 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   /** Observable that provides the current height of the open browser, refreshing whenever the page resizes. */
   private readonly _windowHeight$ = this.throttledResize$.pipe(
+    takeUntil(this._onDestroy),
     map(() => window.innerHeight),
     shareReplay(1),
   );
 
   /** The current dataSource, that is not null. Handles running onDestroy functions whenever the dataSource changes. */
   protected readonly dataSource$ = this._dataSource.pipe(
+    takeUntil(this._onDestroy),
     startWith(null),
     pairwise(),
     map(([previous, current]) => {
@@ -317,12 +327,14 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * Primarily used on CompleteDataSource or PaginatedDataSource while waiting for asynchronous data to return.
    */
   private readonly _isDataSourceLoading$ = this.dataSource$.pipe(
+    takeUntil(this._onDestroy),
     switchMap(src => src.loading$),
     startWith(true),
   );
 
   /** A list of the active columns, filtered by active state. */
   private readonly _filteredActiveColumns$ = this.mappedActiveColumns$.pipe(
+    takeUntil(this._onDestroy),
     switchMap(cols => combineLatest(cols)),
     map(allColumns => allColumns.filter(c => c.isActive)),
     shareReplay(1),
@@ -333,6 +345,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * based on user-defined loading status along with the current status of the data source.
    */
   protected readonly loading$ = combineLatest([this._loading, this._isDataSourceLoading$]).pipe(
+    takeUntil(this._onDestroy),
     map(([inputLoading, dataSourceLoading]) => {
       const myLoad = inputLoading || dataSourceLoading;
       return myLoad;
@@ -345,6 +358,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * allowing us to read the length of the returned data.
    */
   private readonly _dataSourcePostLoading$ = this.dataSource$.pipe(
+    takeUntil(this._onDestroy),
     switchMap(src => src.loading$.pipe(
       filter(loading => loading == false),
       map(() => src),
@@ -357,6 +371,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * and the total height of the content inside (from rowSize and total dataset size).
    */
   private readonly possibleHeights$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight$, this._dataSourcePostLoading$]).pipe(
+    takeUntil(this._onDestroy),
     map(([heightVh, heightPx, offset, itemSize, windowHeight, dataSource]) => {
       const maxPossibleHeight = heightVh != null
         ? windowHeight * heightVh / 100 - offset
@@ -376,6 +391,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * Used to adjust tableHeight to account for the extra padding.
    */
   private readonly _hasHorizontalScrollbar$ = this._filteredActiveColumns$.pipe(
+    takeUntil(this._onDestroy),
     combineLatestWith(this.applyFixedWidth.pipe(startWith(null)), this._resetSizes, this.throttledResize$),
     map(([activeCells]) => {
       let totalWidth = activeCells.reduce((a, b) => a + (b.cellDef.fixedWidth ?? b.cellDef.minWidth), 0);
@@ -392,6 +408,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * Used to offset the header's total width by the scrollbar (to keep aligned with the table columns).
    */
   readonly _hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
+    takeUntil(this._onDestroy),
     map(([[maxPossibleHeight, totalContentHeight], hasHorizontalScrollbar]) => {
       return totalContentHeight + (hasHorizontalScrollbar ? SCROLLBAR_WIDTH : 0) > maxPossibleHeight;
     }),
@@ -401,6 +418,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * Calculates the current height of the table, allowing it to resize properly when the content or window size changes.
    */
   readonly _tableHeight$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(
+    takeUntil(this._onDestroy),
     map(([[maxPossibleHeight, totalContentHeight], hasHorizontalScrollbar]) => Math.min(maxPossibleHeight, totalContentHeight + (hasHorizontalScrollbar ? 16 : 0))),
     shareReplay(1),
   );
@@ -410,6 +428,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * retrieving its current horizontal position in a list.
    */
   readonly stickyCellData$ = this.loading$.pipe(
+    takeUntil(this._onDestroy),
     switchMap(loading => {
       if (this.showHeader)
         return of(null);
@@ -441,6 +460,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   /** Calculates if we want to apply the sticky shadow styling to the current sticky cell, given how far we've horizontally scrolled. */
   readonly applyStickyShadow$ = combineLatest([this._stickyScrollData$, this.stickyCellData$]).pipe(
+    takeUntil(this._onDestroy),
     map(([[scrollPosition, containerWidth], [cellPosition, cellWidth]]) => {
       if (cellPosition < scrollPosition)
         return "sticky-right-shadow";
@@ -461,6 +481,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   /** Used to keep the horizontal scrolling of the header row and the container in sync, based on whenever either of them emit a scroll event. */
   private readonly syncHorizontalScroll$ = this._horizontalScrollData$.pipe(
+    takeUntil(this._onDestroy),
     map(([scrollLeft]) => scrollLeft),
     distinctUntilChanged(),
     tap(scrollLeft => {
@@ -473,10 +494,10 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   /** Throttle the current scroll events so that we don't have to process every single scroll event that comes through, for performance. */
-  private readonly _throttledScrollIndex$ = this._scrollIndex.pipe(throttleTime(50, asyncScheduler, { trailing: true }));
+  private readonly _throttledScrollIndex$ = this._scrollIndex.pipe(takeUntil(this._onDestroy), throttleTime(50, asyncScheduler, { trailing: true }));
 
   /** Using the current height of the table and the height of a given row, calculate how many rows are currently visible. */
-  private readonly _numberOfVisibleRows$ = combineLatest([this._tableHeight$, this._itemSize]).pipe(map(([tableHeight, itemSize]) => {
+  private readonly _numberOfVisibleRows$ = combineLatest([this._tableHeight$, this._itemSize]).pipe(takeUntil(this._onDestroy), map(([tableHeight, itemSize]) => {
     return Math.ceil(tableHeight / itemSize);
   }), shareReplay(1));
 
@@ -486,6 +507,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    * We listen to dataSource and the dataListener so that we can update scroll count appropriately on both
    */
   protected readonly footerData$ = combineLatest([this._throttledScrollIndex$, this._numberOfVisibleRows$, this.dataSource$, this.dataSource$.pipe(switchMap(src => src.dataListener))]).pipe(
+    takeUntil(this._onDestroy),
     map(([scrollIndex, numberOfVisibleRows, dataSource]) => {
       const start = dataSource.length == 0 ? 0 : scrollIndex;
       const footerData: VirtualScrollFooterData = {
@@ -512,6 +534,11 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     this._afterViewInit.next(true);
   }
 
+  ngOnDestroy(): void {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
   /**
    * Triggered by the resizable directive, this function will handle setting fixed widths on all columns,
    * then emitting the appropriate resize events to the active column managers.
@@ -524,6 +551,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     // If any cell def does not have a fixed width, we need to set them to fixed
     if (this._haxFlexColumns) {
       const obs = this.mappedActiveColumns$.pipe(
+        takeUntil(this._onDestroy),
         switchMap(list => combineLatest(list)),
         tap(list => {
           list.forEach(cell => {
@@ -583,6 +611,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
     view: EmbeddedViewRef<unknown> | null;
   }> => {
     return this._afterViewInit.pipe(  // getStickyCell needs to wait for afterViewInit$ to fire, so that rowOutlets.changes will be populated
+      takeUntil(this._onDestroy),
       switchMap(() => {
         if (this.showHeader)
           return of(this._renderedHeader.toArray());

@@ -16,7 +16,7 @@ export class CompleteListDemoComponent {
 
   getData = () => {
     this.infoLog.push("Called: getData");
-    const data = Array.from({length: 400_000}).map((_, i) => `Item #${i + 1}`);
+    const data = Array.from({length: 10_000}).map((_, i) => `Item #${i + 1}`);
     return of(data).pipe(
       delay(2_000),
       tap(() => this.infoLog.push("Finished: getData")),

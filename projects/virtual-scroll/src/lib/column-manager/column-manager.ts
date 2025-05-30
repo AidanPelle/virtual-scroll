@@ -81,16 +81,17 @@ export class ColumnManager<T> {
         this._defaultHeaderCellTemplate = defaultHeaderCellTemplate;
         this._sliderTemplate = sliderTemplate;
 
-        this._toggleColumns$.pipe(takeUntil(this._onDestroy)).subscribe();
-        this._moveColumn$.pipe(takeUntil(this._onDestroy)).subscribe();
-        this._removeCellWidth$.pipe(takeUntil(this._onDestroy)).subscribe();
-        this._applyFixedWidth$.pipe(takeUntil(this._onDestroy)).subscribe();
+        this._toggleColumns$.subscribe();
+        this._moveColumn$.subscribe();
+        this._removeCellWidth$.subscribe();
+        this._applyFixedWidth$.subscribe();
     }
 
     /**
      * Handles events from the active status of cell defs changing, into turning on/off the relevant column and possibly caching the view.
      */
     private readonly _toggleColumns$ = defer(() => of(null)).pipe(
+        takeUntil(this._onDestroy),
         // We defer so that the reference to _virtualScroll was instantiated in the constructor by the time this is subscribed to
         switchMap(() => {
             // Whenever the ordering of columns changes, we skip the first output of the active status, so that we don't try to double render columns
@@ -115,6 +116,7 @@ export class ColumnManager<T> {
 
     /** Handles removing the min, max, flex widths of a cell given its name. */
     private readonly _removeCellWidth$ = defer(() => of(null)).pipe( 
+        takeUntil(this._onDestroy),
         // We defer so that the reference to _virtualScroll was instantiated in the constructor by the time this is subscribed to
         switchMap(() => this._virtualScroll.removeCellWidths),
         tap(columnName => {
@@ -129,6 +131,7 @@ export class ColumnManager<T> {
 
     /** Handles applying the static column width to a given column, for when we're resizing. */
     private readonly _applyFixedWidth$ = defer(() => of(null)).pipe(
+        takeUntil(this._onDestroy),
         // We defer so that the reference to _virtualScroll was instantiated in the constructor by the time this is subscribed to
         switchMap(() => this._virtualScroll.applyFixedWidth),
         tap(([columnName, fixedWidth]) => {
@@ -148,6 +151,7 @@ export class ColumnManager<T> {
      * since this functionality only pertains to physically moving the rendered column.
      */
     private readonly _moveColumn$ = defer(() => of(null)).pipe(
+        takeUntil(this._onDestroy),
         // We defer so that the reference to _virtualScroll was instantiated in the constructor by the time this is subscribed to
         switchMap(() => this._virtualScroll.moveColumn),
         filter(val => val != null && val.isActive), // We want to skip any null moveItems (initial load), and when the item being moved is inactive since the rendering won't change anyways
@@ -232,6 +236,7 @@ export class ColumnManager<T> {
      */
     private _activeIndexObs(baseIndex: number) {
         return this._virtualScroll.mappedActiveColumns$.pipe(
+            takeUntil(this._onDestroy),
             switchMap(obsList => {
                 return combineLatest(obsList).pipe(
                     map(list => list.slice(0, baseIndex)),
