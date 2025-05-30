@@ -1,48 +1,15 @@
 <!-- <h1>Virtual Scroll Demo</h1> -->
 
+<mat-sidenav-container style="height: 100%;">
+    <mat-sidenav [opened]="true" mode="side">
+        <mat-nav-list>
+            <a *ngFor="let route of demoRoutes | keyvalue" mat-list-item [routerLink]="'demo/' + route.key">{{route.value.title}}</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="demo-container">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
 
-
-<div class="demo-container">
-    <!-- <button [columnSelector]="virtualScroll">Column Selector</button>
-    
-    <button (click)="dataSource?.data?.push('new row')">Add a row</button>
-    
-    <div class="scroll-container">
-        <virtual-scroll #virtualScroll [dataSource]="dataSource" [heightVh]="100" [offset]="150">
-            <div vs-row *rowDef="let item;" class="vs-default-row"></div>
-            <div *cellDef="let item; name: 'Cell 1'; minWidth: 200; isActive: isCell1Active;">{{item}}</div>
-            <div *cellDef="let item; name: 'Cell 2'; minWidth: 200; isActive: isCell2Active; let cellIndex = cellIndex">{{cellIndex}} Cell Index</div>
-            <div *cellDef="let item; name: 'Cell 3'; minWidth: 200; sticky: true;">Cell 3</div>
-            <div *cellDef="let item; name: 'Cell 4'; minWidth: 200;">Cell 4</div>
-            <div *cellDef="let item; name: 'Cell 5'; minWidth: 200;">Cell 5</div>
-            <div *cellDef="let item; name: 'Cell 6'; minWidth: 200; minDisplay: 1200;">Cell 6</div>
-        </virtual-scroll>
-    </div> -->
-    
-    
-    <!-- <app-default-demo></app-default-demo> -->
-    
-    <!-- <app-resizable-demo></app-resizable-demo> -->
-    
-    <!-- <app-column-widths-demo></app-column-widths-demo> -->
-
-    <!-- <app-content-alignment-demo></app-content-alignment-demo> -->
-
-    <!-- <app-dynamic-container-demo></app-dynamic-container-demo> -->
-
-    <!-- <app-responsive-column-enabling-demo></app-responsive-column-enabling-demo> -->
-
-    <!-- <app-sticky-column-demo></app-sticky-column-demo> -->
-
-    <h2>Modifying List Data</h2>
-    <h3>When using a Custom DataSource, we can append/remove items in the list, which will automatically be caught by Virtual Scroll</h3>
-    <app-demo-viewer componentId="modify-data-demo"></app-demo-viewer>
-
-    <!-- <app-complete-list-demo></app-complete-list-demo> -->
-
-    <!-- <app-paginated-demo></app-paginated-demo> -->
-
-    <!-- <h2>Column Widths</h2>
-    <h3>Column Widths can be defined as a fraction, a fixed width (px), a min/max width (px), or some combination</h3>
-    <app-demo-viewer componentId="column-widths-demo"></app-demo-viewer> -->
-</div>

@@ -1,11 +1,12 @@
-<mat-card appearance="outlined" style="overflow: auto; margin-bottom: 50px;">
-    <mat-card-header style="padding-left: 0; padding-right: 0; padding-top: 6px; border-bottom: 2px solid #F0F0F0;">
+<mat-card appearance="outlined" class="demo-viewer-card">
+    <mat-card-header class="card-header">
         <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-            <mat-tab *ngFor="let item of fileViews" [label]="item.title"></mat-tab>
+            @for (item of fileViews; track item.title) {
+                <mat-tab [label]="item.title"></mat-tab>
+            }
         </mat-tab-group>
     </mat-card-header>
     <mat-card-content>
-        
         <pre class="code-view"><code [highlight]="selectedFileView" [language]="selectedFileLanguage"></code></pre>
     </mat-card-content>
 </mat-card>

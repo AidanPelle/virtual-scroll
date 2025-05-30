@@ -1,11 +1,12 @@
-import { ChangeDetectorRef, Component, inject, Injector, Input, Type, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Injector, ViewContainerRef } from '@angular/core';
 import { DEMO_COMPONENTS } from '../demo-map';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { HighlightModule } from 'ngx-highlightjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-demo-viewer',
@@ -19,12 +20,14 @@ export class DemoViewerComponent {
   private _injector = inject(Injector);
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _http = inject(HttpClient);
-
-  @Input() componentId!: string;
+  private _route = inject(ActivatedRoute);
 
   fileViews: {title: string, file: string, language: string}[] = [];
+  selectedDemo?: typeof DEMO_COMPONENTS[string];
 
   selectedTabIndex = 0;
+
+  private _onDestroy = new Subject<void>();
 
   get selectedFileView(): string {
     if (this.fileViews[this.selectedTabIndex])
@@ -38,27 +41,37 @@ export class DemoViewerComponent {
     return '';
   }
   
-  async ngOnInit() {
-    const example = await this.loadExample(this.componentId);
-    this._viewContainerRef.createComponent(example, {injector: this._injector});
-    this._changeDetectorRef.markForCheck();
+  ngOnInit() {
+    this._route.params.pipe(takeUntil(this._onDestroy)).subscribe(params => {
+      this._viewContainerRef.clear();
+      this.selectedTabIndex = 0;
+      const componentId = params['componentId'];
+      this.selectedDemo = this.loadExample(componentId);
+      this._viewContainerRef.createComponent(this.selectedDemo.component, {injector: this._injector});
+      this._changeDetectorRef.markForCheck();
+    }); 
   }
 
-  async loadExample(name: string): Promise<Type<unknown>> {
-    const component = DEMO_COMPONENTS[name];
+  loadExample(name: string): typeof DEMO_COMPONENTS[string] {
+    const demo = DEMO_COMPONENTS[name];
     
-    const htmlFile$ = this._http.get(`assets/components/${name}/${name}.component.html`, { responseType: 'text' });
-    const tsFile$ = this._http.get(`assets/components/${name}/${name}.component.ts`, { responseType: 'text' });
-    const scssFile$ = this._http.get(`assets/components/${name}/${name}.component.scss`, { responseType: 'text' });
+    const htmlFile$ = this._http.get(`assets/components/${name}-demo/${name}-demo.component.html`, { responseType: 'text' });
+    const tsFile$ = this._http.get(`assets/components/${name}-demo/${name}-demo.component.ts`, { responseType: 'text' });
+    const scssFile$ = this._http.get(`assets/components/${name}-demo/${name}-demo.component.scss`, { responseType: 'text' });
 
     forkJoin([htmlFile$, tsFile$, scssFile$]).subscribe(([htmlFile, tsFile, scssFile]) => {
+      this.fileViews = [];
       this.fileViews.push({title: 'HTML', file: htmlFile, language: 'html'});
       this.fileViews.push({title: 'TS', file: tsFile, language: 'typescript'});
       if ((scssFile?.length ?? 0) > 0)
         this.fileViews.push({title: 'SCSS', file: scssFile, language: 'css'});
     });
 
-    return component;
+    return demo;
   }
 
+  ngOnDestroy(): void {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
 }
