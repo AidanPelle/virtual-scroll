@@ -488,7 +488,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       if (this._headerContainer && this._headerContainer.nativeElement.scrollLeft !== scrollLeft)
         this._headerContainer.nativeElement.scrollLeft = scrollLeft;
 
-      if (this._viewport && this._viewport.elementRef.nativeElement.scrollLeft !== this._viewport.elementRef.nativeElement.scrollLeft)
+      if (this._viewport && this._viewport.elementRef.nativeElement.scrollLeft !== scrollLeft)
         this._viewport.elementRef.nativeElement.scrollLeft = scrollLeft;
     }),
   );
