@@ -55,7 +55,7 @@ import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
 import { SCROLLBAR_WIDTH } from '../constants';
 
 @Component({
-  selector: 'virtual-scroll',
+  selector: '@aidan-pelle/virtual-scroll',
   templateUrl: './virtual-scroll.component.html',
   styleUrls: ['./virtual-scroll.component.scss', './vs-row.scss', './vs-cell.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

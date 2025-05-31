@@ -38,5 +38,5 @@ npm install @aidan-pelle/virtual-scroll
 
 # Default import
 ```ts
-import VirtualScrollModule from 'virtual-scroll'
+import VirtualScrollModule from '@aidan-pelle/virtual-scroll'
 ```

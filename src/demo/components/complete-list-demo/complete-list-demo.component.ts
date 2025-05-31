@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CompleteDataSource, VirtualScrollModule } from 'virtual-scroll';
+import { CompleteDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 import { MatCardModule } from '@angular/material/card';
 import { delay, of, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';

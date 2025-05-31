@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomDataSource, VirtualScrollModule } from 'virtual-scroll';
+import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
