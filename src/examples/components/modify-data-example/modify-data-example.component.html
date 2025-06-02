@@ -5,6 +5,6 @@
 
 <virtual-scroll [dataSource]="dataSource">
     <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
-    <div *cellDef="let item; let columnName = columnName; name: 'Cell 2'">{{columnName}}</div>
+    <div *cellDef="let item; name: 'Cell 2'">Cell 2</div>
     <div *cellDef="let item; name: 'Cell 3'">Cell 3</div>
 </virtual-scroll>
