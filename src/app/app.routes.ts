@@ -6,7 +6,7 @@ export const routes: Routes = [
     {path: '', redirectTo: 'overview', pathMatch: 'full'},
     {path: 'overview', component: HomePageComponent },
     {
-        path: 'example/:componentId',
+        path: 'examples/:componentId',
         component: ExampleViewerComponent,
     }
 ];
