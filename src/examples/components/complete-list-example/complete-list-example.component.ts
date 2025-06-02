@@ -5,13 +5,13 @@ import { delay, of, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-complete-list-demo',
-  templateUrl: './complete-list-demo.component.html',
-  styleUrl: './complete-list-demo.component.scss',
+  selector: 'app-complete-list-example',
+  templateUrl: './complete-list-example.component.html',
+  styleUrl: './complete-list-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule, MatCardModule, CommonModule],
 })
-export class CompleteListDemoComponent {
+export class CompleteListExampleComponent {
   infoLog: string[] = [];
 
   getData = () => {

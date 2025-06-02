@@ -2,15 +2,13 @@ import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({
-  selector: 'app-column-widths-demo',
-  templateUrl: './column-widths-demo.component.html',
-  styleUrl: './column-widths-demo.component.scss',
+  selector: 'app-resizable-example',
+  templateUrl: './resizable-example.component.html',
+  styleUrl: './resizable-example.component.scss',
   standalone: true,
-  imports: [
-    VirtualScrollModule,
-  ]
+  imports: [VirtualScrollModule],
 })
-export class ColumnWidthsDemoComponent {
+export class ResizableExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

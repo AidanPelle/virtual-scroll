@@ -1,17 +1,17 @@
 import { Type } from "@angular/core"
-import { ColumnWidthsDemoComponent } from "./components/column-widths-demo/column-widths-demo.component"
-import { CompleteListDemoComponent } from "./components/complete-list-demo/complete-list-demo.component"
-import { ContentAlignmentDemoComponent } from "./components/content-alignment-demo/content-alignment-demo.component"
-import { BasicDemoComponent } from "./components/basic-demo/basic-demo.component"
-import { DynamicHeightDemoComponent } from "./components/dynamic-height-demo/dynamic-height-demo.component"
-import { ModifyDataDemoComponent } from "./components/modify-data-demo/modify-data-demo.component"
-import { PaginatedDemoComponent } from "./components/paginated-demo/paginated-demo.component"
-import { ResizableDemoComponent } from "./components/resizable-demo/resizable-demo.component"
-import { ResponsiveColumnEnablingDemoComponent } from "./components/responsive-column-enabling-demo/responsive-column-enabling-demo.component"
-import { StickyColumnDemoComponent } from "./components/sticky-column-demo/sticky-column-demo.component"
-import { ColumnSelectorDemoComponent } from "./components/column-selector-demo/column-selector-demo.component"
+import { BasicexampleComponent } from "./components/basic-example/basic-example.component";
+import { ColumnSelectorExampleComponent } from "./components/column-selector-example/column-selector-example.component";
+import { ColumnWidthsExampleComponent } from "./components/column-widths-example/column-widths-example.component";
+import { CompleteListExampleComponent } from "./components/complete-list-example/complete-list-example.component";
+import { ContentAlignmentExampleComponent } from "./components/content-alignment-example/content-alignment-example.component";
+import { DynamicHeightExampleComponent } from "./components/dynamic-height-example/dynamic-height-example.component";
+import { ModifyDataExampleComponent } from "./components/modify-data-example/modify-data-example.component";
+import { PaginatedExampleComponent } from "./components/paginated-example/paginated-example.component";
+import { ResizableExampleComponent } from "./components/resizable-example/resizable-example.component";
+import { ResponsiveColumnEnablingExampleComponent } from "./components/responsive-column-enabling-example/responsive-column-enabling-example.component";
+import { StickyColumnExampleComponent } from "./components/sticky-column-example/sticky-column-example.component";
 
-type DemoComponent = {
+type Example = {
     [route: string]: {
         title: string,
         subtitle: string,
@@ -19,60 +19,60 @@ type DemoComponent = {
     }
 };
 
-export const DEMO_COMPONENTS: DemoComponent  = {
+export const EXAMPLE_COMPONENTS: Example  = {
     "basic": {
         title: "Basic Configuration",
         subtitle: "A minimum setup in order to produce a working list.",
-        component: BasicDemoComponent,
+        component: BasicexampleComponent,
     },
     "column-selector": {
         title: "Column Selector",
         subtitle: "Allows a user to enable, disable, or reorder columns to their individual preference.",
-        component: ColumnSelectorDemoComponent,
+        component: ColumnSelectorExampleComponent,
     },
     "column-widths": {
         title: "Column Widths",
         subtitle: "Column widths can be defined as a fraction, a fixed width (px), a min/max width (px), or some combination.",
-        component: ColumnWidthsDemoComponent,
+        component: ColumnWidthsExampleComponent,
     },
     "complete-list": {
         title: "Complete List",
         subtitle: "A minimum setup in order to produce a working list.",
-        component: CompleteListDemoComponent,
+        component: CompleteListExampleComponent,
     },
     "content-alignment": {
         title: "Content Alignment",
         subtitle: "Specify if you want content to be left, center or right aligned for a given column.",
-        component: ContentAlignmentDemoComponent,
+        component: ContentAlignmentExampleComponent,
     },
     "dynamic-height": {
         title: "Dynamic Height",
         subtitle: "Resize the viewport and the virtual list will grow/shrink accordingly.",
-        component: DynamicHeightDemoComponent,
+        component: DynamicHeightExampleComponent,
     },
     "modify-data": {
         title: "Modifying List Data",
         subtitle: "When using a Custom DataSource, we can append/remove items in the list, which will automatically be caught by Virtual Scroll.",
-        component: ModifyDataDemoComponent,
+        component: ModifyDataExampleComponent,
     },
     "paginated": {
         title: "Paginated List",
         subtitle: "A paginated list, first retrieving a data count, followed by only the relevant chunks of data.",
-        component: PaginatedDemoComponent,
+        component: PaginatedExampleComponent,
     },
     "resizable": {
         title: "Resizable Columns",
         subtitle: "A minimum setup in order to produce a working list.",
-        component: ResizableDemoComponent,
+        component: ResizableExampleComponent,
     },
     "responsive-column-enabling": {
         title: "Responsive Columns",
         subtitle: "Columns can be enabled/disabled for different screen widths, for this example we're using 1000px and 1400px as breakpoints.",
-        component: ResponsiveColumnEnablingDemoComponent,
+        component: ResponsiveColumnEnablingExampleComponent,
     },
     "sticky-column": {
         title: "Sticky Column",
         subtitle: "When the screen width is too small to fit all the columns on-screen, the column designated as sticky will 'stick' to either side of the viewport.",
-        component: StickyColumnDemoComponent,
+        component: StickyColumnExampleComponent,
     },
 }

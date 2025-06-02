@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({
-  selector: 'app-responsive-column-enabling-demo',
-  templateUrl: './responsive-column-enabling-demo.component.html',
-  styleUrl: './responsive-column-enabling-demo.component.scss',
+  selector: 'app-sticky-column-example',
+  templateUrl: './sticky-column-example.component.html',
+  styleUrl: './sticky-column-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class ResponsiveColumnEnablingDemoComponent {
+export class StickyColumnExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

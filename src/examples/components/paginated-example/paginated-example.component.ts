@@ -5,13 +5,13 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-paginated-demo',
-  templateUrl: './paginated-demo.component.html',
-  styleUrl: './paginated-demo.component.scss',
+  selector: 'app-paginated-example',
+  templateUrl: './paginated-example.component.html',
+  styleUrl: './paginated-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule, MatCardModule, CommonModule],
 })
-export class PaginatedDemoComponent {
+export class PaginatedExampleComponent {
   infoLog: string[] = [];
 
   getCount = () => {

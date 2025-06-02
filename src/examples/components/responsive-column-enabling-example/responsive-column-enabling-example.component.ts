@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({
-  selector: 'app-dynamic-height-demo',
-  templateUrl: './dynamic-height-demo.component.html',
-  styleUrl: './dynamic-height-demo.component.scss',
+  selector: 'app-responsive-column-enabling-example',
+  templateUrl: './responsive-column-enabling-example.component.html',
+  styleUrl: './responsive-column-enabling-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class DynamicHeightDemoComponent {
+export class ResponsiveColumnEnablingExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

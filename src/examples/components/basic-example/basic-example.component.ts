@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 @Component({
-  selector: 'app-default-demo',
-  templateUrl: './basic-demo.component.html',
-  styleUrl: './basic-demo.component.scss',
+  selector: 'app-default-example',
+  templateUrl: './basic-example.component.html',
+  styleUrl: './basic-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class BasicDemoComponent {
+export class BasicexampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

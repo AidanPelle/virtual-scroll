@@ -3,11 +3,11 @@ import { VirtualScrollModule } from '../../projects/virtual-scroll/src/public-ap
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { DEMO_COMPONENTS } from '../demo/demo-map';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { EXAMPLE_COMPONENTS } from '../examples/example-map';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +34,7 @@ export class AppComponent {
     this._iconRegistry.addSvgIcon('github-logo', this._sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github-mark.svg'));
   }
 
-  demoRoutes = DEMO_COMPONENTS;
+  demoRoutes = EXAMPLE_COMPONENTS;
 
   isRouteActivated(route: string) {
     return this._router.url.includes(route);

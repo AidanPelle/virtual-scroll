@@ -1,0 +1,19 @@
+.example-viewer-card {
+    overflow: auto;
+    margin-bottom: 20px;
+    
+    .card-header {
+        padding: 0;
+        padding-top: 6px;
+        border-bottom: 2px solid #F0F0F0;
+        flex-direction: column;
+        
+        .example-title {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+}

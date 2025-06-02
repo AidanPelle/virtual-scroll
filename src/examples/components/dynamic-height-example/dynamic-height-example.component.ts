@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({
-  selector: 'app-resizable-demo',
-  templateUrl: './resizable-demo.component.html',
-  styleUrl: './resizable-demo.component.scss',
+  selector: 'app-dynamic-height-example',
+  templateUrl: './dynamic-height-example.component.html',
+  styleUrl: './dynamic-height-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class ResizableDemoComponent {
+export class DynamicHeightExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

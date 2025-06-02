@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, Injector, ViewChild, ViewContainerRef } from '@angular/core';
-import { DEMO_COMPONENTS } from '../demo-map';
+import { EXAMPLE_COMPONENTS } from '../example-map';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { HttpClient } from '@angular/common/http';
@@ -12,9 +12,9 @@ import { MatButtonModule } from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-demo-viewer',
-  templateUrl: './demo-viewer.component.html',
-  styleUrl: './demo-viewer.component.scss',
+  selector: 'app-example-viewer',
+  templateUrl: './example-viewer.component.html',
+  styleUrl: './example-viewer.component.scss',
   standalone: true,
   imports: [
     CommonModule,
@@ -26,18 +26,18 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatTooltipModule,
   ],
 })
-export class DemoViewerComponent {
+export class ExampleViewerComponent {
   private _injector = inject(Injector);
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _http = inject(HttpClient);
   private _route = inject(ActivatedRoute);
 
-  @ViewChild('demoComponentContainer', {static: true, read: ViewContainerRef}) _viewContainerRef!: ViewContainerRef;
+  @ViewChild('exampleComponentContainer', {static: true, read: ViewContainerRef}) _viewContainerRef!: ViewContainerRef;
 
   protected _showCodeView = false;
 
   fileViews: {title: string, file: string, language: string}[] = [];
-  selectedDemo?: typeof DEMO_COMPONENTS[string];
+  selectedExample?: typeof EXAMPLE_COMPONENTS[string];
 
   selectedTabIndex = 0;
 
@@ -60,18 +60,18 @@ export class DemoViewerComponent {
       this._viewContainerRef.clear();
       this.selectedTabIndex = 0;
       const componentId = params['componentId'];
-      this.selectedDemo = this.loadExample(componentId);
-      this._viewContainerRef.createComponent(this.selectedDemo.component, {injector: this._injector});
+      this.selectedExample = this.loadExample(componentId);
+      this._viewContainerRef.createComponent(this.selectedExample.component, {injector: this._injector});
       this._changeDetectorRef.markForCheck();
     }); 
   }
 
-  loadExample(name: string): typeof DEMO_COMPONENTS[string] {
-    const demo = DEMO_COMPONENTS[name];
+  loadExample(name: string): typeof EXAMPLE_COMPONENTS[string] {
+    const demo = EXAMPLE_COMPONENTS[name];
     
-    const htmlFile$ = this._http.get(`assets/components/${name}-demo/${name}-demo.component.html`, { responseType: 'text' });
-    const tsFile$ = this._http.get(`assets/components/${name}-demo/${name}-demo.component.ts`, { responseType: 'text' });
-    const scssFile$ = this._http.get(`assets/components/${name}-demo/${name}-demo.component.scss`, { responseType: 'text' });
+    const htmlFile$ = this._http.get(`assets/components/${name}-example/${name}-example.component.html`, { responseType: 'text' });
+    const tsFile$ = this._http.get(`assets/components/${name}-example/${name}-example.component.ts`, { responseType: 'text' });
+    const scssFile$ = this._http.get(`assets/components/${name}-example/${name}-example.component.scss`, { responseType: 'text' });
 
     forkJoin([htmlFile$, tsFile$, scssFile$]).subscribe(([htmlFile, tsFile, scssFile]) => {
       this.fileViews = [];

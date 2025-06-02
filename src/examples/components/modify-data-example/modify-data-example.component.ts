@@ -3,13 +3,13 @@ import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scro
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-modify-data-demo',
-  templateUrl: './modify-data-demo.component.html',
-  styleUrl: './modify-data-demo.component.scss',
+  selector: 'app-modify-data-example',
+  templateUrl: './modify-data-example.component.html',
+  styleUrl: './modify-data-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule, MatButtonModule],
 })
-export class ModifyDataDemoComponent {
+export class ModifyDataExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

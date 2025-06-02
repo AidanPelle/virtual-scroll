@@ -1,20 +1,16 @@
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({
-  selector: 'app-column-selector-demo',
-  templateUrl: './column-selector-demo.component.html',
-  styleUrl: './column-selector-demo.component.scss',
+  selector: 'app-column-widths-example',
+  templateUrl: './column-widths-example.component.html',
+  styleUrl: './column-widths-example.component.scss',
   standalone: true,
   imports: [
     VirtualScrollModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  ]
 })
-export class ColumnSelectorDemoComponent {
+export class ColumnWidthsExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

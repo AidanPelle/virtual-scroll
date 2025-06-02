@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({
-  selector: 'app-content-alignment-demo',
-  templateUrl: './content-alignment-demo.component.html',
-  styleUrl: './content-alignment-demo.component.scss',
+  selector: 'app-content-alignment-example',
+  templateUrl: './content-alignment-example.component.html',
+  styleUrl: './content-alignment-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class ContentAlignmentDemoComponent {
+export class ContentAlignmentExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {
