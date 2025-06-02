@@ -55,7 +55,7 @@
         <p><b>Header Cells</b> briefly covers how to provide custom templates for header cells and how to link them to the row cell by name.</p>
         <p><b>Rows</b> covers how to provide custom row or header row templates, for row-level functionality or styling.</p>
         <p>
-            On the left is a list of links to live examples for all provided functionality,
+            On the left is a list of links to examples for all provided functionality,
             with copyable code views for each example to facilitate initial setup.
         </p>
 
@@ -82,6 +82,7 @@
             <h3><b>Offset</b></h3>
             <p>
                 The offset will reduce the height of the table by some pixel value.
+                <br>
                 This is most commonly used in conjunction with heightVh, so that the table height will be 100% of the viewport height - some pixel value,
                 essentially the same as calc(100vh - 500px).
             </p>
@@ -98,6 +99,7 @@
             <h3><b>MinRowBuffer</b></h3>
             <p>
                 The minimum number of rows to pre-render outside of the current viewport.
+                <br>
                 Whenever the viewport falls below the minimum number of buffered elements, it'll start rendering
                 to fill the buffer until it hits the maximum.
             </p>
@@ -106,14 +108,21 @@
             <h3><b>MaxRowBuffer</b></h3>
             <p>
                 The maximum number of rows to pre-render outside of the current viewport.
+                <br>
                 Whenever the viewport falls below the minimum number of buffered elements, it'll start rendering
                 to fill the buffer until it hits the maximum.
             </p>
             <a href="/examples/row-buffer">Example</a>
 
             <h3><b>CanResize</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>
+                This attribute, when applied to the &lt;virtual-scroll&gt; element, will allow the user to resize columns,
+                <br>
+                Double-clicking on a resize bar will reset the columns to their original sizes.
+                <br>
+                <b>Note:</b> Whenever any one column is resized, all columns will be moved to fixedWidth, and no longer flex with the screen size.
+            </p>
+            <a href="/examples/resizable">Example</a>
 
             <h3><b>ResizeWidth</b></h3>
             <p>Stuff</p>
