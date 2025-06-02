@@ -10,6 +10,8 @@ import { PaginatedExampleComponent } from "./components/paginated-example/pagina
 import { ResizableExampleComponent } from "./components/resizable-example/resizable-example.component";
 import { ResponsiveColumnEnablingExampleComponent } from "./components/responsive-column-enabling-example/responsive-column-enabling-example.component";
 import { StickyColumnExampleComponent } from "./components/sticky-column-example/sticky-column-example.component";
+import { CellPaddingExampleComponent } from "./components/cell-padding-example/cell-padding-example.component";
+import { SmallContentExampleComponent } from "./components/small-content-example/small-content-example.component";
 
 type Example = {
     [route: string]: {
@@ -24,6 +26,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Basic Configuration",
         subtitle: "A minimum setup in order to produce a working list.",
         component: BasicexampleComponent,
+    },
+    "cell-padding": {
+        title: "Cell Padding",
+        subtitle: "Allows a developer to modify the padding applied to each column by default.",
+        component: CellPaddingExampleComponent,
     },
     "column-selector": {
         title: "Column Selector",
@@ -69,6 +76,16 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Responsive Columns",
         subtitle: "Columns can be enabled/disabled for different screen widths, for this example we're using 1000px and 1400px as breakpoints.",
         component: ResponsiveColumnEnablingExampleComponent,
+    },
+    "small-content": {
+        title: "Small Content",
+        subtitle: "When the content (itemSize * rowCount) is less than the height of the table, the table will shrink to fit the rows instead.",
+        component: SmallContentExampleComponent,
+    },
+    "static-height": {
+        title: "Static Height",
+        subtitle: "The height of a table can be defined by a developer as a pixel value, to set as an unchanging height regardless of window size.",
+        component: StickyColumnExampleComponent,
     },
     "sticky-column": {
         title: "Sticky Column",

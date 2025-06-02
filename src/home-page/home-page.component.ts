@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -6,7 +7,10 @@ import { RouterLink } from '@angular/router';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
   standalone: true,
-  imports: [RouterLink],
+  imports: [
+    MatCardModule,
+    RouterLink,
+  ],
 })
 export class HomePageComponent {
   
