@@ -15,6 +15,7 @@ import { SmallContentExampleComponent } from "./components/small-content-example
 import { StaticHeightExampleComponent } from "./components/static-height-example/static-height-example.component";
 import { ItemSizeExampleComponent } from "./components/item-size-example/item-size-example.component";
 import { RowBufferExampleComponent } from "./components/row-buffer-example/row-buffer-example.component";
+import { ResizeWidthExampleComponent } from "./components/resize-width-example/resize-width-example.component";
 
 type Example = {
     [route: string]: {
@@ -47,7 +48,7 @@ export const EXAMPLE_COMPONENTS: Example  = {
     },
     "complete-list": {
         title: "Complete List",
-        subtitle: "A minimum setup in order to produce a working list.",
+        subtitle: "A list provided to virtual scroll asynchronously, rather than on initialization.",
         component: CompleteListExampleComponent,
     },
     "content-alignment": {
@@ -77,8 +78,13 @@ export const EXAMPLE_COMPONENTS: Example  = {
     },
     "resizable": {
         title: "Resizable Columns",
-        subtitle: "A minimum setup in order to produce a working list.",
+        subtitle: "Columns that can be resized to any width by the end user (which will disable flex columns).",
         component: ResizableExampleComponent,
+    },
+    "resize-width": {
+        title: "Resize Width",
+        subtitle: "A custom width for the resize bar between columns, to make more obvious or less obtrusive.",
+        component: ResizeWidthExampleComponent,
     },
     "responsive-column-enabling": {
         title: "Responsive Columns",
