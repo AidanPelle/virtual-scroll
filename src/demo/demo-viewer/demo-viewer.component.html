@@ -2,7 +2,7 @@
     <mat-card-header class="card-header">
         <div style="display: flex; justify-content: space-between; padding: 12px; width: 100%; box-sizing: border-box;">
             <div>
-                <h2>{{selectedDemo?.title}}</h2>
+                <h1>{{selectedDemo?.title}}</h1>
                 <h3>{{selectedDemo?.subtitle}}</h3>
             </div>
             <button mat-icon-button style="margin-left: auto; margin-right: 20px;" (click)="_showCodeView = !_showCodeView" [matTooltip]="_showCodeView ? 'Hide code' : 'Show code'">

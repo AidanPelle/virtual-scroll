@@ -13,7 +13,7 @@ npm install @aidan-pelle/virtual-scroll
 
 # Overview
 
-This virtual scroll project focuses on providing a template to rapidly scaffold well-organized infinitely scrolling lists,
+This project focuses on providing a template to rapidly scaffold well-organized infinitely scrolling lists,
 and adding new functionality for the end user.
 A variety of features are supported, including multiple data retrieval strategies, column re-ordering, resizing, and turning columns on/off.
 It provides some standardized behavior for setting column widths and responsive behavior.

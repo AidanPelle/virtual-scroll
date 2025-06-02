@@ -77,7 +77,7 @@ export class CellDefDirective {
    * Designates this column as 'sticky', where it'll catch on the left/right side of the container when scrolling,
    * to ensure that the column always remains visible.
    */
-  @Input('cellDefSticky') isSticky = false;
+  @Input('cellDefIsSticky') isSticky = false;
 
   /**
    * Handles the current state as selected by a user.

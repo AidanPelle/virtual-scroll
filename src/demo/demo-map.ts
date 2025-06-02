@@ -11,7 +11,15 @@ import { ResponsiveColumnEnablingDemoComponent } from "./components/responsive-c
 import { StickyColumnDemoComponent } from "./components/sticky-column-demo/sticky-column-demo.component"
 import { ColumnSelectorDemoComponent } from "./components/column-selector-demo/column-selector-demo.component"
 
-export const DEMO_COMPONENTS: {[route: string]: {title: string, subtitle: string, component: Type<unknown>}} = {
+type DemoComponent = {
+    [route: string]: {
+        title: string,
+        subtitle: string,
+        component: Type<unknown>
+    }
+};
+
+export const DEMO_COMPONENTS: DemoComponent  = {
     "basic": {
         title: "Basic Configuration",
         subtitle: "A minimum setup in order to produce a working list.",

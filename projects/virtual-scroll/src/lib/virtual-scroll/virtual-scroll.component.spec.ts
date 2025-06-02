@@ -86,7 +86,7 @@ describe('VirtualScrollComponent', () => {
   <div style="width: 200px;">
     <virtual-scroll>
       <div *cellDef="let item; name: 'Cell 1';">Cell 1</div>
-      <div *cellDef="let item; name: 'Cell 2'; sticky: true;">Cell 2</div>
+      <div *cellDef="let item; name: 'Cell 2'; isSticky: true;">Cell 2</div>
     </virtual-scroll>
   </div>
   `,
