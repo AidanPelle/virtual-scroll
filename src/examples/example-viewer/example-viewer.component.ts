@@ -9,7 +9,9 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-example-viewer',
@@ -24,6 +26,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    ClipboardModule,
   ],
 })
 export class ExampleViewerComponent {
@@ -31,6 +34,7 @@ export class ExampleViewerComponent {
   private _changeDetectorRef = inject(ChangeDetectorRef);
   private _http = inject(HttpClient);
   private _route = inject(ActivatedRoute);
+  private _snackbar = inject(MatSnackBar);
 
   @ViewChild('exampleComponentContainer', {static: true, read: ViewContainerRef}) _viewContainerRef!: ViewContainerRef;
 
@@ -82,6 +86,10 @@ export class ExampleViewerComponent {
     });
 
     return demo;
+  }
+
+  copiedToClipboard() {
+    this._snackbar.open('Example copied');
   }
 
   ngOnDestroy(): void {

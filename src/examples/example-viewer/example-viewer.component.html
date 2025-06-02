@@ -5,7 +5,7 @@
                 <h1>{{selectedExample?.title}}</h1>
                 <h3>{{selectedExample?.subtitle}}</h3>
             </div>
-            <button mat-icon-button style="margin-left: auto; margin-right: 20px;" (click)="_showCodeView = !_showCodeView" [matTooltip]="_showCodeView ? 'Hide code' : 'Show code'">
+            <button mat-icon-button style="margin-left: auto;" (click)="_showCodeView = !_showCodeView" [matTooltip]="_showCodeView ? 'Hide code' : 'Show code'">
                 <mat-icon>code</mat-icon>
             </button>
         </div>
@@ -19,7 +19,10 @@
         
     </mat-card-header>
     @if (_showCodeView) {
-        <mat-card-content style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);">
+        <mat-card-content class="code-view-container">
+            <button mat-icon-button class="copy-button" [cdkCopyToClipboard]="selectedFileView" (cdkCopyToClipboardCopied)="copiedToClipboard()" matTooltip="Copy example">
+                <mat-icon>content_copy</mat-icon>
+            </button>
             <pre class="code-view"><code [highlight]="selectedFileView" [language]="selectedFileLanguage"></code></pre>
         </mat-card-content>
     }
