@@ -12,6 +12,7 @@ import { ResponsiveColumnEnablingExampleComponent } from "./components/responsiv
 import { StickyColumnExampleComponent } from "./components/sticky-column-example/sticky-column-example.component";
 import { CellPaddingExampleComponent } from "./components/cell-padding-example/cell-padding-example.component";
 import { SmallContentExampleComponent } from "./components/small-content-example/small-content-example.component";
+import { StaticHeightExampleComponent } from "./components/static-height-example/static-height-example.component";
 
 type Example = {
     [route: string]: {
@@ -85,7 +86,7 @@ export const EXAMPLE_COMPONENTS: Example  = {
     "static-height": {
         title: "Static Height",
         subtitle: "The height of a table can be defined by a developer as a pixel value, to set as an unchanging height regardless of window size.",
-        component: StickyColumnExampleComponent,
+        component: StaticHeightExampleComponent,
     },
     "sticky-column": {
         title: "Sticky Column",
