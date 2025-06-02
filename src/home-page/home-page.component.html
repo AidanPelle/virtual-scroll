@@ -45,8 +45,8 @@
             <li>Rows</li>
         </ul>
         <p>
-            <b>Main Component</b> covers any information on inputs or customization applied directly to the base element, &lt;virtual-scroll&gt;,
-            including settings for row size, table height, buffers, et cetera.
+            <b>Main Component</b> covers any information on inputs or customization applied directly to the base element,
+            &lt;virtual-scroll&gt;, including settings for row size, table height, buffers, et cetera.
         </p>
         <p>
             <b>Cells</b> covers information relevant to configuring a given column inside of the table,
@@ -54,7 +54,10 @@
         </p>
         <p><b>Header Cells</b> briefly covers how to provide custom templates for header cells and how to link them to the row cell by name.</p>
         <p><b>Rows</b> covers how to provide custom row or header row templates, for row-level functionality or styling.</p>
-        <p>On the left is a list of links to live examples for all provided functionality, with copyable code views for each example to facilitate initial setup.</p>
+        <p>
+            On the left is a list of links to live examples for all provided functionality,
+            with copyable code views for each example to facilitate initial setup.
+        </p>
 
         <div class="docs-content">
             <h1>Main Component</h1>
@@ -71,25 +74,42 @@
             <h3><b>HeightVh</b></h3>
             <p>
                 Table height can also be set as some fraction of the viewport height, from 0-100, by passing a custom heightVh value.
+                <br>
                 <b>Note:</b> this will override the heightPx value, so if both are passed in, only heightVh will take effect.
             </p>
             <a href="/examples/dynamic-height">Example</a>
 
-            <h3><b>ItemSize</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
-
             <h3><b>Offset</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>
+                The offset will reduce the height of the table by some pixel value.
+                This is most commonly used in conjunction with heightVh, so that the table height will be 100% of the viewport height - some pixel value,
+                essentially the same as calc(100vh - 500px).
+            </p>
+            <a href="/examples/dynamic-height">Example</a>
+
+            <h3><b>ItemSize</b></h3>
+            <p>
+                The height of a row is by default 48px, but can be modified as needed to some other value.
+                <br>
+                <b>Note:</b> The height of every row must always be uniform, to calculate the size of the scrollbar.
+            </p>
+            <a href="/examples/item-size">Example</a>            
 
             <h3><b>MinRowBuffer</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>
+                The minimum number of rows to pre-render outside of the current viewport.
+                Whenever the viewport falls below the minimum number of buffered elements, it'll start rendering
+                to fill the buffer until it hits the maximum.
+            </p>
+            <a href="/examples/row-buffer">Example</a>
 
             <h3><b>MaxRowBuffer</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>
+                The maximum number of rows to pre-render outside of the current viewport.
+                Whenever the viewport falls below the minimum number of buffered elements, it'll start rendering
+                to fill the buffer until it hits the maximum.
+            </p>
+            <a href="/examples/row-buffer">Example</a>
 
             <h3><b>CanResize</b></h3>
             <p>Stuff</p>
@@ -148,6 +168,10 @@
             <a>Link</a>
 
             <h3><b>IsSticky</b></h3>
+            <p>Stuff</p>
+            <a>Link</a>
+
+            <h3><b>Context</b></h3>
             <p>Stuff</p>
             <a>Link</a>
 

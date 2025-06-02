@@ -13,6 +13,8 @@ import { StickyColumnExampleComponent } from "./components/sticky-column-example
 import { CellPaddingExampleComponent } from "./components/cell-padding-example/cell-padding-example.component";
 import { SmallContentExampleComponent } from "./components/small-content-example/small-content-example.component";
 import { StaticHeightExampleComponent } from "./components/static-height-example/static-height-example.component";
+import { ItemSizeExampleComponent } from "./components/item-size-example/item-size-example.component";
+import { RowBufferExampleComponent } from "./components/row-buffer-example/row-buffer-example.component";
 
 type Example = {
     [route: string]: {
@@ -58,6 +60,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         subtitle: "Resize the viewport and the virtual list will grow/shrink accordingly.",
         component: DynamicHeightExampleComponent,
     },
+    "item-size": {
+        title: "Item Size",
+        subtitle: "Customize the size of a row to some value in pixels.",
+        component: ItemSizeExampleComponent,
+    },
     "modify-data": {
         title: "Modifying List Data",
         subtitle: "When using a Custom DataSource, we can append/remove items in the list, which will automatically be caught by Virtual Scroll.",
@@ -77,6 +84,12 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Responsive Columns",
         subtitle: "Columns can be enabled/disabled for different screen widths, for this example we're using 1000px and 1400px as breakpoints.",
         component: ResponsiveColumnEnablingExampleComponent,
+    },
+    "row-buffer": {
+        title: "Row Buffers",
+        subtitle: "When the amount of rows rendered outside of the viewport (the buffer) falls below some minimum, it'll refill the buffer up to the maximum."
+            + "For this example, please view the DOM to see changes in the buffer.",
+        component: RowBufferExampleComponent,
     },
     "small-content": {
         title: "Small Content",
