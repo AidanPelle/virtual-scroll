@@ -71,10 +71,10 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   @ViewChildren(RowOutletDirective) _renderedRows!: QueryList<RowOutletDirective<T>>;
   @ViewChildren(HeaderOutletDirective) _renderedHeader!: QueryList<HeaderOutletDirective<T>>;
 
-  @ContentChildren(CellDefDirective, { descendants: true }) _cellDefsContent?: QueryList<CellDefDirective>;
+  @ContentChildren(CellDefDirective, { descendants: true }) _cellDefsContent?: QueryList<CellDefDirective<T>>;
   @ContentChild(RowDefDirective, { read: TemplateRef }) _rowTemplate?: TemplateRef<unknown>;
   @ContentChild(HeaderCellDefDirective, { read: TemplateRef }) _headerTemplate?: TemplateRef<unknown>;
-  @ContentChildren(HeaderCellDefDirective, { descendants: true }) _headerCellDefs?: QueryList<HeaderCellDefDirective>;
+  @ContentChildren(HeaderCellDefDirective, { descendants: true }) _headerCellDefs?: QueryList<HeaderCellDefDirective<T>>;
 
   protected readonly SCROLLBAR_WIDTH = SCROLLBAR_WIDTH;
 
@@ -217,7 +217,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   private readonly _resetSizes = new BehaviorSubject<void>(undefined);
 
   /** Handles the initial mapping from the contentChildren out to subsequent functions, and allows us access to the current array value. */
-  private readonly _cellDefs = new BehaviorSubject<CellDefDirective[]>([]);
+  private readonly _cellDefs = new BehaviorSubject<CellDefDirective<T>[]>([]);
 
   /** Used to force an observable to not start processing until after the view has initialized, so that we have access to dynamic viewChildren. */
   private readonly _afterViewInit = new ReplaySubject<boolean>(1);

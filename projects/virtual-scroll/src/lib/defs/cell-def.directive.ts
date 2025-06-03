@@ -1,13 +1,14 @@
 import { Directive, inject, TemplateRef, Input } from "@angular/core";
 import { VirtualScrollComponent } from "../virtual-scroll/virtual-scroll.component";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, shareReplay } from "rxjs";
+import { CellContext } from "../interfaces/cell-context";
 
 @Directive({
   selector: '[cellDef]',
 })
-export class CellDefDirective {
+export class CellDefDirective<T> {
 
-  public template = inject(TemplateRef);
+  public template: TemplateRef<CellContext<T>> = inject(TemplateRef);
   private _virtualScroll = inject(VirtualScrollComponent);
 
   /** A unique name for the column. Used for rendering the header, and populating the column selector dialog. */

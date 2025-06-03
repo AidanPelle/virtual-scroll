@@ -1,4 +1,5 @@
 import { Directive, Input, TemplateRef } from '@angular/core';
+import { CellContext } from '../interfaces/cell-context';
 
 /**
  * This directive is used to handle when a developer needs a custom
@@ -9,7 +10,7 @@ import { Directive, Input, TemplateRef } from '@angular/core';
 @Directive({
   selector: '[headerCellDef]'
 })
-export class HeaderCellDefDirective {
+export class HeaderCellDefDirective<T> {
 
   /**
    * The name of the column for the header cell.
@@ -20,7 +21,7 @@ export class HeaderCellDefDirective {
   @Input('headerCellDefName') columnName: string = '';
 
   constructor(
-    public template: TemplateRef<unknown>,
+    public template: TemplateRef<CellContext<T>>,
   ) { }
 
 }

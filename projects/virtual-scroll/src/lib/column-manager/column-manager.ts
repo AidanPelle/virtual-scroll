@@ -43,10 +43,10 @@ export class ColumnManager<T> {
     private readonly _isHeader: boolean = false;
 
     /** The definitions for the header cells. */
-    private readonly _headerCellDefs!: HeaderCellDefDirective[];
+    private readonly _headerCellDefs!: HeaderCellDefDirective<T>[];
 
     /** A default header cell template, to use whenever there is no custom header cell def provided by the user. */
-    private readonly _defaultHeaderCellTemplate?: TemplateRef<unknown>;
+    private readonly _defaultHeaderCellTemplate?: TemplateRef<CellContext<T>>;
 
     /** The slider template, for rendering in between each row. */
     private readonly _sliderTemplate!: TemplateRef<unknown>;
@@ -68,8 +68,8 @@ export class ColumnManager<T> {
         renderSticky: BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>,
         sliderTemplate: TemplateRef<unknown>,
         isHeader: boolean,
-        headerCellDefs: HeaderCellDefDirective[],
-        defaultHeaderCellTemplate?: TemplateRef<unknown>,
+        headerCellDefs: HeaderCellDefDirective<T>[],
+        defaultHeaderCellTemplate?: TemplateRef<CellContext<T>>,
     ) {
         this._viewContainer = viewContainer;
         this._virtualScroll = virtualScroll;
@@ -195,7 +195,7 @@ export class ColumnManager<T> {
     }
 
     /** Given a cell def directive, render the template inside of the row at the appropriate index, and apply the sticky shadow. */
-    private _renderCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
+    private _renderCell(val: { cellDef: CellDefDirective<T>, baseIndex: number, isActive: boolean }, activeIndex: number): void {
         const indexToPlace = this._virtualScroll.canResize ? activeIndex * 2 : activeIndex;
         const cellTemplate = this._isHeader ? (this._headerCellDefs.find(h => h.columnName === val.cellDef.columnName)?.template ?? this._defaultHeaderCellTemplate!) : val.cellDef.template;
 
@@ -217,7 +217,7 @@ export class ColumnManager<T> {
     }
 
     /** Given a cell def directive, remove it from the rendered row. */
-    private _removeRenderedCell(val: { cellDef: CellDefDirective, baseIndex: number, isActive: boolean }, activeIndex: number): void {
+    private _removeRenderedCell(val: { cellDef: CellDefDirective<T>, baseIndex: number, isActive: boolean }, activeIndex: number): void {
         const renderedCellIndex = this.renderedCellViews.findIndex(r => r.columnName === val.cellDef.columnName);
         const indexToPlace = this._virtualScroll.canResize ? activeIndex * 2 : activeIndex;
         if (renderedCellIndex === -1)      // If the cell hasn't already been rendered, we can end here, since no action needed.
