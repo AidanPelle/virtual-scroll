@@ -262,10 +262,12 @@ export class ColumnManager<T> {
     /** Update the implicit context for the cells in the row, to maintain proper referencing. */
     private _updateCellContext(): void {
         for (let i = 0; i < this._viewContainer.length; i++) {
-            const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<CellContext<T>>;
-
+            const context = (this._viewContainer.get(i) as EmbeddedViewRef<CellContext<T>>).context;
             const cellIndex = this._virtualScroll.canResize ? Math.floor(i / 2) : i;
-            viewRef.context = { $implicit: this._item, index: this._index, columnName: viewRef.context.columnName, cellIndex: cellIndex }
+
+            context.$implicit = this._item;
+            context.index = this._index;
+            context.cellIndex = cellIndex;
         }
     }
 }

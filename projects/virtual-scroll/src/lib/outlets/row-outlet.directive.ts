@@ -141,8 +141,11 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
   /** Handles updating the context provided to the row template with the current context, whenever references change. */
   private _updateRowContext(): void {
-    if (this._viewContainer.get(0))
-      (this._viewContainer.get(0) as EmbeddedViewRef<RowContext<T>>).context = { $implicit: this._item, index: this._index };
+    if (this._viewContainer.get(0)) {
+      const context = (this._viewContainer.get(0) as EmbeddedViewRef<RowContext<T>>).context;
+      context.$implicit = this._item;
+      context.index = this._index;
+    }
   }
 
   ngOnDestroy(): void {
