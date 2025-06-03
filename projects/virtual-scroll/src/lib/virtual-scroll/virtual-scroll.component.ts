@@ -11,6 +11,7 @@ import {
   inject,
   Input,
   OnInit,
+  Output,
   QueryList,
   TemplateRef,
   TrackByFunction,
@@ -506,7 +507,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
    *
    * We listen to dataSource and the dataListener so that we can update scroll count appropriately on both
    */
-  protected readonly footerData$ = combineLatest([this._throttledScrollIndex$, this._numberOfVisibleRows$, this.dataSource$, this.dataSource$.pipe(switchMap(src => src.dataListener))]).pipe(
+  @Output() readonly scrollData = combineLatest([this._throttledScrollIndex$, this._numberOfVisibleRows$, this.dataSource$, this.dataSource$.pipe(switchMap(src => src.dataListener))]).pipe(
     takeUntil(this._onDestroy),
     map(([scrollIndex, numberOfVisibleRows, dataSource]) => {
       const start = dataSource.length == 0 ? 0 : scrollIndex;
@@ -518,7 +519,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       };
       return footerData;
     }),
-    startWith({ start: -1, end: -1, itemCount: 0 }),
+    startWith({ start: -1, end: -1, itemCount: 0 } as VirtualScrollFooterData),
     shareReplay(1),
   );
 

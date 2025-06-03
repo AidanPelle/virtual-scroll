@@ -22,9 +22,8 @@
         position: relative;
 
         .copy-button {
-            position: absolute;
-            top: 12px;
-            right: 12px;
+            float: right;
+            margin-top: 12px;
         }
     }
 }

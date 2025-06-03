@@ -16,3 +16,4 @@ export * from './lib/data-sources/base-data-source';
 export * from './lib/data-sources/complete-data-source';
 export * from './lib/data-sources/custom-data-source';
 export * from './lib/data-sources/paginated-data-source';
+export * from './lib/interfaces/footer-data';

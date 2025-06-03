@@ -18,6 +18,9 @@ import { RowBufferExampleComponent } from "./components/row-buffer-example/row-b
 import { ResizeWidthExampleComponent } from "./components/resize-width-example/resize-width-example.component";
 import { DefaultLoadingExampleComponent } from "./components/default-loading-example/default-loading-example.component";
 import { AsyncDataSourceExampleComponent } from "./components/async-data-source-example/async-data-source-example.component";
+import { ShowHeaderExampleComponent } from "./components/show-header-example/show-header-example.component";
+import { ShowFooterExampleComponent } from "./components/show-footer-example/show-footer-example.component";
+import { CustomFooterExampleComponent } from "./components/custom-footer-example/custom-footer-example.component";
 
 type Example = {
     [route: string]: {
@@ -62,6 +65,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Content Alignment",
         subtitle: "Specify if you want content to be left, center or right aligned for a given column.",
         component: ContentAlignmentExampleComponent,
+    },
+    "custom-footer": {
+        title: "Custom Footer",
+        subtitle: "Using the footer metadata we can implement a customized footer to display information about the current scroll position.",
+        component: CustomFooterExampleComponent,
     },
     "default-loading": {
         title: "Default Loading",
@@ -108,6 +116,16 @@ export const EXAMPLE_COMPONENTS: Example  = {
         subtitle: "When the amount of rows rendered outside of the viewport (the buffer) falls below some minimum, it'll refill the buffer up to the maximum."
             + "For this example, please view the DOM to see changes in the buffer.",
         component: RowBufferExampleComponent,
+    },
+    "show-header": {
+        title: "Show Header",
+        subtitle: "The header can be disabled if unwanted, such as displaying in a modal or implementing a custom header.",
+        component: ShowHeaderExampleComponent,
+    },
+    "show-footer": {
+        title: "Show Footer",
+        subtitle: "The footer can be disabled if unwanted, such as implementing a custom footer.",
+        component: ShowFooterExampleComponent,
     },
     "small-content": {
         title: "Small Content",

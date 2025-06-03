@@ -61,7 +61,7 @@
 </ng-template>
 
 <div *ngIf="showFooter" style="height: 40px; display: flex; align-items: center; justify-content: flex-end; padding: 0px 16px; border-top: 2px solid #F0F0F0;">
-    <div *ngIf="footerData$ | async as footerData">
+    <div *ngIf="scrollData | async as footerData">
         {{footerData.start + 1 | number}} to {{footerData.end + 1 | number}} of <b>{{footerData.itemCount | number}}</b>
     </div>
 </div>
