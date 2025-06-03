@@ -1,0 +1,12 @@
+<virtual-scroll [dataSource]="dataSource" class="virtual-scroll">
+    <div *cellDef="let item; name: 'Cell 1'">{{item}}</div>
+    <div *cellDef="let item; name: 'Cell 2'">Cell 2</div>
+    <div *cellDef="let item; name: 'Cell 3'">Cell 3</div>
+</virtual-scroll>
+
+<mat-card-content class="log-list">
+    <h3>Async DataSource Log Items</h3>
+    @for (logItem of infoLog; track $index) {
+        <div>{{logItem}}</div>
+    }
+</mat-card-content>

@@ -16,6 +16,8 @@ import { StaticHeightExampleComponent } from "./components/static-height-example
 import { ItemSizeExampleComponent } from "./components/item-size-example/item-size-example.component";
 import { RowBufferExampleComponent } from "./components/row-buffer-example/row-buffer-example.component";
 import { ResizeWidthExampleComponent } from "./components/resize-width-example/resize-width-example.component";
+import { DefaultLoadingExampleComponent } from "./components/default-loading-example/default-loading-example.component";
+import { AsyncDataSourceExampleComponent } from "./components/async-data-source-example/async-data-source-example.component";
 
 type Example = {
     [route: string]: {
@@ -26,6 +28,11 @@ type Example = {
 };
 
 export const EXAMPLE_COMPONENTS: Example  = {
+    "async-data-source": {
+        title: "Asynchronous DataSource",
+        subtitle: "Display a default loading state while the component waits for a dataSource to be provided.",
+        component: AsyncDataSourceExampleComponent,
+    },
     "basic": {
         title: "Basic Configuration",
         subtitle: "A minimum setup in order to produce a working list.",
@@ -55,6 +62,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Content Alignment",
         subtitle: "Specify if you want content to be left, center or right aligned for a given column.",
         component: ContentAlignmentExampleComponent,
+    },
+    "default-loading": {
+        title: "Default Loading",
+        subtitle: "Display a default loading state while the user retrieves the dataSource.",
+        component: DefaultLoadingExampleComponent,
     },
     "dynamic-height": {
         title: "Dynamic Height",
