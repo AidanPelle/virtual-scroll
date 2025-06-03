@@ -18,7 +18,9 @@
 </div>
 
 <ng-container *ngIf="loading$ | async; else emptyStateTemplate">
-    <div>Loading...</div>
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
 </ng-container>
 
 <ng-template #emptyStateTemplate>

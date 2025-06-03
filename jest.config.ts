@@ -94,7 +94,8 @@ const config: Config = {
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   modulePathIgnorePatterns: [
-    "<rootDir>/dist/"
+    "<rootDir>/dist/",
+    "<rootDir>/src/assets/",
   ],
 
   // Activates notifications for test results

@@ -72,7 +72,51 @@
     animation-fill-mode: forwards;
 
     @keyframes moving-gradient {
-        0% { background-position: -250px 0; }
-        100% { background-position: 250px 0; }
+        0% {
+            background-position: -250px 0;
+        }
+
+        100% {
+            background-position: 250px 0;
+        }
+    }
+}
+
+// Originally sourced from https://github.com/vineethtrv/css-loader
+.loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    
+    .loader {
+        width: 100px;
+        aspect-ratio: 1;
+        display: grid;
+        border: 6px solid #0000;
+        border-radius: 50%;
+        border-right-color: blue;
+        animation: transformRotate 2s infinite linear;
+    }
+
+    .loader::before,
+    .loader::after {
+        content: "";
+        grid-area: 1/1;
+        margin: 4px;
+        border: inherit;
+        border-radius: 50%;
+        animation: transformRotate 4s infinite;
+    }
+
+    .loader::after {
+        margin: 14px;
+        animation-duration: 2s;
+    }
+
+    @keyframes transformRotate {
+        100% {
+            transform: rotate(1turn)
+        }
     }
 }

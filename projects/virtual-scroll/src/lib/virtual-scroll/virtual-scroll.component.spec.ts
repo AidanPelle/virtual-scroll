@@ -30,7 +30,7 @@ describe('VirtualScrollComponent', () => {
 
   it('should be loading by default', () => {
     const divs = fixture.debugElement.queryAll(By.css('div'));
-    const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).textContent?.includes("Loading"));
+    const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).classList.contains("loader"));
     expect(loadingDiv).toBeTruthy();
   });
 
@@ -40,7 +40,7 @@ describe('VirtualScrollComponent', () => {
     fixture.detectChanges();
 
     const divs = fixture.debugElement.queryAll(By.css('div'));
-    const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).textContent?.includes("Loading"));
+    const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).classList.contains("loader"));
     expect(loadingDiv).toBeTruthy();
   });
 
@@ -49,7 +49,7 @@ describe('VirtualScrollComponent', () => {
     fixture.detectChanges();
 
     const divs = fixture.debugElement.queryAll(By.css('div'));
-    const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).textContent?.includes("Loading"));
+    const loadingDiv = divs.find(d => (d.nativeElement as HTMLElement).classList.contains("loader"));
     expect(loadingDiv).toBeFalsy();
   });
 

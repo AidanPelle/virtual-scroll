@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { VirtualScrollModule } from '../../projects/virtual-scroll/src/public-api';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -16,7 +15,6 @@ import { EXAMPLE_COMPONENTS } from '../examples/example-map';
   styleUrl: './app.component.scss',
   imports: [
     CommonModule,
-    VirtualScrollModule,
     MatSidenavModule,
     MatListModule,
     RouterLink,
