@@ -79,10 +79,10 @@
 <ng-template #loadingRowTemplate>
     <div
         class="vs-row vs-row-border"
-        style="width: 100%; box-sizing: border-box;"
         [style.height.px]="_itemSize | async"
         [style.paddingLeft.px]="cellPadding"
-        [style.paddingRight.px]="cellPadding">
+        [style.paddingRight.px]="cellPadding"
+        [style.minWidth]="'max(100%, ' + (_rowWidth$ | async) + 'px)'">
         <div class="loading-row"></div>
     </div>
 </ng-template>

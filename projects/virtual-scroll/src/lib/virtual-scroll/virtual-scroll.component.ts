@@ -386,12 +386,13 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   /**
-   * An observable containing the current state of the component's horizontal scrollbar,
-   * based on if the total minimum widths are wider than the container's width.
+   * An observable containing the smallest possible width of a given row,'
+   * based on the total minimum/fixed widths of the current active cells.
    * 
-   * Used to adjust tableHeight to account for the extra padding.
+   * Used to make sure that loading row templates maintain the horizontal scrollbar
+   * when scrolling quickly.
    */
-  private readonly _hasHorizontalScrollbar$ = this._filteredActiveColumns$.pipe(
+  protected readonly _rowWidth$ = this._filteredActiveColumns$.pipe(
     takeUntil(this._onDestroy),
     combineLatestWith(this.applyFixedWidth.pipe(startWith(null)), this._resetSizes, this.throttledResize$),
     map(([activeCells]) => {
@@ -399,8 +400,19 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       if (this.canResize)
         totalWidth += activeCells.length * this.resizeWidth;
 
-      return totalWidth > this._hostElement.nativeElement.offsetWidth;
+      return totalWidth;
     }),
+  );
+
+  /**
+   * An observable containing the current state of the component's horizontal scrollbar,
+   * based on if the total minimum widths are wider than the container's width.
+   * 
+   * Used to adjust tableHeight to account for the extra padding.
+   */
+  private readonly _hasHorizontalScrollbar$ = this._rowWidth$.pipe(
+    takeUntil(this._onDestroy),
+    map(totalWidth => totalWidth > this._hostElement.nativeElement.offsetWidth),
   );
 
   /**
