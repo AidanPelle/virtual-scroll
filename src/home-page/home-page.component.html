@@ -3,8 +3,7 @@
         <h1>Virtual Scroll</h1>
 
 
-        <p>Looking for how to run locally or contribute? Please visit <a
-                href="https://github.com/AidanPelle/virtual-scroll">the README.md.</a></p>
+        <p>Looking for how to run locally or contribute? Please visit <a href="https://github.com/AidanPelle/virtual-scroll">the README.md.</a></p>
 
         <br>
         <br>
@@ -67,9 +66,9 @@
                 By default, the size of the table displayed will be 500px or the total size of its content, whichever is smaller.
                 Pass a custom heightPx value if you want a static height for your table.
             </p>
-            <a href="/examples/small-content">Small Content Table</a>
+            <a routerLink="/examples/small-content">Small Content Table</a>
             <br>
-            <a href="/examples/static-height">Custom static height table</a>
+            <a routerLink="/examples/static-height">Custom static height table</a>
 
             <h3><b>HeightVh</b></h3>
             <p>
@@ -77,7 +76,7 @@
                 <br>
                 <b>Note:</b> this will override the heightPx value, so if both are passed in, only heightVh will take effect.
             </p>
-            <a href="/examples/dynamic-height">Example</a>
+            <a routerLink="/examples/dynamic-height">Example</a>
 
             <h3><b>Offset</b></h3>
             <p>
@@ -86,7 +85,7 @@
                 This is most commonly used in conjunction with heightVh, so that the table height will be 100% of the viewport height - some pixel value,
                 essentially the same as calc(100vh - 500px).
             </p>
-            <a href="/examples/dynamic-height">Example</a>
+            <a routerLink="/examples/dynamic-height">Example</a>
 
             <h3><b>ItemSize</b></h3>
             <p>
@@ -94,7 +93,7 @@
                 <br>
                 <b>Note:</b> The height of every row must always be uniform, to calculate the size of the scrollbar.
             </p>
-            <a href="/examples/item-size">Example</a>            
+            <a routerLink="/examples/item-size">Example</a>            
 
             <h3><b>MinRowBuffer</b></h3>
             <p>
@@ -103,7 +102,7 @@
                 Whenever the viewport falls below the minimum number of buffered elements, it'll start rendering
                 to fill the buffer until it hits the maximum.
             </p>
-            <a href="/examples/row-buffer">Example</a>
+            <a routerLink="/examples/row-buffer">Example</a>
 
             <h3><b>MaxRowBuffer</b></h3>
             <p>
@@ -112,7 +111,7 @@
                 Whenever the viewport falls below the minimum number of buffered elements, it'll start rendering
                 to fill the buffer until it hits the maximum.
             </p>
-            <a href="/examples/row-buffer">Example</a>
+            <a routerLink="/examples/row-buffer">Example</a>
 
             <h3><b>CanResize</b></h3>
             <p>
@@ -122,7 +121,7 @@
                 <br>
                 <b>Note:</b> Whenever any one column is resized, all columns will be moved to fixedWidth, and no longer flex with the screen size.
             </p>
-            <a href="/examples/resizable">Example</a>
+            <a routerLink="/examples/resizable">Example</a>
 
             <h3><b>ResizeWidth</b></h3>
             <p>
@@ -130,7 +129,7 @@
                 <br>
                 <b>Note:</b> This property is only used when canResize has been applied, otherwise it will have no effect.
             </p>
-            <a href="/examples/resize-width">Example</a>
+            <a routerLink="/examples/resize-width">Example</a>
 
             <h3><b>Loading</b></h3>
             <p>
@@ -138,9 +137,9 @@
                 <br>
                 The component won't start building the page until loading goes to false.
                 <br>
-                <b>Note:</b> The loading state will also display when the <a href="/examples/async-data-source">dataSource is asynchronously supplied</a>
+                <b>Note:</b> The loading state will also display when the <a routerLink="/examples/async-data-source">dataSource is asynchronously supplied</a>
             </p>
-            <a href="/examples/default-loading">Loading Example</a>
+            <a routerLink="/examples/default-loading">Loading Example</a>
 
             <h3><b>ShowFooter</b></h3>
             <p>Stuff</p>
