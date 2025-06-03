@@ -120,3 +120,12 @@
         }
     }
 }
+
+.footer-container {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px 16px;
+    border-top: 2px solid #F0F0F0;
+}

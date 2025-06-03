@@ -2,21 +2,22 @@
     cdkDropList
     class="vs-drop-list column-selector-list">
 
-    <div
-        *ngFor="let cellDef of virtualScroll.orderedCellDefs$ | async"
-        cdkDrag
-        (cdkDragDropped)="drop($event, cellDef.activeState$)"
-        class="column-selector-item">
-
-        <i cdkDragHandle class="material-icons vs-drag-handle" style="font-size: 20px;">drag_indicator</i>
-
-        <input
-            #input
-            type="checkbox"
-            class="checkbox-control"
-            [checked]="cellDef.activeState$ | async"
-            (change)="cellDef.userDefinedActiveState.next(input.checked)">
-
-        {{cellDef.columnName}}
-    </div>
+    @for (cellDef of virtualScroll.orderedCellDefs$ | async; track cellDef.columnName) {
+        <div
+            cdkDrag
+            (cdkDragDropped)="drop($event, cellDef.activeState$)"
+            class="column-selector-item">
+    
+            <i cdkDragHandle class="material-icons vs-drag-handle" style="font-size: 20px;">drag_indicator</i>
+    
+            <input
+                #input
+                type="checkbox"
+                class="checkbox-control"
+                [checked]="cellDef.activeState$ | async"
+                (change)="cellDef.userDefinedActiveState.next(input.checked)">
+    
+            {{cellDef.columnName}}
+        </div>
+    }
 </div>

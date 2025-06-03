@@ -1,35 +1,32 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-<div
-    #headerContainer
-    *ngIf="showHeader"
-    class="header-container"
-    [style.width]="'calc(100% - ' + ((_hasVerticalScrollBar$ | async) ? SCROLLBAR_WIDTH : 0) + 'px)'"
-    (scroll)="_onHorizontalScroll.next($event)">
-    <ng-container
-        headerOutlet
-        [rowTemplate]="_headerTemplate"
-        [defaultRowTemplate]="defaultHeaderTemplate"
-        [sliderTemplate]="slider"
-        [virtualScroll]="this"
-        [headerCellDefs]="_headerCellDefs?.toArray() ?? []"
-        [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
-    </ng-container>
-</div>
+@if (showHeader) {
+    <div
+        #headerContainer
+        class="header-container"
+        [style.width]="'calc(100% - ' + ((_hasVerticalScrollBar$ | async) ? SCROLLBAR_WIDTH : 0) + 'px)'"
+        (scroll)="_onHorizontalScroll.next($event)">
+        <ng-container
+            headerOutlet
+            [rowTemplate]="_headerTemplate"
+            [defaultRowTemplate]="defaultHeaderTemplate"
+            [sliderTemplate]="slider"
+            [virtualScroll]="this"
+            [headerCellDefs]="_headerCellDefs?.toArray() ?? []"
+            [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
+        </ng-container>
+    </div>
+}
 
-<ng-container *ngIf="loading$ | async; else emptyStateTemplate">
+@if (loading$ | async) {
     <div class="loader-container">
         <div class="loader"></div>
     </div>
-</ng-container>
-
-<ng-template #emptyStateTemplate>
-    <ng-container *ngIf="!(dataSource$ | async)?.length; else listTemplate">
-        <div>No data to display!</div>
-    </ng-container>
-</ng-template>
-
-<ng-template #listTemplate>
+}
+@else if (!(dataSource$ | async)?.length) {
+    <div>No data to display!</div>
+}
+@else {
     <cdk-virtual-scroll-viewport
         #virtualScroll
         [itemSize]="_itemSize | async"
@@ -58,13 +55,15 @@
         </ng-container>
 
     </cdk-virtual-scroll-viewport>
-</ng-template>
+}
 
-<div *ngIf="showFooter" style="height: 40px; display: flex; align-items: center; justify-content: flex-end; padding: 0px 16px; border-top: 2px solid #F0F0F0;">
-    <div *ngIf="scrollData | async as footerData">
-        {{footerData.start + 1 | number}} to {{footerData.end + 1 | number}} of <b>{{footerData.itemCount | number}}</b>
+@if(showFooter) {
+    <div class="footer-container">
+        @if (scrollData | async; as footerData) {
+            {{footerData.start + 1 | number}} to {{footerData.end + 1 | number}} of <b>{{footerData.itemCount | number}}</b>
+        }
     </div>
-</div>
+}
 
 <ng-template #defaultHeaderTemplate let-item>
     <div vs-row class="vs-default-header-row">
