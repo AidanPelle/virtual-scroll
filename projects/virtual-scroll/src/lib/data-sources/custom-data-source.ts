@@ -19,11 +19,14 @@ export class CustomDataSource<T> extends BaseDataSource<T> {
     /** Handles triggering refreshes on changes to the rows and underlying data. */
     private _handleChangeDetection() {
         const iterableDiffer = new IterableDiffer();
-        timer(0, 500).pipe(takeUntil(this._onDestroy)).subscribe(() => {
+        timer(0, 500).pipe(
+            takeUntil(this._onDestroy),
+        ).subscribe(() => {
             if (iterableDiffer.diff(this.data)) {
                 this.dataListener.next(this.data);
                 // Trigger isLoading so that tableHeight updates on dataSource
                 this.isLoading.next(false);
+                this.dataSizeChange.next();
             }
         });
     }

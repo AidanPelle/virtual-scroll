@@ -1,7 +1,7 @@
+import { RowContext } from "./row-context";
+
 /** A template defining the context accessible by the EmbeddedViewRef for a given cell. */
-export interface CellContext<T> {
-    $implicit: T;
-    index: number;
-    columnName: string;
+export interface CellContext<T> extends RowContext<T> {
     cellIndex: number;
+    columnName: string;
 }

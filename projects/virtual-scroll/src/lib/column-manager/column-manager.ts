@@ -31,10 +31,10 @@ export class ColumnManager<T> {
     private readonly _viewContainer!: ViewContainerRef;
 
     /** A reference to the context of this given row, the data that will be used in each cell. */
-    private readonly _item!: T;
+    private _item!: T;
 
     /** The index of the row being rendered, in reference to its position in the parent list. */
-    private readonly _index!: number;
+    private _index!: number;
 
     /** A BehaviorSubject that emits whenever the sticky cell in this row is rendered or moved. */
     private readonly _renderSticky: BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>;
@@ -87,6 +87,18 @@ export class ColumnManager<T> {
         this._applyFixedWidth$.subscribe();
     }
 
+    /** Updates the current reference for the item from the list. */
+    setItem(value: T) {
+        this._item = value;
+        this._updateCellContext();
+    }
+
+    /** Updates the index of the row we're currently looking at for this column manager. */
+    setRowIndex(value: number) {
+        this._index = value;
+        this._updateCellContext();
+    }
+
     /**
      * Handles events from the active status of cell defs changing, into turning on/off the relevant column and possibly caching the view.
      */
@@ -110,7 +122,7 @@ export class ColumnManager<T> {
                 this._renderCell(val, activeIndex);
             else
                 this._removeRenderedCell(val, activeIndex);
-            this._updateCellIndices();
+            this._updateCellContext();
         }),
     );
 
@@ -181,7 +193,7 @@ export class ColumnManager<T> {
             else
                 this._viewContainer.move(viewToMove, toActiveIndex);
 
-            this._updateCellIndices();
+            this._updateCellContext();
 
             // We re-fire the render sticky in case the sticky cell was moved in the row by these actions (assuming the sticky column is currently rendered)
             if (this.renderedCellViews.find(c => c.isSticky) != null)
@@ -247,11 +259,13 @@ export class ColumnManager<T> {
         );
     }
     
-    /** Update the implicit context for a cell's index in the row, in case people need to reference how far along the row they are. */
-    private _updateCellIndices(): void {
+    /** Update the implicit context for the cells in the row, to maintain proper referencing. */
+    private _updateCellContext(): void {
         for (let i = 0; i < this._viewContainer.length; i++) {
             const viewRef = this._viewContainer.get(i) as EmbeddedViewRef<CellContext<T>>;
-            viewRef.context.cellIndex = this._virtualScroll.canResize ? Math.floor(i / 2) : i;
+
+            const cellIndex = this._virtualScroll.canResize ? Math.floor(i / 2) : i;
+            viewRef.context = { $implicit: this._item, index: this._index, columnName: viewRef.context.columnName, cellIndex: cellIndex }
         }
     }
 }

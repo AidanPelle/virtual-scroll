@@ -14,6 +14,12 @@ export abstract class BaseDataSource<T> extends DataSource<T> {
     /** A readonly observable for listening to the dataSource's loading state. */
     public readonly loading$ = this.isLoading.asObservable();
 
+    /** Handles emitting when the number of rows in the list has changed. */
+    protected readonly dataSizeChange = new BehaviorSubject<void>(undefined);
+
+    /** A reaonly observable for listening to when the size of the list has changed. */
+    public readonly dataSizeChange$ = this.dataSizeChange.asObservable();
+
     /** Handles cleaning up any running subscriptions when the dataSource is discarded. */
     protected readonly _onDestroy = new Subject<void>();    
 

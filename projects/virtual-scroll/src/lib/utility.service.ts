@@ -13,7 +13,7 @@ export class UtilityService {
     );
   }
 
-  static applyCellStyling(cell: CellDefDirective, rootElement: HTMLElement, cellPadding: number) {
+  static applyCellStyling<T>(cell: CellDefDirective<T>, rootElement: HTMLElement, cellPadding: number) {
     rootElement.classList.add('vs-cell');
     UtilityService.applyHorizontalPadding(rootElement, cellPadding);
     UtilityService.applyAlignment(rootElement, cell.align);

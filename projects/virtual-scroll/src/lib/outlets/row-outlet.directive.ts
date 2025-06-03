@@ -6,6 +6,7 @@ import { BehaviorSubject, delay, filter, of, Subject, takeUntil } from "rxjs";
 import { CellContext } from "../interfaces/cell-context";
 import { RENDER_DELAY } from "../constants";
 import { BaseDataSource } from "../data-sources/base-data-source";
+import { RowContext } from "../interfaces/row-context";
 
 @Directive({
   selector: '[rowOutlet]',
@@ -18,16 +19,16 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   public _columnManager?: ColumnManager<T>;
 
   /** A custom template defined by the user for how they want to display a row in the table. */
-  @Input() rowTemplate?: TemplateRef<unknown>;
+  @Input() rowTemplate?: TemplateRef<RowContext<T>>;
 
   /** A fallback row template for when none has been defined by the user. */
-  @Input() defaultRowTemplate!: TemplateRef<unknown>;
+  @Input() defaultRowTemplate!: TemplateRef<RowContext<T>>;
 
   /**
    * A template defined internally for displaying the loading animation on rows while asynchronously waiting for data,
    * or whipping the scrollbar.
    */
-  @Input() loadingRowTemplate!: TemplateRef<unknown>;
+  @Input() loadingRowTemplate!: TemplateRef<RowContext<T>>;
 
   /** A template defined internally for the slider between the columns, for resizing columns. */
   @Input() sliderTemplate!: TemplateRef<unknown>;
@@ -36,16 +37,37 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
   @Input() virtualScroll!: typeof VirtualScrollComponent.prototype;
 
   /** A reference to the related object for this given row in the overarching list. */
-  @Input() item!: T;
+  @Input()
+  set item(value: T) {
+    this._item = value;
+    this._updateRowContext();
+    if (this._columnManager)
+      this._columnManager.setItem(value);
+  }
+  get item(): T {
+    return this._item;
+  }
+  private _item!: T;
 
   /** The index at which this row exists in the list. */
-  @Input() index!: number;
+  @Input()
+  set index(value: number) {
+    this._index = value;
+    this._updateRowContext();
+    if (this._columnManager)
+      this._columnManager.setRowIndex(value);
+  }
+  get index(): number {
+    return this._index;
+  }
+  private _index!: number;
+  
 
   /** The source object currently in use, used to find if we need to skip the loading animation for a row. */
   @Input() dataSource?: BaseDataSource<T> | null;
 
   /** A reference to the currently rendered row template, used for adding css classes. */
-  public rowView?: EmbeddedViewRef<unknown>;
+  public rowView?: EmbeddedViewRef<RowContext<T>>;
 
   /** BehaviorSubject that emits whenever the column manager renders a sticky column. */
   protected readonly renderSticky = new BehaviorSubject<EmbeddedViewRef<CellContext<T>> | null>(null);
@@ -115,6 +137,12 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
       [],
       undefined,
     );
+  }
+
+  /** Handles updating the context provided to the row template with the current context, whenever references change. */
+  private _updateRowContext(): void {
+    if (this._viewContainer.get(0))
+      (this._viewContainer.get(0) as EmbeddedViewRef<RowContext<T>>).context = { $implicit: this._item, index: this._index };
   }
 
   ngOnDestroy(): void {

@@ -54,6 +54,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { HeaderCellDefDirective } from '../defs/header-cell-def.directive';
 import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
 import { SCROLLBAR_WIDTH } from '../constants';
+import { RowContext } from '../interfaces/row-context';
 
 @Component({
   selector: '@aidan-pelle/virtual-scroll',
@@ -72,8 +73,8 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   @ViewChildren(HeaderOutletDirective) _renderedHeader!: QueryList<HeaderOutletDirective<T>>;
 
   @ContentChildren(CellDefDirective, { descendants: true }) _cellDefsContent?: QueryList<CellDefDirective<T>>;
-  @ContentChild(RowDefDirective, { read: TemplateRef }) _rowTemplate?: TemplateRef<unknown>;
-  @ContentChild(HeaderCellDefDirective, { read: TemplateRef }) _headerTemplate?: TemplateRef<unknown>;
+  @ContentChild(RowDefDirective, { read: TemplateRef }) _rowTemplate?: TemplateRef<RowContext<T>>;
+  @ContentChild(HeaderCellDefDirective, { read: TemplateRef }) _headerTemplate?: TemplateRef<RowContext<T>>;
   @ContentChildren(HeaderCellDefDirective, { descendants: true }) _headerCellDefs?: QueryList<HeaderCellDefDirective<T>>;
 
   protected readonly SCROLLBAR_WIDTH = SCROLLBAR_WIDTH;
@@ -324,6 +325,22 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   /**
+   * A reference to the dataSource as soon as the actual data has been loaded into the class,
+   * allowing us to read the length of the returned data.
+   * 
+   * This will also update if any changes have been made to the size of the list
+   * (for example, if getCount in PaginatedDataSource emits, or the list size in CustomDataSource changes).
+   */
+  private readonly _dataSourceChanges$ = this.dataSource$.pipe(
+    takeUntil(this._onDestroy),
+    switchMap(src => src.loading$.pipe(
+      filter(loading => loading == false),
+      switchMap(() => src.dataSizeChange$.pipe(map(() => src))),
+    )),
+    shareReplay(1),
+  );
+
+  /**
    * The current loading state of the dataSource itself.
    * Primarily used on CompleteDataSource or PaginatedDataSource while waiting for asynchronous data to return.
    */
@@ -355,23 +372,10 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   );
 
   /**
-   * A reference to the dataSource as soon as the actual data has been loaded into the class,
-   * allowing us to read the length of the returned data.
-   */
-  private readonly _dataSourcePostLoading$ = this.dataSource$.pipe(
-    takeUntil(this._onDestroy),
-    switchMap(src => src.loading$.pipe(
-      filter(loading => loading == false),
-      map(() => src),
-    )),
-    shareReplay(1),
-  );
-
-  /**
    * An observable containing the maximum possible height (calculated from user-defined height settings),
    * and the total height of the content inside (from rowSize and total dataset size).
    */
-  private readonly possibleHeights$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight$, this._dataSourcePostLoading$]).pipe(
+  private readonly possibleHeights$ = combineLatest([this._heightVh, this._heightPx, this._offset, this._itemSize, this._windowHeight$, this._dataSourceChanges$]).pipe(
     takeUntil(this._onDestroy),
     map(([heightVh, heightPx, offset, itemSize, windowHeight, dataSource]) => {
       const maxPossibleHeight = heightVh != null
