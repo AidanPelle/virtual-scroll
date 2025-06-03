@@ -132,6 +132,9 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   }
   private readonly _loading = new BehaviorSubject<boolean>(false);
 
+  /** A custom loading template to override the default circle. */
+  @Input() loadingTemplate?: TemplateRef<unknown>;
+
   /** The maximum number of rows that we keep rendered outside of the viewport for scrolling consistency */
   @Input()
   set maxRowBuffer(value: number) {

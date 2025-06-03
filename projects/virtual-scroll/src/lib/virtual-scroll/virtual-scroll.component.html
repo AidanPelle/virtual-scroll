@@ -18,7 +18,10 @@
     </div>
 }
 
-@if (loading$ | async) {
+@if ((loading$ | async) && loadingTemplate) {
+    <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
+}
+@else if (loading$ | async) {
     <div class="loader-container">
         <div class="loader"></div>
     </div>
@@ -60,7 +63,7 @@
 @if(showFooter) {
     <div class="footer-container">
         @if (scrollData | async; as footerData) {
-            {{footerData.start + 1 | number}} to {{footerData.end + 1 | number}} of <b>{{footerData.itemCount | number}}</b>
+            <div>{{footerData.start + 1 | number}} to {{footerData.end + 1 | number}} of <b>{{footerData.itemCount | number}}</b></div>
         }
     </div>
 }

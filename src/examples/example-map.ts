@@ -22,6 +22,7 @@ import { ShowHeaderExampleComponent } from "./components/show-header-example/sho
 import { ShowFooterExampleComponent } from "./components/show-footer-example/show-footer-example.component";
 import { CustomFooterExampleComponent } from "./components/custom-footer-example/custom-footer-example.component";
 import { FlexExampleComponent } from "./components/flex-example/flex-example.component";
+import { LoadingTemplateExampleComponent } from "./components/loading-template-example/loading-template-example.component";
 
 type Example = {
     [route: string]: {
@@ -91,6 +92,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Item Size",
         subtitle: "Customize the size of a row to some value in pixels.",
         component: ItemSizeExampleComponent,
+    },
+    "loading-template": {
+        title: "Loading Template",
+        subtitle: "Customize the loading animation displayed to users.",
+        component: LoadingTemplateExampleComponent,
     },
     "modify-data": {
         title: "Modifying List Data",
