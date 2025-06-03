@@ -21,6 +21,7 @@ import { AsyncDataSourceExampleComponent } from "./components/async-data-source-
 import { ShowHeaderExampleComponent } from "./components/show-header-example/show-header-example.component";
 import { ShowFooterExampleComponent } from "./components/show-footer-example/show-footer-example.component";
 import { CustomFooterExampleComponent } from "./components/custom-footer-example/custom-footer-example.component";
+import { FlexExampleComponent } from "./components/flex-example/flex-example.component";
 
 type Example = {
     [route: string]: {
@@ -80,6 +81,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Dynamic Height",
         subtitle: "Resize the viewport and the virtual list will grow/shrink accordingly.",
         component: DynamicHeightExampleComponent,
+    },
+    "flex": {
+        title: "Flex Fractions",
+        subtitle: "By modifying the flex property, columns can expand to take up varying fractions of the available space.",
+        component: FlexExampleComponent,
     },
     "item-size": {
         title: "Item Size",
