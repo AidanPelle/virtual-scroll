@@ -82,7 +82,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /** Whitespace to be left within a cell for readability. */
   @Input() cellPadding: number = 16;
 
-  /** 
+  /**
    * The table's source of data, with four options:
    *    - A wrapper around a simple array of data
    *    - An observable that emits the entire set of data when called
@@ -95,6 +95,9 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
       this._dataSource.next(source);
   }
   private readonly _dataSource = new ReplaySubject<BaseDataSource<T>>(1);
+
+  /** Custom empty state template to display, instead of the default "No rows to display!" */
+  @Input() emptyStateTemplate?: TemplateRef<unknown>;
 
   /**
    * The height of the table in pixels. Default value will be 500, so that the table is visible right off the bat.
@@ -172,7 +175,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   /**
    * Controls if the footer (containing information about the current location in the list) is displayed.
-   * 
+   *
    * Usually turned off when you'd want to implement a custom display.
   */
   @Input() showFooter = true;
@@ -330,7 +333,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /**
    * A reference to the dataSource as soon as the actual data has been loaded into the class,
    * allowing us to read the length of the returned data.
-   * 
+   *
    * This will also update if any changes have been made to the size of the list
    * (for example, if getCount in PaginatedDataSource emits, or the list size in CustomDataSource changes).
    */
@@ -395,7 +398,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /**
    * An observable containing the smallest possible width of a given row,'
    * based on the total minimum/fixed widths of the current active cells.
-   * 
+   *
    * Used to make sure that loading row templates maintain the horizontal scrollbar
    * when scrolling quickly.
    */
@@ -414,7 +417,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
   /**
    * An observable containing the current state of the component's horizontal scrollbar,
    * based on if the total minimum widths are wider than the container's width.
-   * 
+   *
    * Used to adjust tableHeight to account for the extra padding.
    */
   private readonly _hasHorizontalScrollbar$ = this._rowWidth$.pipe(
@@ -424,7 +427,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   /**
    * An observable containing the current state of the component's vertical scrollbar.
-   * 
+   *
    * Used to offset the header's total width by the scrollbar (to keep aligned with the table columns).
    */
   readonly _hasVerticalScrollBar$ = combineLatest([this.possibleHeights$, this._hasHorizontalScrollbar$]).pipe(

@@ -23,6 +23,7 @@ import { ShowFooterExampleComponent } from "./components/show-footer-example/sho
 import { CustomFooterExampleComponent } from "./components/custom-footer-example/custom-footer-example.component";
 import { FlexExampleComponent } from "./components/flex-example/flex-example.component";
 import { LoadingTemplateExampleComponent } from "./components/loading-template-example/loading-template-example.component";
+import { EmptyStateTemplateExampleComponent } from "./components/empty-state-template-example/empty-state-template-example.component";
 
 type Example = {
     [route: string]: {
@@ -82,6 +83,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Dynamic Height",
         subtitle: "Resize the viewport and the virtual list will grow/shrink accordingly.",
         component: DynamicHeightExampleComponent,
+    },
+    "empty-state-template": {
+        title: "Empty State Template",
+        subtitle: "Customize the empty state displayed to users when loading is complete, and the list is of length 0.",
+        component: EmptyStateTemplateExampleComponent,
     },
     "flex": {
         title: "Flex Fractions",

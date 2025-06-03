@@ -82,13 +82,13 @@
     }
 }
 
-// Originally sourced from https://github.com/vineethtrv/css-loader
-.loader-container {
+.loader-container, .empty-state-container {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
     
+    // Originally sourced from https://github.com/vineethtrv/css-loader
     .loader {
         width: 100px;
         aspect-ratio: 1;
@@ -118,6 +118,10 @@
         100% {
             transform: rotate(1turn)
         }
+    }
+
+    .empty-state-message {
+        font-size: 16px;
     }
 }
 

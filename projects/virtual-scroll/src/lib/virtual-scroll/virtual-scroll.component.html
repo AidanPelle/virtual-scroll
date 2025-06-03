@@ -22,12 +22,17 @@
     <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
 }
 @else if (loading$ | async) {
-    <div class="loader-container">
+    <div class="state-container">
         <div class="loader"></div>
     </div>
 }
+@else if (!(dataSource$ | async)?.length && emptyStateTemplate) {
+    <ng-container [ngTemplateOutlet]="emptyStateTemplate"></ng-container>
+}
 @else if (!(dataSource$ | async)?.length) {
-    <div>No data to display!</div>
+    <div class="empty-state-container">
+        <div class="empty-state-message">No data to display!</div>
+    </div>
 }
 @else {
     <cdk-virtual-scroll-viewport
