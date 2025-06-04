@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
+// import { CustomDataSource, VirtualScrollModule } from '../../../../projects/virtual-scroll/src/public-api';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
+
 @Component({
-  selector: 'app-default-example',
-  templateUrl: './basic-example.component.html',
-  styleUrl: './basic-example.component.scss',
+  selector: 'app-cell-context-example',
+  templateUrl: './cell-context-example.component.html',
+  styleUrl: './cell-context-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class BasicExampleComponent {
+export class CellContextExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

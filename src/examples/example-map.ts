@@ -1,5 +1,5 @@
 import { Type } from "@angular/core"
-import { BasicexampleComponent } from "./components/basic-example/basic-example.component";
+import { BasicExampleComponent } from "./components/basic-example/basic-example.component";
 import { ColumnSelectorExampleComponent } from "./components/column-selector-example/column-selector-example.component";
 import { ColumnWidthsExampleComponent } from "./components/column-widths-example/column-widths-example.component";
 import { CompleteListExampleComponent } from "./components/complete-list-example/complete-list-example.component";
@@ -28,6 +28,7 @@ import { TrackByExampleComponent } from "./components/track-by-example/track-by-
 import { MinMaxWidthsExampleComponent } from "./components/min-max-widths-example/min-max-widths-example.component";
 import { FixedWidthExampleComponent } from "./components/fixed-width-example/fixed-width-example.component";
 import { ActiveColumnExampleComponent } from "./components/active-column-example/active-column-example.component";
+import { CellContextExampleComponent } from "./components/cell-context-example/cell-context-example.component";
 
 type Example = {
     [route: string]: {
@@ -51,7 +52,13 @@ export const EXAMPLE_COMPONENTS: Example  = {
     "basic": {
         title: "Basic Configuration",
         subtitle: "A minimum setup in order to produce a working list.",
-        component: BasicexampleComponent,
+        component: BasicExampleComponent,
+    },
+    "cell-context": {
+        title: "Cell Context",
+        subtitle: "When defining a cell, we have access to a number of values in the context,"
+            + " such as the list item associated with the row, the row/cell indices, and the column name",
+        component: CellContextExampleComponent,
     },
     "cell-padding": {
         title: "Cell Padding",
