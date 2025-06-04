@@ -24,6 +24,7 @@ import { CustomFooterExampleComponent } from "./components/custom-footer-example
 import { FlexExampleComponent } from "./components/flex-example/flex-example.component";
 import { LoadingTemplateExampleComponent } from "./components/loading-template-example/loading-template-example.component";
 import { EmptyStateTemplateExampleComponent } from "./components/empty-state-template-example/empty-state-template-example.component";
+import { TrackByExampleComponent } from "./components/track-by-example/track-by-example.component";
 
 type Example = {
     [route: string]: {
@@ -159,5 +160,10 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Sticky Column",
         subtitle: "When the screen width is too small to fit all the columns on-screen, the column designated as sticky will 'stick' to either side of the viewport.",
         component: StickyColumnExampleComponent,
+    },
+    "track-by": {
+        title: "Track By Function",
+        subtitle: "A custom tracking function can be supplied for the table (like ngFor), to keep track of which rows need to be rendered.",
+        component: TrackByExampleComponent,
     },
 }
