@@ -211,16 +211,25 @@
             <a routerLink="/examples/fixed-width">Example</a>
 
             <h3><b>IsActive</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>
+                Columns can be initialized as inactive, hiding them from the user.
+                This can be useful for re-using tables, or hiding extraneous information intially.
+            </p>
+            <a routerLink="/examples/active-column" [queryParams]="{isActive: false}">Example</a>
 
             <h3><b>IsSticky</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>When the screen width is too small to fit all the columns on-screen, the column designated as sticky will 'stick' to either side of the viewport.</p>
+            <a routerLink="/examples/sticky-column">Example</a>
 
             <h3><b>Context</b></h3>
-            <p>Stuff</p>
-            <a>Link</a>
+            <p>When defining a cell, we have access to a number of values in the context, such as:</p>
+                <ul>
+                    <li>The item associated with the cell</li>
+                    <li>The index of the row</li>
+                    <li>The index of the cell</li>
+                    <li>The name of the cell</li>
+                </ul>
+            <a routerLink="/examples/cell-context">Example</a>
 
 
 

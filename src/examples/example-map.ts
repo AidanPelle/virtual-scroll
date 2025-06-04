@@ -27,6 +27,7 @@ import { EmptyStateTemplateExampleComponent } from "./components/empty-state-tem
 import { TrackByExampleComponent } from "./components/track-by-example/track-by-example.component";
 import { MinMaxWidthsExampleComponent } from "./components/min-max-widths-example/min-max-widths-example.component";
 import { FixedWidthExampleComponent } from "./components/fixed-width-example/fixed-width-example.component";
+import { ActiveColumnExampleComponent } from "./components/active-column-example/active-column-example.component";
 
 type Example = {
     [route: string]: {
@@ -37,6 +38,11 @@ type Example = {
 };
 
 export const EXAMPLE_COMPONENTS: Example  = {
+    "active-column": {
+        title: "Active Columns",
+        subtitle: "Columns can be initialized as inactive, hiding them from the user. This can be useful for re-using tables, or hiding extraneous information intially.",
+        component: ActiveColumnExampleComponent,
+    },
     "async-data-source": {
         title: "Asynchronous DataSource",
         subtitle: "Display a default loading state while the component waits for a dataSource to be provided.",
