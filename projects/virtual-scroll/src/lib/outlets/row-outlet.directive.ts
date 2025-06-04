@@ -61,6 +61,20 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
     return this._index;
   }
   private _index!: number;
+
+  /**
+   * The smallest value which a row can be.
+   * Applying this makes the loading rows and header row take the proper size.
+   */
+  @Input()
+  set rowMinWidth(value: number | null) {
+    this._rowMinWidth = value;
+    this._applyMinWidth();
+  }
+  get rowMinWidth() {
+    return this._rowMinWidth;
+  }
+  private _rowMinWidth: number | null = null;
   
 
   /** The source object currently in use, used to find if we need to skip the loading animation for a row. */
@@ -99,6 +113,7 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
 
     this.rowView = this._viewContainer.createEmbeddedView(this.loadingRowTemplate);
     this.rowView.rootNodes[0].children[0].style.animationDelay = '-' + ((this.index % 10) / 2) + 's';
+    this._applyMinWidth();
   }
 
   /** Renders the row template (custom if provided, default otherwise) and hands off to the column manager for individual columns. */
@@ -111,6 +126,7 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
       $implicit: this.item,
       index: this.index,
     });
+    this._applyMinWidth();
 
     const cellOutlet = CellOutletDirective.mostRecentView;
     if (!cellOutlet)
@@ -146,6 +162,11 @@ export class RowOutletDirective<T> implements OnInit, OnDestroy {
       context.$implicit = this._item;
       context.index = this._index;
     }
+  }
+
+  private _applyMinWidth(): void {
+    if (this.rowView)
+      this.rowView.rootNodes[0].style.minWidth = `max(100%, ${this.rowMinWidth ?? 0}px)`;
   }
 
   ngOnDestroy(): void {

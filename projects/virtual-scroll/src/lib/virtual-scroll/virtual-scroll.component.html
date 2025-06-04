@@ -13,7 +13,8 @@
             [sliderTemplate]="slider"
             [virtualScroll]="this"
             [headerCellDefs]="_headerCellDefs?.toArray() ?? []"
-            [defaultHeaderCellTemplate]="defaultHeaderCellTemplate">
+            [defaultHeaderCellTemplate]="defaultHeaderCellTemplate"
+            [rowMinWidth]="_rowWidth$ | async">
         </ng-container>
     </div>
 }
@@ -59,7 +60,8 @@
             [index]="index"
             [sliderTemplate]="dummySliderTemplate"
             [virtualScroll]="this"
-            [dataSource]="dataSource$ | async">
+            [dataSource]="dataSource$ | async"
+            [rowMinWidth]="_rowWidth$ | async">
         </ng-container>
 
     </cdk-virtual-scroll-viewport>
@@ -88,8 +90,7 @@
         class="vs-row vs-row-border"
         [style.height.px]="_itemSize | async"
         [style.paddingLeft.px]="cellPadding"
-        [style.paddingRight.px]="cellPadding"
-        [style.minWidth]="'max(100%, ' + (_rowWidth$ | async) + 'px)'">
+        [style.paddingRight.px]="cellPadding">
         <div class="loading-row"></div>
     </div>
 </ng-template>

@@ -17,6 +17,24 @@
         .sticky-right-shadow {
             box-shadow: 4px 0 4px -2px rgba(0, 0, 0, 0.16);
         }
+
+        // Fixes for cdk-virtual-scroll flex stuff not being ideal
+        // We use flex instead of block to allow the content-wrapper
+        // to be bigger and force the scrollbar, + allow for intersectionObserver API to function
+        .cdk-virtual-scroll-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            position: unset;
+            contain: unset;
+        }
+
+        // We add the width so that the element actually takes up space
+        // otherwise virtual scroll doesn't respect the height
+        .cdk-virtual-scroll-spacer {
+            position: absolute;
+            top: 0;
+            width: 1px;
+        }
     }
 }
 
