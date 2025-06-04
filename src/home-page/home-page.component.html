@@ -42,6 +42,7 @@
             <li>Cells</li>
             <li>Header Cells</li>
             <li>Rows</li>
+            <li>Miscellaneous</li>
         </ul>
         <p>
             <b>Main Component</b> covers any information on inputs or customization applied directly to the base element,
@@ -53,6 +54,7 @@
         </p>
         <p><b>Header Cells</b> briefly covers how to provide custom templates for header cells and how to link them to the row cell by name.</p>
         <p><b>Rows</b> covers how to provide custom row or header row templates, for row-level functionality or styling.</p>
+        <p><b>Miscellaneous</b> covers how to handle common list page actions, such as sorting and searching.</p>
         <p>
             On the left is a list of links to examples for all provided functionality,
             with copyable code views for each example to facilitate initial setup.
@@ -61,6 +63,13 @@
         <div class="docs-content">
             <h1>Main Component</h1>
 
+            <h3><b>Column Selector</b></h3>
+            <p>
+                Allows a user to enable, disable, or reorder columns to their individual preference.
+            </p>
+            <a routerLink="/examples/column-selector">Example</a>
+            
+            
             <h3><b>HeightPx</b></h3>
             <p>
                 By default, the size of the table displayed will be 500px or the total size of its content, whichever is smaller.
@@ -254,6 +263,14 @@
             <h3><b>Custom Footer</b></h3>
             <p>Virtual Scroll will emit metadata about the current scroll position whenever it updates, which can be used to implement a custom footer.</p>
             <a routerLink="/examples/custom-footer">Example</a>
+
+
+
+            <h1>Miscellaneous</h1>
+
+            <h3><b>Sorting</b></h3>
+            <p>Sorting functions that run against the dataSource will update the list to use the sorted order.</p>
+            <a routerLink="/examples/sort">Example</a>
         </div>
     </mat-card-content>
 </mat-card>

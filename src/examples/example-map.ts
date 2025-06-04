@@ -29,6 +29,7 @@ import { MinMaxWidthsExampleComponent } from "./components/min-max-widths-exampl
 import { FixedWidthExampleComponent } from "./components/fixed-width-example/fixed-width-example.component";
 import { ActiveColumnExampleComponent } from "./components/active-column-example/active-column-example.component";
 import { CellContextExampleComponent } from "./components/cell-context-example/cell-context-example.component";
+import { SortExampleComponent } from "./components/sort-example/sort-example.component";
 
 type Example = {
     [route: string]: {
@@ -175,6 +176,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Small Content",
         subtitle: "When the content (itemSize * rowCount) is less than the height of the table, the table will shrink to fit the rows instead.",
         component: SmallContentExampleComponent,
+    },
+    "sort": {
+        title: "Sorting Data",
+        subtitle: "Sorting functions that run against the dataSource will update the list to use the sorted order.",
+        component: SortExampleComponent,
     },
     "static-height": {
         title: "Static Height",
