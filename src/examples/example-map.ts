@@ -25,6 +25,7 @@ import { FlexExampleComponent } from "./components/flex-example/flex-example.com
 import { LoadingTemplateExampleComponent } from "./components/loading-template-example/loading-template-example.component";
 import { EmptyStateTemplateExampleComponent } from "./components/empty-state-template-example/empty-state-template-example.component";
 import { TrackByExampleComponent } from "./components/track-by-example/track-by-example.component";
+import { MinMaxWidthsExampleComponent } from "./components/min-max-widths-example/min-max-widths-example.component";
 
 type Example = {
     [route: string]: {
@@ -104,6 +105,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Loading Template",
         subtitle: "Customize the loading animation displayed to users.",
         component: LoadingTemplateExampleComponent,
+    },
+    "min-max-widths": {
+        title: "Min/Max Widths",
+        subtitle: "When defining a column, we can specify minimum and maximum widths (in pixels) as boundaries for growing/shrinking with screen size.",
+        component: MinMaxWidthsExampleComponent,
     },
     "modify-data": {
         title: "Modifying List Data",

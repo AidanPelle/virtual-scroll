@@ -1,0 +1,5 @@
+<virtual-scroll [dataSource]="dataSource">
+    <div *cellDef="let item; name: 'Cell 1'">Default Size Column</div>
+    <div *cellDef="let item; name: 'Cell 2'; minWidth: 500;">Minimum Width 500px Column</div>
+    <div *cellDef="let item; name: 'Cell 3'; maxWidth: 200;">Max Width 200px Column</div>
+</virtual-scroll>
