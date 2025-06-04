@@ -55,6 +55,7 @@ import { HeaderCellDefDirective } from '../defs/header-cell-def.directive';
 import { HeaderOutletDirective } from '../outlets/header-outlet.directive';
 import { SCROLLBAR_WIDTH } from '../constants';
 import { RowContext } from '../interfaces/row-context';
+import { HeaderDefDirective } from '../defs/header-def.directive';
 
 @Component({
   selector: '@aidan-pelle/virtual-scroll',
@@ -74,7 +75,7 @@ export class VirtualScrollComponent<T> implements OnInit, AfterViewInit, AfterCo
 
   @ContentChildren(CellDefDirective, { descendants: true }) _cellDefsContent?: QueryList<CellDefDirective<T>>;
   @ContentChild(RowDefDirective, { read: TemplateRef }) _rowTemplate?: TemplateRef<RowContext<T>>;
-  @ContentChild(HeaderCellDefDirective, { read: TemplateRef }) _headerTemplate?: TemplateRef<RowContext<T>>;
+  @ContentChild(HeaderDefDirective, { read: TemplateRef }) _headerTemplate?: TemplateRef<RowContext<T>>;
   @ContentChildren(HeaderCellDefDirective, { descendants: true }) _headerCellDefs?: QueryList<HeaderCellDefDirective<T>>;
 
   protected readonly SCROLLBAR_WIDTH = SCROLLBAR_WIDTH;
