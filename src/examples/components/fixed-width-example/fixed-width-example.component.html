@@ -1,0 +1,5 @@
+<virtual-scroll [dataSource]="dataSource">
+    <div *cellDef="let item; name: 'Cell 1'">Default Flex Cell</div>
+    <div *cellDef="let item; name: 'Cell 2'; fixedWidth: 700;">Cell Fixed at 700px Wide</div>
+    <div *cellDef="let item; name: 'Cell 3'; fixedWidth: 200;">Cell Fixed at 200px Wide</div>
+</virtual-scroll>

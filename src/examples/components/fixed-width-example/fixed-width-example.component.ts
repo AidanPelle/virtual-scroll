@@ -2,13 +2,13 @@ import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scro
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-min-max-widths-example',
-  templateUrl: './min-max-widths-example.component.html',
-  styleUrl: './min-max-widths-example.component.scss',
+  selector: 'app-fixed-width-example',
+  templateUrl: './fixed-width-example.component.html',
+  styleUrl: './fixed-width-example.component.scss',
   standalone: true,
   imports: [VirtualScrollModule],
 })
-export class MinMaxWidthsExampleComponent {
+export class FixedWidthExampleComponent {
   protected dataSource = this.initSource();
 
   initSource() {

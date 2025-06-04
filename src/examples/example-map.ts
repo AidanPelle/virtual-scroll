@@ -26,6 +26,7 @@ import { LoadingTemplateExampleComponent } from "./components/loading-template-e
 import { EmptyStateTemplateExampleComponent } from "./components/empty-state-template-example/empty-state-template-example.component";
 import { TrackByExampleComponent } from "./components/track-by-example/track-by-example.component";
 import { MinMaxWidthsExampleComponent } from "./components/min-max-widths-example/min-max-widths-example.component";
+import { FixedWidthExampleComponent } from "./components/fixed-width-example/fixed-width-example.component";
 
 type Example = {
     [route: string]: {
@@ -90,6 +91,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Empty State Template",
         subtitle: "Customize the empty state displayed to users when loading is complete, and the list is of length 0.",
         component: EmptyStateTemplateExampleComponent,
+    },
+    "fixed-width": {
+        title: "Fixed Width",
+        subtitle: "When defining a column, we can specify a fixed width (in pixels) to make a column take a static width, without responding to screen size.",
+        component: FixedWidthExampleComponent,
     },
     "flex": {
         title: "Flex Fractions",
