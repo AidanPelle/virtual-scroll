@@ -31,6 +31,7 @@ import { ActiveColumnExampleComponent } from "./components/active-column-example
 import { CellContextExampleComponent } from "./components/cell-context-example/cell-context-example.component";
 import { SortExampleComponent } from "./components/sort-example/sort-example.component";
 import { CustomHeaderCellExampleComponent } from "./components/custom-header-cell-example/custom-header-cell-example.component";
+import { CustomRowExampleComponent } from "./components/custom-row-example/custom-row-example.component";
 
 type Example = {
     [route: string]: {
@@ -96,6 +97,13 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Custom Header Cell",
         subtitle: "We can provide templates for custom header cells to be rendered instead of the default, to apply our own directives and styling.",
         component: CustomHeaderCellExampleComponent,
+    },
+    "custom-row": {
+        title: "Custom Row",
+        subtitle: "When defining a table, we can pass in a custom row to override the default template for a row in the list, or for our header row."
+            + " This can be useful for adding click events or row-level styling."
+            + ' The classes "vs-row" and "vs-default-header-row" can be applied to the custom row or header in order to apply the default styling.',
+        component: CustomRowExampleComponent,
     },
     "default-loading": {
         title: "Default Loading",
