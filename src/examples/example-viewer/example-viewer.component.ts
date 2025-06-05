@@ -38,6 +38,8 @@ export class ExampleViewerComponent {
 
   @ViewChild('exampleComponentContainer', {static: true, read: ViewContainerRef}) _viewContainerRef!: ViewContainerRef;
 
+  private _baseUrl = "https://raw.githubusercontent.com/AidanPelle/virtual-scroll/main/src/examples/components";
+
   protected _showCodeView = false;
 
   fileViews: {title: string, file: string, language: string}[] = [];
@@ -72,10 +74,10 @@ export class ExampleViewerComponent {
 
   loadExample(name: string): typeof EXAMPLE_COMPONENTS[string] {
     const demo = EXAMPLE_COMPONENTS[name];
-    
-    const htmlFile$ = this._http.get(`assets/components/${name}-example/${name}-example.component.html`, { responseType: 'text' });
-    const tsFile$ = this._http.get(`assets/components/${name}-example/${name}-example.component.ts`, { responseType: 'text' });
-    const scssFile$ = this._http.get(`assets/components/${name}-example/${name}-example.component.scss`, { responseType: 'text' });
+
+    const htmlFile$ = this._http.get(`${this._baseUrl}/${name}-example/${name}-example.component.html`, { responseType: 'text' });
+    const tsFile$ = this._http.get(`${this._baseUrl}/${name}-example/${name}-example.component.ts`, { responseType: 'text' });
+    const scssFile$ = this._http.get(`${this._baseUrl}/${name}-example/${name}-example.component.scss`, { responseType: 'text' });
 
     forkJoin([htmlFile$, tsFile$, scssFile$]).subscribe(([htmlFile, tsFile, scssFile]) => {
       this.fileViews = [];
