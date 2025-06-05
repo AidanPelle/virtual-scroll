@@ -33,6 +33,7 @@ import { SortExampleComponent } from "./components/sort-example/sort-example.com
 import { CustomHeaderCellExampleComponent } from "./components/custom-header-cell-example/custom-header-cell-example.component";
 import { CustomRowExampleComponent } from "./components/custom-row-example/custom-row-example.component";
 import { FilteringExampleComponent } from "./components/filtering-example/filtering-example.component";
+import { StreamExampleComponent } from "./components/stream-example/stream-example.component";
 
 type Example = {
     [route: string]: {
@@ -211,6 +212,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Sticky Column",
         subtitle: "When the screen width is too small to fit all the columns on-screen, the column designated as sticky will 'stick' to either side of the viewport.",
         component: StickyColumnExampleComponent,
+    },
+    "stream": {
+        title: "Streaming Data",
+        subtitle: "A dataSource for Virtual Scroll that's defined as an observable, emitting data and updates to the component over time.",
+        component: StreamExampleComponent,
     },
     "track-by": {
         title: "Track By Function",

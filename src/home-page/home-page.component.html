@@ -28,7 +28,7 @@
                 <a routerLink="/examples/basic">basic array</a>
                 , an <a routerLink="/examples/complete-list">asynchronous list</a>
                 , a <a routerLink="/examples/paginated">paginated list</a>
-                , or a <a routerLink="/examples/custom-list">custom solution</a>
+                , or a <a routerLink="/examples/stream">data stream</a>
             </li>
         </ul>
 
@@ -290,8 +290,13 @@
             <h1>Miscellaneous</h1>
 
             <h3><b>Sorting</b></h3>
-            <p>Sorting functions that run against the dataSource will update the list to use the sorted order.</p>
-            <a routerLink="/examples/sorting">Example</a>
+            <p>
+                Sorting functions that run against the dataSource will update the list to use the sorted order.
+                <br>
+                Sorting can also be implemented with the streaming dataSource, which can feel more intuitive to some users.
+            </p>
+            <a routerLink="/examples/sorting">Example with basic array</a>
+            <a routerLink="/examples/stream">Example with data stream</a>
 
             <h3><b>Filtering</b></h3>
             <p>Filtering functions that run against the dataSource will update the list to use the filtered list.</p>
