@@ -14,10 +14,9 @@ export * from './lib/column-selector/column-selector.directive';
 
 export * from './lib/data-sources/base-data-source';
 export * from './lib/data-sources/custom-data-source';
-export * from './lib/data-sources/base-data-source';
 export * from './lib/data-sources/complete-data-source';
-export * from './lib/data-sources/custom-data-source';
 export * from './lib/data-sources/paginated-data-source';
+export * from './lib/data-sources/stream-data-source';
 
 export * from './lib/interfaces/footer-data';
 export * from './lib/interfaces/cell-context';

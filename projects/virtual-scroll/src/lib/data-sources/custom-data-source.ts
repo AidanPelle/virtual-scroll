@@ -24,8 +24,6 @@ export class CustomDataSource<T> extends BaseDataSource<T> {
         ).subscribe(() => {
             if (iterableDiffer.diff(this.data)) {
                 this.dataListener.next(this.data);
-                // Trigger isLoading so that tableHeight updates on dataSource
-                this.isLoading.next(false);
                 this.dataSizeChange.next();
             }
         });

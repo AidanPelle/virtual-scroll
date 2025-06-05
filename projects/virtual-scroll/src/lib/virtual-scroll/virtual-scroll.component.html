@@ -23,7 +23,7 @@
     <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
 }
 @else if (loading$ | async) {
-    <div class="state-container">
+    <div class="loader-container">
         <div class="loader"></div>
     </div>
 }
