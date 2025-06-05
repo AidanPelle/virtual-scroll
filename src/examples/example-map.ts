@@ -30,6 +30,7 @@ import { FixedWidthExampleComponent } from "./components/fixed-width-example/fix
 import { ActiveColumnExampleComponent } from "./components/active-column-example/active-column-example.component";
 import { CellContextExampleComponent } from "./components/cell-context-example/cell-context-example.component";
 import { SortExampleComponent } from "./components/sort-example/sort-example.component";
+import { CustomHeaderCellExampleComponent } from "./components/custom-header-cell-example/custom-header-cell-example.component";
 
 type Example = {
     [route: string]: {
@@ -90,6 +91,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         title: "Custom Footer",
         subtitle: "Using the footer metadata we can implement a customized footer to display information about the current scroll position.",
         component: CustomFooterExampleComponent,
+    },
+    "custom-header-cell": {
+        title: "Custom Header Cell",
+        subtitle: "We can provide templates for custom header cells to be rendered instead of the default, to apply our own directives and styling.",
+        component: CustomHeaderCellExampleComponent,
     },
     "default-loading": {
         title: "Default Loading",
