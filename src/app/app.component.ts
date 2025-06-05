@@ -37,4 +37,16 @@ export class AppComponent {
   isRouteActivated(route: string) {
     return this._router.url.includes(route);
   }
+
+  calculatedWidth = "100%";
+
+  onContentScroll(container: HTMLDivElement) {
+    const scrollTop = container.scrollTop;
+
+    if (scrollTop > 50)
+      this.calculatedWidth = "0";
+    else
+      this.calculatedWidth = "100%";
+  }
+  
 }

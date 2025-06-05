@@ -1,21 +1,22 @@
-<div class="nav-bar">
-    <a mat-stroked-button href="https://github.com/AidanPelle/virtual-scroll">
-        <mat-icon svgIcon="github-logo"></mat-icon>
-        GitHub
-    </a>
-    <a mat-stroked-button href="overview">Home</a>
+<div class="scroll-container" #scrollContainer (scroll)="onContentScroll(scrollContainer)">
+    <div class="nav-bar" [style.width]="calculatedWidth" [style.minWidth.px]="sidenav._getWidth()">
+        <a routerLink="/overview" class="home-link">Virtual Scroll</a>
+        <a href="https://github.com/AidanPelle/virtual-scroll" class="github-link">
+            <mat-icon svgIcon="github-logo" class="github-logo"></mat-icon>
+        </a>
+    </div>
+
+    <mat-sidenav-container class="sidenav-container">
+        <mat-sidenav [opened]="true" mode="side" #sidenav class="sidenav">
+            <mat-nav-list>
+                @for (route of demoRoutes | keyvalue; track route.key) {
+                    <a mat-list-item [routerLink]="'examples/' + route.key" [activated]="isRouteActivated(route.key)">{{route.value.title}}</a>
+                }
+            </mat-nav-list>
+        </mat-sidenav>
+            <mat-sidenav-content class="sidenav-content">
+                <router-outlet></router-outlet>
+            </mat-sidenav-content>
+    </mat-sidenav-container>
+
 </div>
-
-<mat-sidenav-container style="height: calc(100% - 56px);">
-    <mat-sidenav [opened]="true" mode="side">
-        <mat-nav-list>
-            @for (route of demoRoutes | keyvalue; track route.key) {
-                <a mat-list-item [routerLink]="'examples/' + route.key" [activated]="isRouteActivated(route.key)">{{route.value.title}}</a>
-            }
-        </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content>
-        <router-outlet></router-outlet>
-    </mat-sidenav-content>
-</mat-sidenav-container>
-

@@ -1,21 +1,65 @@
-.nav-bar {
-    width: 100%;
-    height: 56px;
-    border-bottom: 1px solid rgb(169, 172, 170);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    align-items: center;
-    padding: 12px;
-}
-
 .scroll-container {
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    border-radius: 15px;
-}
-
-mat-sidenav-content {
-    padding: 20px;
-    box-sizing: border-box;
+    overflow: auto;
+    height: 100vh;
+    scrollbar-width: none;
+    background-color: #FAFAFA;
+    
+    .nav-bar {
+        width: 100%;
+        height: 75px;
+        border-bottom: 1px solid rgb(169, 172, 170);
+        border-right: 1px solid rgb(169, 172, 170);
+        border-bottom-right-radius: 5px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        align-items: center;
+        padding-left: 12px;
+        padding-right: 24px;
+        justify-content: space-between;
+        position: absolute;
+        z-index: 2;
+        background-color: white;
+    
+        transition: width 1s ease-in-out;
+    
+        .home-link, .github-link {
+            text-decoration: none;
+            color: black;
+        }
+    
+        .home-link {
+            font-size: 24px;
+        }
+    
+        .github-link {
+            font-size: 18px;
+    
+            .github-logo {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    }
+    
+    .sidenav-container {
+        overflow: visible;
+        position: unset;
+        margin-top: 75px;
+    
+        .sidenav-content {
+            margin-left: 233px;
+            overflow: visible;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+    
+        .sidenav {
+            top: 75px;
+            :host::ng-deep & *[cdkscrollable] {
+                scrollbar-width: none;
+            }
+        }
+    }
 }
