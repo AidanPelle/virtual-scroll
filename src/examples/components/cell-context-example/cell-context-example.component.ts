@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-// import { CustomDataSource, VirtualScrollModule } from '../../../../projects/virtual-scroll/src/public-api';
 import { CustomDataSource, VirtualScrollModule } from '@aidan-pelle/virtual-scroll';
 
 @Component({

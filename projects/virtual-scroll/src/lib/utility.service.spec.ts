@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { UtilityService } from './utility.service';
 import { CellDefDirective, VirtualScrollModule } from '../public-api';
 import { Component, ViewChild } from '@angular/core';
-import { firstValueFrom, lastValueFrom, of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 describe('UtilityService', () => {
   let cellDef: CellDefDirective;
