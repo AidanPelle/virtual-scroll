@@ -32,6 +32,7 @@ import { CellContextExampleComponent } from "./components/cell-context-example/c
 import { SortExampleComponent } from "./components/sort-example/sort-example.component";
 import { CustomHeaderCellExampleComponent } from "./components/custom-header-cell-example/custom-header-cell-example.component";
 import { CustomRowExampleComponent } from "./components/custom-row-example/custom-row-example.component";
+import { FilteringExampleComponent } from "./components/filtering-example/filtering-example.component";
 
 type Example = {
     [route: string]: {
@@ -120,6 +121,11 @@ export const EXAMPLE_COMPONENTS: Example  = {
         subtitle: "Customize the empty state displayed to users when loading is complete, and the list is of length 0.",
         component: EmptyStateTemplateExampleComponent,
     },
+    "filtering": {
+        title: "Filtering Data",
+        subtitle: "Filtering functions that run against the dataSource will update the list to use the filtered list.",
+        component: FilteringExampleComponent,
+    },
     "fixed-width": {
         title: "Fixed Width",
         subtitle: "When defining a column, we can specify a fixed width (in pixels) to make a column take a static width, without responding to screen size.",
@@ -191,7 +197,7 @@ export const EXAMPLE_COMPONENTS: Example  = {
         subtitle: "When the content (itemSize * rowCount) is less than the height of the table, the table will shrink to fit the rows instead.",
         component: SmallContentExampleComponent,
     },
-    "sort": {
+    "sorting": {
         title: "Sorting Data",
         subtitle: "Sorting functions that run against the dataSource will update the list to use the sorted order.",
         component: SortExampleComponent,
