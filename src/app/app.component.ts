@@ -47,15 +47,11 @@ export class AppComponent {
   );
 
   /**
-   * The calculated width of the header, depending on if the user has scrolled.
+   * Handles if the navbar should be compressed, depending on if the user has scrolled.
    * We use this to animate the header shrinking and opening up screen space when on desktop.
    */
-  protected headerWidth$ = combineLatest([this.isMobile$, this._scroll]).pipe(
-    map(([isMobile, scrollTop]) => {
-      if (isMobile || scrollTop < 50)
-        return "100%";
-      return "0";
-    }),
+  protected isCompressed$ = combineLatest([this.isMobile$, this._scroll]).pipe(
+    map(([isMobile, scrollTop]) => !isMobile && scrollTop > 50),
   );
 
   /**

@@ -21,30 +21,51 @@
         z-index: 4;
         background-color: white;
         min-width: 233px;
+        width: 100%;
     
-        transition: width 1s ease-in-out;
+        transition: 0.75s 0.25s, width 1s ease-in-out;
     
-        .home-link, .github-link {
+        .title-container, .link-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .title-container { 
+            gap: 4px;
+
+            .custom-link {
+                font-size: 24px;
+                white-space: nowrap;
+            }
+        }
+        
+        .link-container {
+            gap: 16px;
+            transition: gap 0.75s 0.25s;
+
+            .custom-link {
+                font-size: 18px;
+        
+                .github-logo {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+
+        .custom-link {
             text-decoration: none;
             color: black;
         }
-    
-        .home-link {
-            font-size: 24px;
-        }
 
-        .link-container {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-    
-        .github-link {
-            font-size: 18px;
-    
-            .github-logo {
-                width: 18px;
-                height: 18px;
+        &.compressed-navbar {
+            width: 0;
+            padding: 0 12px;
+            transition: 0.5s, width 1s ease-in-out;
+
+            .link-container {
+                gap: 4px;
+                transition: gap 0.5s;
             }
         }
     }

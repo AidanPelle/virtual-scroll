@@ -1,19 +1,19 @@
 <div class="scroll-container" #scrollContainer (scroll)="_scroll.next(scrollContainer.scrollTop)">
-    <div class="nav-bar" [style.width]="headerWidth$ | async">
-        <div style="display: flex; align-items: center; gap: 4px;">
+    <div class="nav-bar" [class.compressed-navbar]="isCompressed$ | async">
+        <div class="title-container">
             @if (isMobile$ | async) {
                 <button (click)="sidenav.toggle()" mat-icon-button>
                     <mat-icon>menu</mat-icon>
                 </button>
             }
-            <a routerLink="/overview" class="home-link">Virtual Scroll</a>
+            <a routerLink="/overview" class="custom-link">Virtual Scroll</a>
         </div>
         
         <div class="link-container">
-            <a routerLink="/overview" class="github-link">
+            <a routerLink="/overview" class="custom-link">
                 <mat-icon>home</mat-icon>
             </a>
-            <a href="https://github.com/AidanPelle/virtual-scroll" class="github-link">
+            <a href="https://github.com/AidanPelle/virtual-scroll" class="custom-link">
                 <mat-icon svgIcon="github-logo"></mat-icon>
             </a>
         </div>
