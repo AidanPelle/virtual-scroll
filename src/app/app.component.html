@@ -1,20 +1,26 @@
-<div class="scroll-container" #scrollContainer (scroll)="onContentScroll(scrollContainer)">
-    <div class="nav-bar" [style.width]="calculatedWidth" [style.minWidth.px]="sidenav._getWidth()">
+<div class="scroll-container" #scrollContainer (scroll)="_scroll.next(scrollContainer.scrollTop)">
+    <div class="nav-bar" [style.width]="_headerWidth$ | async">
         <a routerLink="/overview" class="home-link">Virtual Scroll</a>
         <a href="https://github.com/AidanPelle/virtual-scroll" class="github-link">
             <mat-icon svgIcon="github-logo" class="github-logo"></mat-icon>
         </a>
+        @if (_isMobile$ | async) {
+            <button (click)="sidenav.toggle()" mat-icon-button>
+                <mat-icon>menu</mat-icon>
+            </button>
+        }
     </div>
 
+
     <mat-sidenav-container class="sidenav-container">
-        <mat-sidenav [opened]="true" mode="side" #sidenav class="sidenav">
+        <mat-sidenav [opened]="_isNavbarOpen$ | async" [mode]="(_isMobile$ | async) ? 'over' : 'side'" #sidenav class="sidenav">
             <mat-nav-list>
                 @for (route of demoRoutes | keyvalue; track route.key) {
-                    <a mat-list-item [routerLink]="'examples/' + route.key" [activated]="isRouteActivated(route.key)">{{route.value.title}}</a>
+                    <a mat-list-item [routerLink]="'examples/' + route.key" [activated]="isRouteActivated(route.key)" (click)="closeSidenavOnMobile()">{{route.value.title}}</a>
                 }
             </mat-nav-list>
         </mat-sidenav>
-            <mat-sidenav-content class="sidenav-content">
+            <mat-sidenav-content class="sidenav-content" [style.marginLeft.px]="(_isMobile$ | async) ? 0 : '233'">
                 <router-outlet></router-outlet>
             </mat-sidenav-content>
     </mat-sidenav-container>
