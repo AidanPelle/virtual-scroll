@@ -32,6 +32,12 @@
         .home-link {
             font-size: 24px;
         }
+
+        .link-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
     
         .github-link {
             font-size: 18px;

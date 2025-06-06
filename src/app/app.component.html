@@ -1,26 +1,34 @@
 <div class="scroll-container" #scrollContainer (scroll)="_scroll.next(scrollContainer.scrollTop)">
-    <div class="nav-bar" [style.width]="_headerWidth$ | async">
-        <a routerLink="/overview" class="home-link">Virtual Scroll</a>
-        <a href="https://github.com/AidanPelle/virtual-scroll" class="github-link">
-            <mat-icon svgIcon="github-logo" class="github-logo"></mat-icon>
-        </a>
-        @if (_isMobile$ | async) {
-            <button (click)="sidenav.toggle()" mat-icon-button>
-                <mat-icon>menu</mat-icon>
-            </button>
-        }
+    <div class="nav-bar" [style.width]="headerWidth$ | async">
+        <div style="display: flex; align-items: center; gap: 4px;">
+            @if (isMobile$ | async) {
+                <button (click)="sidenav.toggle()" mat-icon-button>
+                    <mat-icon>menu</mat-icon>
+                </button>
+            }
+            <a routerLink="/overview" class="home-link">Virtual Scroll</a>
+        </div>
+        
+        <div class="link-container">
+            <a routerLink="/overview" class="github-link">
+                <mat-icon>home</mat-icon>
+            </a>
+            <a href="https://github.com/AidanPelle/virtual-scroll" class="github-link">
+                <mat-icon svgIcon="github-logo"></mat-icon>
+            </a>
+        </div>
     </div>
 
 
     <mat-sidenav-container class="sidenav-container">
-        <mat-sidenav [opened]="_isNavbarOpen$ | async" [mode]="(_isMobile$ | async) ? 'over' : 'side'" #sidenav class="sidenav">
+        <mat-sidenav [opened]="isNavbarOpen$ | async" [mode]="(isMobile$ | async) ? 'over' : 'side'" #sidenav class="sidenav">
             <mat-nav-list>
                 @for (route of demoRoutes | keyvalue; track route.key) {
                     <a mat-list-item [routerLink]="'examples/' + route.key" [activated]="isRouteActivated(route.key)" (click)="closeSidenavOnMobile()">{{route.value.title}}</a>
                 }
             </mat-nav-list>
         </mat-sidenav>
-            <mat-sidenav-content class="sidenav-content" [style.marginLeft.px]="(_isMobile$ | async) ? 0 : '233'">
+            <mat-sidenav-content class="sidenav-content" [style.marginLeft.px]="(isMobile$ | async) ? 0 : '233'">
                 <router-outlet></router-outlet>
             </mat-sidenav-content>
     </mat-sidenav-container>

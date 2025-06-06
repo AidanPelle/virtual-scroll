@@ -5,11 +5,11 @@
                 <h1>{{selectedExample?.title}}</h1>
                 <h3>{{selectedExample?.subtitle}}</h3>
             </div>
-            <button mat-icon-button style="margin-left: auto;" (click)="_showCodeView = !_showCodeView" [matTooltip]="_showCodeView ? 'Hide code' : 'Show code'">
+            <button mat-icon-button style="margin-left: auto;" (click)="showCodeView = !showCodeView" [matTooltip]="showCodeView ? 'Hide code' : 'Show code'">
                 <mat-icon>code</mat-icon>
             </button>
         </div>
-        @if (_showCodeView) {
+        @if (showCodeView) {
             <mat-tab-group [(selectedIndex)]="selectedTabIndex" style="width: fit-content;">
                 @for (item of fileViews; track item.title) {
                     <mat-tab [label]="item.title"></mat-tab>
@@ -18,7 +18,7 @@
         }
         
     </mat-card-header>
-    @if (_showCodeView) {
+    @if (showCodeView) {
         <mat-card-content class="code-view-container">
             <button mat-icon-button class="copy-button" [cdkCopyToClipboard]="selectedFileView" (cdkCopyToClipboardCopied)="copiedToClipboard()" matTooltip="Copy example">
                 <mat-icon>content_copy</mat-icon>

@@ -34,22 +34,23 @@ export class AppComponent {
 
   @ViewChild(MatSidenav, {static: true}) _sidenav!: MatSidenav;
 
-  protected _isMobile$ = this._breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).pipe(
+  /** Emits whenever we scroll on our parent container. */
+  protected _scroll = new BehaviorSubject<number>(0);
+  
+  /** The list of examples available in the app, used to populate our navbar. */
+  protected demoRoutes = EXAMPLE_COMPONENTS;
+  
+  /** An observable that emits if the current screenWidth is mobile or smaller, and updates if the width changes. */
+  protected isMobile$ = this._breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).pipe(
     map(result => result.matches),
     shareReplay(1),
   );
 
-  protected _toggleNavbar = new Subject<void>();
-
-  protected _isNavbarOpen$ = this._isMobile$.pipe(
-    map(isHandset => {
-      return !isHandset;
-    }),
-  );
-
-  protected _scroll = new BehaviorSubject<number>(0);
-
-  protected _headerWidth$ = combineLatest([this._isMobile$, this._scroll]).pipe(
+  /**
+   * The calculated width of the header, depending on if the user has scrolled.
+   * We use this to animate the header shrinking and opening up screen space when on desktop.
+   */
+  protected headerWidth$ = combineLatest([this.isMobile$, this._scroll]).pipe(
     map(([isMobile, scrollTop]) => {
       if (isMobile || scrollTop < 50)
         return "100%";
@@ -57,18 +58,34 @@ export class AppComponent {
     }),
   );
 
+  /**
+   * Emits if the navbar should be open or not, essentially forcing it to open when we go to desktop view,
+   * and forcing it to close when we go to mobile view.
+   */
+  protected isNavbarOpen$ = this.isMobile$.pipe(
+    map(isHandset => {
+      return !isHandset;
+    }),
+  );
+
   constructor() {
     this._iconRegistry.addSvgIcon('github-logo', this._sanitizer.bypassSecurityTrustResourceUrl('assets/icons/github-mark.svg'));
   }
 
-  demoRoutes = EXAMPLE_COMPONENTS;
-
-  isRouteActivated(route: string) {
+  /**
+   * Returns if, for the given route in the navbar, we've navigated to it.
+   * This is used to highlight which example component we're currently on.
+   */
+  protected isRouteActivated(route: string) {
     return this._router.url.includes(route);
   }
 
-  closeSidenavOnMobile() {
-    this._isMobile$.pipe(
+  /**
+   * This function handles closing the navbar, when a route has been selected on mobile devices,
+   * in order to clear up screen space.
+   */
+  protected closeSidenavOnMobile() {
+    this.isMobile$.pipe(
       take(1)
     ).subscribe(isMobile => {
       if (isMobile)
