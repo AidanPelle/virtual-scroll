@@ -23,7 +23,7 @@
             <button mat-icon-button class="copy-button" [cdkCopyToClipboard]="selectedFileView" (cdkCopyToClipboardCopied)="copiedToClipboard()" matTooltip="Copy example">
                 <mat-icon>content_copy</mat-icon>
             </button>
-            <pre class="code-view"><code [highlight]="selectedFileView" [language]="selectedFileLanguage" style="white-space: break-spaces;"></code></pre>
+            <pre class="code-view"><code [highlight]="selectedFileView" [language]="selectedFileLanguage"></code></pre>
         </mat-card-content>
     }
     
