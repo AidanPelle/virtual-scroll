@@ -58,7 +58,7 @@
             [loadingRowTemplate]="loadingRowTemplate"
             [item]="item"
             [index]="index"
-            [sliderTemplate]="dummySliderTemplate"
+            [sliderTemplate]="fakeSliderTemplate"
             [virtualScroll]="this"
             [dataSource]="dataSource$ | async"
             [rowMinWidth]="_rowWidth$ | async">
@@ -109,6 +109,6 @@
     </div>
 </ng-template>
 
-<ng-template #dummySliderTemplate let-cellIndex="cellIndex">
-    <div [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth" class="dummy-slider"></div>
+<ng-template #fakeSliderTemplate let-cellIndex="cellIndex">
+    <div [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth" class="fake-slider"></div>
 </ng-template>

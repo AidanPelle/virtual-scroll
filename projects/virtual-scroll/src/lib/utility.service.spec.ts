@@ -127,7 +127,7 @@ describe('UtilityService', () => {
 @Component({
   template: `
     <virtual-scroll>
-      <div *cellDef="let item; name: 'Dummy Cell';">Cell 5</div>
+      <div *cellDef="let item; name: 'Mock Cell';">Cell 5</div>
     </virtual-scroll>
   `,
 })
