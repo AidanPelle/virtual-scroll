@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {OverlayModule} from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { VirtualScrollComponent } from './virtual-scroll/virtual-scroll.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { RowOutletDirective } from './outlets/row-outlet.directive';
