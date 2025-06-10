@@ -8,7 +8,7 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { EXAMPLE_COMPONENTS } from '../examples/example-map';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { BehaviorSubject, combineLatest, map, scan, shareReplay, startWith, Subject, switchMap, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, shareReplay, take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
