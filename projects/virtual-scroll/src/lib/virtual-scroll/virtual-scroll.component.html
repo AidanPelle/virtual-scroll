@@ -105,12 +105,10 @@
     <div class="vs-slider" [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth"
         vsResizable (resize)="onResize($event, columnName)" (resetSizes)="onResetSizes()">
 
-        <div class="vertical-line">
-        </div>
+        <div class="vertical-line"></div>
     </div>
 </ng-template>
 
 <ng-template #dummySliderTemplate let-cellIndex="cellIndex">
-    <div [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth" class="dummy-slider">
-    </div>
+    <div [style.minWidth.px]="resizeWidth" [style.maxWidth.px]="resizeWidth" class="dummy-slider"></div>
 </ng-template>
